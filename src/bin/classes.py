@@ -1,5 +1,6 @@
 from math import *
 from random import uniform, sample, randint
+import pandas as pd
 
 # comme on utilise plus tard les positions, on met des variables globales ici pour pouvoir règler au fur et à mesure du développement
 largeur_fenetre = 100
@@ -135,7 +136,8 @@ class Simulation :
         # on stocke les personnes présentes
         self.liste_personnes = []
         # on stocke les statistiques qui peuvent servir pour la réalisation des statistiques
-        self.liste_historique_iterations = []
+        # on fait directement en dataframe pour que ce soit plus simple pour la réalisation des schémas matplotlib
+        self.df_historique = pd.DataFrame(columns=["nb_sains", "nb_infectes", "nb_immunises", "nb_morts", "nb_total"])
         # on garde aussi le nombre d'itérations
         self.iterations = 0
         # on crée la grille
@@ -179,3 +181,41 @@ class Simulation :
                         # si elle est inférieure au pourcentage de risque de transmission, la personne est maintenant infectée
                         if randint(0, 100) < self.maladie.risque_transmission:
                             voisin.etre_infecte()
+    
+    # on met à jour après chaque itération
+    def mise_a_jour_iteration(self):
+        # on ajoutera ici les mouvements
+
+        # on reconstruit la grille avec les nouvelles positions
+        self.grille.construire_grille(self.liste_personnes)
+        # on propage l’infection
+        self.propager_infection()
+        # on met à jour les états pour chaque personne
+        for personne in self.liste_personnes:
+            if personne.etat == "infecte":
+                personne.cpt_iterations_infection += 1
+                # on teste si la personne va mourir
+                # on va estimer que les personnes immunodéprimées ont deux fois plus de chances de mourir
+                risque = self.maladie.taux_letalite
+                if personne.immunodeprime == "oui":
+                    risque *= 2
+                if randint(1, 100) <= risque:
+                    personne.mourir()
+                # si la personne n'a pas une maladie permanente et qu'elle a survécu à toutes les itérations nécessaires pour que la maladie passe, la personne est guérie
+                elif self.maladie.temps_guerison != -1 and personne.cpt_iterations_infection >= self.maladie.temps_guerison:
+                    # si on est immunisé après la maladie, la personne gagne ce statut, sinon elle est juste saine à nouveau
+                    if self.maladie.immunite_apres_guerison == "oui":
+                        personne.etre_immunise()
+                    else:
+                        personne.guerir()
+        # on enregistre les statistiques actuelles sous forme de dataframe 
+        # pour ça, on calcule le nombre de personnes par état
+        nb_sains = sum(1 for personne in self.liste_personnes if personne.etat == "sain")
+        nb_infectes = sum(1 for personne in self.liste_personnes if personne.etat == "infecte")
+        nb_immunises = sum(1 for personne in self.liste_personnes if personne.etat == "immunise")
+        nb_morts = sum(1 for personne in self.liste_personnes if personne.etat == "mort")
+        nb_total = nb_sains + nb_infectes + nb_immunises + nb_morts
+        self.df_historique.loc[self.iterations] = [nb_sains, nb_infectes, nb_immunises, nb_morts, nb_total]
+
+        # on augmente le compteur d’itérations
+        self.iterations += 1
