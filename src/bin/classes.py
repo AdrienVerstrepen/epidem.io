@@ -1,5 +1,5 @@
 from math import *
-from random import uniform, sample, random
+from random import uniform, sample, randint
 
 # comme on utilise plus tard les positions, on met des variables globales ici pour pouvoir règler au fur et à mesure du développement
 largeur_fenetre = 100
@@ -73,6 +73,58 @@ class Maladie :
         self.temps_guerison = temps_guerison
 
 
+# on implémente une classe qui représente la grille qui nous permet d'optimiser la recherche des voisins d'une personne infectée
+class Grille:
+    # on va prendre la distance de contamination comme taille de carreau, ça permet d'optimiser la taille des carreaux en fonction de l'utilisation qu'on en aura
+    def __init__(self, taille_cellule, largeur_fenetre, hauteur_fenetre):
+        self.taille_cellule = float(taille_cellule)
+        self.largeur = largeur_fenetre
+        self.hauteur = hauteur_fenetre
+        # on calcule le nombre de colonnes et de lignes pour la matrice
+        self.nb_colonnes = int(self.largeur // self.taille_cellule) + 1
+        self.nb_lignes = int(self.hauteur // self.taille_cellule) + 1
+        # on fait la matrice 2D avec listes vides
+        # on stockera dans chaque case les personnes présentes grâce à une liste
+        self.carreaux = []
+        for col in range(self.nb_colonnes):
+            ligne = []
+            for lig in range(self.nb_lignes):
+                ligne.append([])
+            self.carreaux.append(ligne)
+
+    # on récupère les coordonnées du carreau dans la grille dans lequel se trouve une personne
+    def coordonnees_carreau(self, position):
+        carreau_x = int(position[0] // self.taille_cellule)
+        carreau_y = int(position[1] // self.taille_cellule)
+        return carreau_x, carreau_y
+
+    # on construit la grille à partir d'une liste de personnes
+    def construire_grille(self, personnes):
+        # on commence par vider toutes les cases avant de pouvoir remplir
+        for colonne in self.carreaux:
+            for carreau in colonne:
+                carreau.clear()
+        # on place chaque personne dans la bonne case
+        for personne in personnes:
+            carreau_x, carreau_y = self.coordonnees_carreau(personne.position)
+            self.carreaux[carreau_x][carreau_y].append(personne)
+
+    # on récupère les voisins d'une personne dans son carreau ou les 8 autour
+    # ça permet de récupérer les personnes qui seront potentiellement infectées par la personne elle-même infectée
+    def voisins_de_personne(self, personne):
+        # on commence déjà par récupérer le carreau auquel appartient la personne infectée
+        carreau_x, carreau_y = self.coordonnees_carreau(personne.position)
+        voisins = []
+        for x in (-1, 0, 1):
+            for y in (-1, 0, 1):
+                nouveau_carreau_x, nouveau_carreau_y = carreau_x + x, carreau_y + y
+                # on pense bien à vérifier qu'on reste dans la grille
+                # par exemple si on est dans le carreau tout en haut à droite, il faut bien penser à ne pas sortir de la grille
+                if 0 <= nouveau_carreau_x < self.nb_colonnes and 0 <= nouveau_carreau_y < self.nb_lignes:
+                    voisins.extend(self.carreaux[nouveau_carreau_x][nouveau_carreau_y])
+        return voisins
+    
+
 # on implémente ensuite la classe simulation, qui permet de construire toute la structure pour la simulation
 class Simulation :
     def __init__(self, maladie, nb_personnes=50):
@@ -86,6 +138,8 @@ class Simulation :
         self.liste_historique_iterations = []
         # on garde aussi le nombre d'itérations
         self.iterations = 0
+        # on crée la grille
+        self.grille = Grille(taille_cellule=self.maladie.distance_infection, largeur_fenetre=largeur_fenetre, hauteur_fenetre=hauteur_fenetre)
 
     # on crée les personnes de la simulation et on infecte un échantillon
     # par défaut on met le pourcentage de personnes infectées à 5% mais l'utilisateur peut règler cette valeur
@@ -100,10 +154,28 @@ class Simulation :
             personne = Personne(etat="sain", immunodeprime="non", position=position, id=i)
             # on ajoute la personen crée à la liste de toutes les personnes
             self.liste_personnes.append(personne)
-
         # on infecte le poucentage de personnes infectées choisi par la personne
         nb_infectes_initiaux = int(self.nb_personnes * pourcentage_infectes)
         # on tire aléatoirement le nombre de personnes qu'il faut
         infectes_initiaux = sample(self.liste_personnes, nb_infectes_initiaux)
         for personne in infectes_initiaux:
             personne.etre_infecte()
+        # on pense bien à initialiser la grille avec les personnes générées
+        self.grille.construire_grille(self.liste_personnes)
+    
+    # on fait la propagation de la maladie aux personnes à côté d'une personne infectée
+    def propager_infection(self):
+        # on commence par récupérer les personnes infectées
+        infectes = [personne for personne in self.liste_personnes if personne.etat == "infecte"]
+        for infecte in infectes:
+            # on récupère ses voisins, donc ceux dans sa case ou les 8 cas autour
+            voisins = self.grille.voisins_de_personne(infecte)
+            for voisin in voisins:
+                # on a pas besoin de regarder ceux qui sont déjà infectés, morts ou immunisés
+                if voisin.etat == "sain":
+                    # on regarde si la distance entre les deux points est assez faible pour que la personne puisse être infectée
+                    if infecte.etre_en_contact(voisin.position, self.maladie.distance_infection):
+                        # comme la valeur de risque de transmission est un entier entre 1 et 100, on va récupérer une valeur aléatoire
+                        # si elle est inférieure au pourcentage de risque de transmission, la personne est maintenant infectée
+                        if randint(0, 100) < self.maladie.risque_transmission:
+                            voisin.etre_infecte()
