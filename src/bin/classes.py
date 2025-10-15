@@ -61,7 +61,6 @@ class Maladie :
         # on met en place le pourcentage de risque que quelqu'un infecté meurt de la maladie
         self.taux_letalite = taux_letalite
         # la distance d'infection correspond à la distance maximale à partir de laquelle une personne peut en infecter une autre
-        # les valeurs possibles de distance sont de 1 à 4, 1 étant très proche et 4 très éloigné
         self.distance_infection = distance_infection
         # risque transmission correspond au pourcentage de risque que quelqu'un d'infecté en infecte un autre qui serait assez proche pour être infecté
         # sa valeur est donc un entier compris entre 1 et 100, avec 1% un risque très faible de transmission et 100% une transmission permanente
@@ -146,18 +145,21 @@ class Simulation :
     # on crée les personnes de la simulation et on infecte un échantillon
     # par défaut on met le pourcentage de personnes infectées à 5% mais l'utilisateur peut règler cette valeur
     # il y a également un indicateur des personnes immunodéprimées parmi la population
-    def initialiser_population(self, pourcentage_infectes = 0.05, pourcentage_immunodeprimes = 0.05):
+    def initialiser_population(self, pourcentage_infectes = 5, pourcentage_immunodeprimes = 5):
         # on crée le nombre de personnes que l'utilisateur veut
         for i in range(self.nb_personnes):
             # on va donner à chaque personne une position aléatoire dans la fenêtre
             # l'avantage d'uniform est que les valeurs ne sont pas forcément rondes, donc la répartitions sera plus aléatoire
             position = [uniform(0, largeur_fenetre), uniform(0, hauteur_fenetre)]
             # on crée la personne saine et on lui donne par défaut l'état sain
-            personne = Personne(etat="sain", immunodeprime="non", position=position, id=i)
-            # on ajoute la personen crée à la liste de toutes les personnes
+            if randint(0, 100) < pourcentage_immunodeprimes:
+                personne = Personne(etat="sain", immunodeprime="oui", position=position, id=i)
+            else :
+                personne = Personne(etat="sain", immunodeprime="non", position=position, id=i)
+            # on ajoute la personne crée à la liste de toutes les personnes
             self.liste_personnes.append(personne)
         # on infecte le poucentage de personnes infectées choisi par la personne
-        nb_infectes_initiaux = int(self.nb_personnes * pourcentage_infectes)
+        nb_infectes_initiaux = int(self.nb_personnes * (pourcentage_infectes/100))
         # on tire aléatoirement le nombre de personnes qu'il faut
         infectes_initiaux = sample(self.liste_personnes, nb_infectes_initiaux)
         for personne in infectes_initiaux:
@@ -196,11 +198,13 @@ class Simulation :
                 personne.cpt_iterations_infection += 1
                 # on teste si la personne va mourir
                 # on va estimer que les personnes immunodéprimées ont deux fois plus de chances de mourir
-                risque = self.maladie.taux_letalite
-                if personne.immunodeprime == "oui":
-                    risque *= 2
-                if randint(1, 100) <= risque:
-                    personne.mourir()
+                if personne.cpt_iterations_infection == 1:
+                    risque = self.maladie.taux_letalite
+                    if personne.immunodeprime == "oui":
+                        risque *= 2
+                    if randint(1, 100) <= risque:
+                        personne.mourir()
+                        continue
                 # si la personne n'a pas une maladie permanente et qu'elle a survécu à toutes les itérations nécessaires pour que la maladie passe, la personne est guérie
                 elif self.maladie.temps_guerison != -1 and personne.cpt_iterations_infection >= self.maladie.temps_guerison:
                     # si on est immunisé après la maladie, la personne gagne ce statut, sinon elle est juste saine à nouveau
