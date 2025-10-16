@@ -2,10 +2,6 @@ from math import *
 from random import uniform, sample, randint
 import pandas as pd
 
-# comme on utilise plus tard les positions, on met des variables globales ici pour pouvoir règler au fur et à mesure du développement
-largeur_fenetre = 100
-hauteur_fenetre = 100
-
 # on commence par implémenter la classe personne, qui permet de construire chacun des individues de la simulation
 class Personne :
     # par défaut, les personnes commencent saines (par rapport à cette maladie)
@@ -127,7 +123,7 @@ class Grille:
 
 # on implémente ensuite la classe simulation, qui permet de construire toute la structure pour la simulation
 class Simulation :
-    def __init__(self, maladie, nb_personnes=50):
+    def __init__(self, maladie, largeur_fenetre, hauteur_fenetre, nb_personnes=50):
         # on garde le nombre de personnes totales dans la simulation
         self.nb_personnes = nb_personnes
         # on récupère les critères de la maladie entrés par l'utilisateur
@@ -145,7 +141,7 @@ class Simulation :
     # on crée les personnes de la simulation et on infecte un échantillon
     # par défaut on met le pourcentage de personnes infectées à 5% mais l'utilisateur peut règler cette valeur
     # il y a également un indicateur des personnes immunodéprimées parmi la population
-    def initialiser_population(self, pourcentage_infectes = 5, pourcentage_immunodeprimes = 5):
+    def initialiser_population(self, largeur_fenetre, hauteur_fenetre, pourcentage_infectes = 5, pourcentage_immunodeprimes = 5):
         # on crée le nombre de personnes que l'utilisateur veut
         for i in range(self.nb_personnes):
             # on va donner à chaque personne une position aléatoire dans la fenêtre
@@ -201,7 +197,7 @@ class Simulation :
                 if personne.cpt_iterations_infection == 1:
                     risque = self.maladie.taux_letalite
                     if personne.immunodeprime == "oui":
-                        risque *= 2
+                        risque *= 1.5
                     if randint(1, 100) <= risque:
                         personne.mourir()
                         continue

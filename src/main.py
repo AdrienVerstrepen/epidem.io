@@ -14,15 +14,15 @@ def main():
         # les valeurs possibles sont entre 1 et 4, 1 étant très proche et 4 très éloigné
         # par soucis de facilité, je propose qu'on fasse cette distinction directement dans l'interface dans l'envoi des données
         # ça me permet d'utiliser ici direct des distances en fonction de la taille des fenetres
-        distance_infection=2,
+        distance_infection=10,
         # c'est également un pourcentage qui attfin_temps une valeur entre 1 et 100
         risque_transmission=30,
         immunite_apres_guerison="oui",
         # l'unité ici est le nombre d'itérations nécessaires pour guérir
         temps_guerison=10
     )
-    simulation = Simulation(maladie, nb_personnes=10000)
-    simulation.initialiser_population(pourcentage_infectes=2, pourcentage_immunodeprimes=10)
+    simulation = Simulation(maladie, largeur_fenetre, hauteur_fenetre, nb_personnes=10000)
+    simulation.initialiser_population(largeur_fenetre, hauteur_fenetre, pourcentage_infectes=2, pourcentage_immunodeprimes=10)
 
     # on enregistre l'état initial
     nb_sains = sum(1 for p in simulation.liste_personnes if p.etat == "sain")
