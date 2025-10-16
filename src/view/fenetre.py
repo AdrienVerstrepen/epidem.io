@@ -1,23 +1,29 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 import sys
-from widgets.grille import Grille
-from widgets.parametres import Parametres
-from widgets.barre_boutons import Barre_boutons
+from view.widgets.grille import Grille_visualisation
+from view.widgets.parametres import Parametres
+from view.widgets.barre_boutons import Barre_boutons
 
 class Fenetre(QMainWindow):
 	def __init__(self):
 		super().__init__()
 		# Gestion titre et taille de la fenêtre
 		self.setWindowTitle("épidém.io")
-		self.resize(800, 600)
+
+		self.largeur = 800
+		self.hauteur = 600
 		
+		self.resize(self.largeur, self.hauteur)
+
 		widget_central = QWidget()
 		self.setCentralWidget(widget_central)
 
 		disposition_principal = QHBoxLayout()
 
-		self.widget_grille = Grille()
+		taille_fenetre = [self.largeur, self.hauteur]
+
+		self.widget_grille = Grille_visualisation(taille_fenetre)
 		self.widget_parametres = Parametres()
 
 		disposition_principal.addWidget(self.widget_grille, stretch=3)
@@ -29,3 +35,4 @@ class Fenetre(QMainWindow):
 		disposition_haut.addLayout(disposition_principal)
 
 		widget_central.setLayout(disposition_haut)
+	
