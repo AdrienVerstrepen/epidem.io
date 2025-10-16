@@ -7,7 +7,7 @@ class Grille(QWidget):
         disposition = QGridLayout()
         self.setLayout(disposition)
 
-        # Exemple d’une grille 3x3
+        # Exemple avec une grille 3x3
         for ligne in range(3):
             for colonne in range(3):
                 btn = QPushButton(f"{ligne},{colonne}")
