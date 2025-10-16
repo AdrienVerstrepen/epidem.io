@@ -103,6 +103,7 @@ class Grille:
         # on place chaque personne dans la bonne case
         for personne in personnes:
             carreau_x, carreau_y = self.coordonnees_carreau(personne.position)
+            # print(personne.position)
             self.carreaux[carreau_x][carreau_y].append(personne)
 
     # on récupère les voisins d'une personne dans son carreau ou les 8 autour
@@ -183,6 +184,18 @@ class Simulation :
     # on met à jour après chaque itération
     def mise_a_jour_iteration(self):
         # on ajoutera ici les mouvements
+        for personne in self.liste_personnes:
+            x = personne.position[0] + randint(-5,5)
+            y = personne.position[1] + randint(-5,5)
+            if x < 0 :
+                x = 0
+            elif x > self.grille.largeur :
+                x = self.grille.largeur
+            if y < 0 :
+                y = 0
+            elif y > self.grille.hauteur :
+                y = self.grille.hauteur
+            personne.se_deplace([x, y])
 
         # on reconstruit la grille avec les nouvelles positions
         self.grille.construire_grille(self.liste_personnes)
