@@ -13,4 +13,4 @@ class Parametres(QWidget):
 		layout.addWidget(QLabel("Paramètre 2"))
 		layout.addWidget(QLineEdit())
 
-		layout.addStretch()  # Pour pousser vers le haut
+		layout.addStretch()

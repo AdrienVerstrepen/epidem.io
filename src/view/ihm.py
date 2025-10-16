@@ -6,14 +6,10 @@ from fenetre import Fenetre
 
 if __name__ == "__main__":
     application = QApplication()
-
     ihm = Fenetre()
-
     ihm.show()
-    
     # Déboggage, rajoute une bordure à chaque élément de l'interface
-    # application.setStyleSheet("QWidget { border: 1px solid gray; }")
-
+    # application.setStyleSheet("QWidget { border: 1p x solid gray; }")
     sys.exit(application.exec())
 
 # Exemple doc string : 
