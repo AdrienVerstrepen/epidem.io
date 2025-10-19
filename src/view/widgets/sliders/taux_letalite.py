@@ -7,13 +7,13 @@ class Taux_letalite(QSlider):
 
 		self.parent = parent
 
-	def value_changed(self):
+	def changement_valeur(self):
 		self.parent.label_letalite.setText(f"Value: {self.parent.slider_letalite.value()+1}")
 
-	def slider_pressed(self):
-		print("Slider pressed")
+	def slider_selectionne(self):
+		print("Taux letalite choisi")
 
-	def slider_released(self):
-		print("Slider released")
-	def slider_moved(self, position):
-		print(f"Slider moved to: {position}")
+	def slider_relache(self):
+		print("Taux letalite relaché")
+	def slider_deplace(self, position):
+		print(f"Valeur déplacée à : {position}")

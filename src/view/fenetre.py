@@ -6,14 +6,13 @@ from view.widgets.parametres import Parametres
 from view.widgets.barre_boutons import Barre_boutons
 
 class Fenetre(QMainWindow):
-	def __init__(self):
+	def __init__(self, nb_personnes, taille_fenetre):
 		super().__init__()
-		# Gestion titre et taille de la fenêtre
 		self.setWindowTitle("épidém.io")
 
-		self.largeur = 800
-		self.hauteur = 600
-		
+		self.largeur = taille_fenetre["largeur"]
+		self.hauteur = taille_fenetre["hauteur"]
+
 		self.resize(self.largeur, self.hauteur)
 
 		widget_central = QWidget()
@@ -21,9 +20,7 @@ class Fenetre(QMainWindow):
 
 		disposition_principal = QHBoxLayout()
 
-		taille_fenetre = [self.largeur, self.hauteur]
-
-		self.widget_grille = Grille_visualisation(taille_fenetre)
+		self.widget_grille = Grille_visualisation(taille_fenetre, nb_personnes)
 		self.widget_parametres = Parametres()
 
 		disposition_principal.addWidget(self.widget_grille, stretch=3)

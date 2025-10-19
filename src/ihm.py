@@ -1,12 +1,15 @@
 import sys
-import random
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from view.fenetre import Fenetre
 
 if __name__ == "__main__":
     application = QApplication()
-    ihm = Fenetre()
+    largeur = 800
+    hauteur = 600
+    taille_fenetre = {"largeur": largeur,"hauteur": hauteur}
+    nb_personnes = 5
+    ihm = Fenetre(nb_personnes, taille_fenetre)
     ihm.show()
     # Déboggage, rajoute une bordure à chaque élément de l'interface
     # application.setStyleSheet("QWidget { border: 1p x solid gray; }")
