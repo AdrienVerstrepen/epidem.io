@@ -6,7 +6,7 @@ from view.widgets.parametres import Parametres
 from view.widgets.barre_boutons import Barre_boutons
 
 class Fenetre(QMainWindow):
-	def __init__(self, nb_personnes, taille_fenetre):
+	def __init__(self, nb_personnes: int, taille_fenetre: dict):
 		super().__init__()
 		self.setWindowTitle("épidém.io")
 

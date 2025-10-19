@@ -7,15 +7,15 @@ import numpy as np
 
 class Grille_visualisation(QWidget):
     def __init__(self, 
-                 taille_fenetre, 
-                 nb_personnes=10, 
-                 nb_iterations=20, 
-                 taux_letalite=5,
-                 distance_infection=50, 
-                 taux_transmission=30, 
-                 temps_guerison=20, 
-                 taux_infectes=4,
-                 taux_immunodeprimes=10
+                 taille_fenetre : dict,
+                 nb_personnes : int = 10, 
+                 nb_iterations : int = 20, 
+                 taux_letalite : int = 5,
+                 distance_infection : int = 50, 
+                 taux_transmission : int = 30, 
+                 temps_guerison : int = 20, 
+                 taux_infectes : int = 4,
+                 taux_immunodeprimes : int = 10
     ):
         super().__init__()
         disposition = QGridLayout()
@@ -53,6 +53,8 @@ class Grille_visualisation(QWidget):
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         self.visualisation.setBackground('w')
         self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
+        self.visualisation.hideAxis('bottom')
+        self.visualisation.hideAxis('left')
 
         personnes = donnees[2]
         
