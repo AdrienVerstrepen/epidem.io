@@ -8,7 +8,7 @@ if __name__ == "__main__":
     largeur = 800
     hauteur = 600
     taille_fenetre = {"largeur": largeur,"hauteur": hauteur}
-    nb_personnes = 5
+    nb_personnes = 100
     ihm = Fenetre(nb_personnes, taille_fenetre)
     ihm.show()
     # Déboggage, rajoute une bordure à chaque élément de l'interface

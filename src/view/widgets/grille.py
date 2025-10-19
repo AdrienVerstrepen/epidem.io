@@ -10,11 +10,11 @@ class Grille_visualisation(QWidget):
                  taille_fenetre, 
                  nb_personnes=10, 
                  nb_iterations=20, 
-                 taux_letalite=5, 
-                 distance_infection=2, 
+                 taux_letalite=5,
+                 distance_infection=50, 
                  taux_transmission=30, 
-                 temps_guerison=10, 
-                 taux_infectes=2, 
+                 temps_guerison=20, 
+                 taux_infectes=4,
                  taux_immunodeprimes=10
     ):
         super().__init__()
@@ -49,21 +49,35 @@ class Grille_visualisation(QWidget):
         # Récupération des données initialisées
         donnees = recuperer_points_personnes(self.sa_simulation.grille.carreaux)
         
-        visualisation = PlotWidget()
-        visualisation.setBackground('w')
-        visualisation.showGrid(x=True, y=True, alpha=0.3) 
+        self.visualisation = PlotWidget()
+        self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
+        self.visualisation.setBackground('w')
+        self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
 
         personnes = donnees[2]
         
-        nuage_de_points = ScatterPlotItem(size=10, spots=personnes)
+        self.nuage_de_points = ScatterPlotItem(size=10, spots=personnes)
         
-        nuage_de_points.sigClicked.connect(afficher_information_personne)
+        self.nuage_de_points.sigClicked.connect(afficher_information_personne)
 
-        visualisation.addItem(nuage_de_points)
+        self.visualisation.addItem(self.nuage_de_points)
 
-        disposition.addWidget(visualisation)
+        disposition.addWidget(self.visualisation)
 
-def recuperer_points_personnes(cases):
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(300)
+        self.timer.timeout.connect(self.actualiser_simulation)
+        self.timer.start()
+
+    def actualiser_simulation(self) -> None :
+        self.sa_simulation.mise_a_jour_iteration()
+        self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
+        self.nuage_de_points.setData(spots=recuperer_points_personnes(self.sa_simulation.grille.carreaux)[2])
+        if (self.sa_simulation.iterations >= 20):
+            self.timer.stop()
+            print(self.sa_simulation.df_historique)
+        
+def recuperer_points_personnes(cases: list) -> tuple :
     ordonnees = []
     abscisses = []
     coordonnes_personnes = []
@@ -80,7 +94,7 @@ def recuperer_points_personnes(cases):
                 abscisses.append(abscisse)
     return (abscisses, ordonnees, coordonnes_personnes)
 
-def afficher_information_personne(plot, points):
+def afficher_information_personne(graphique : ScatterPlotItem, points : list) -> None :
     for point in points:
         personne = point.data()
         print(str(personne[0]))

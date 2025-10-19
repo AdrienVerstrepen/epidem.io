@@ -25,7 +25,8 @@ class Personne :
         self.cpt_iterations_infection=cpt_iterations_infection
 
     def se_deplace(self, arrivee):
-        self.position = arrivee
+        if (self.etat != "mort"):
+            self.position = arrivee
             
     def guerir(self):
         self.etat = "sain"
