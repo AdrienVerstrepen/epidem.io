@@ -57,7 +57,7 @@ class Grille_visualisation(QWidget):
         
         nuage_de_points = ScatterPlotItem(size=10, spots=personnes)
         
-        nuage_de_points.sigClicked.connect(personne_selectionnee)
+        nuage_de_points.sigClicked.connect(afficher_information_personne)
 
         visualisation.addItem(nuage_de_points)
 
@@ -73,14 +73,21 @@ def recuperer_points_personnes(cases):
                 coordonnes_personnes.append({
                     'pos' : (abscisse, ordonnee),
                     'data' : personne,
+                    'brush' : couleurs_personnes.get(personne[0].couleur),
                     'symbol' : "o",
-
                 })
                 ordonnees.append(ordonnee)
                 abscisses.append(abscisse)
     return (abscisses, ordonnees, coordonnes_personnes)
 
-def personne_selectionnee(plot, points):
-    for pt in points:
-        objet = pt.data()
-        print("Objet lié :", str(objet[0]))
+def afficher_information_personne(plot, points):
+    for point in points:
+        personne = point.data()
+        print(str(personne[0]))
+
+couleurs_personnes = {
+    "rouge": "red",
+    "vert": "green",
+    "orange": "orange",
+    "bleu": "blue"
+}

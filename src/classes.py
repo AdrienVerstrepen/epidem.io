@@ -51,7 +51,7 @@ class Personne :
         return True if distance <= distance_infection else False
     
     def __str__(self):
-        return f"Personne n°{self.id} ; {self.etat} ; {self.immunodeprime} ; {self.position} ; {self.medecin}\n"
+        return f"Personne n°{self.id} ; {self.etat} ; Immunodéprimé :{self.immunodeprime} ; coordonnées : {self.position} ; Médecin :{self.medecin}\n"
 
 # on implémente maintenant la classe Maladie, qui est la classe contenant toutes les caractèristiques par rapport à la maladie qui va être simulée
 class Maladie :
@@ -123,10 +123,6 @@ class Grille:
                     voisins.extend(self.carreaux[nouveau_carreau_x][nouveau_carreau_y])
         return voisins
 
-    def afficher_simulation(self):
-        for ligne in self.carreaux:
-            print(ligne)
-
 
 # on implémente ensuite la classe simulation, qui permet de construire toute la structure pour la simulation
 class Simulation :
@@ -169,7 +165,6 @@ class Simulation :
             personne.etre_infecte()
         # on pense bien à initialiser la grille avec les personnes générées
         self.grille.construire_grille(self.liste_personnes)
-        self.grille.afficher_simulation()
     
     # on fait la propagation de la maladie aux personnes à côté d'une personne infectée
     def propager_infection(self):
@@ -239,4 +234,3 @@ class Simulation :
 
         # on augmente le compteur d’itérations
         self.iterations += 1
-        self.grille.afficher_simulation()
