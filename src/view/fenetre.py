@@ -20,13 +20,13 @@ class Fenetre(QMainWindow):
 
 		disposition_principal = QHBoxLayout()
 
-		self.widget_grille = Grille_visualisation(taille_fenetre, nb_personnes)
+		self.sa_grille = Grille_visualisation(taille_fenetre, nb_personnes)
 		self.widget_parametres = Parametres()
 
-		disposition_principal.addWidget(self.widget_grille, stretch=3)
+		disposition_principal.addWidget(self.sa_grille, stretch=3)
 		disposition_principal.addWidget(self.widget_parametres, stretch=1)
 
-		self.boutons_haut = Barre_boutons()
+		self.boutons_haut = Barre_boutons(self)
 		disposition_haut = QVBoxLayout()
 		disposition_haut.addWidget(self.boutons_haut)
 		disposition_haut.addLayout(disposition_principal)
