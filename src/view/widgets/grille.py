@@ -71,11 +71,17 @@ class Grille_visualisation(QWidget):
         self.timer.timeout.connect(self.actualiser_simulation)
         self.timer.start()
 
+    def mettre_en_pause_simulation(self, etat):
+        if (etat) :
+            self.timer.stop()
+        else :
+            self.timer.start()
+
     def actualiser_simulation(self) -> None :
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         self.nuage_de_points.setData(spots=recuperer_points_personnes(self.sa_simulation.grille.carreaux)[2])
-        if (self.sa_simulation.iterations >= 100):
+        if (self.sa_simulation.iterations >= 20):
             self.timer.stop()
             print(self.sa_simulation.df_historique)
 
