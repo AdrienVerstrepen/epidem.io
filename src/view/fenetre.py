@@ -34,8 +34,3 @@ class Fenetre(QMainWindow):
 		disposition_haut.addLayout(self.disposition_principale)
 
 		widget_central.setLayout(disposition_haut)
-
-	# def reinitialiser_simulation(self):
-	# 	self.disposition_principale.removeWidget(self.sa_grille)
-	# 	self.sa_grille = Grille_visualisation(self.taille_fenetre, self.nb_personnes)
-	# 	self.disposition_principale.addWidget(self.sa_grille, stretch=3)

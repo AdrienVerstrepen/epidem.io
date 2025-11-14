@@ -24,6 +24,28 @@ Le dossier src/bin contient les binaires préconstruits et compilés avec [PyIns
 
 ### Structure du projet
 
+README.md
+doc
+   |-- cahier_des_charges.md
+   |-- diagramme-de-classe-epidem.io.mdj
+launch-app.sh
+src
+   |-- classes.py
+   |-- ihm.py
+   |-- main.py
+   |-- view
+   |   |-- fenetre.py
+   |   |-- widgets
+   |   |   |-- barre_boutons.py
+   |   |   |-- boutons
+   |   |   |   |-- arreter.py
+   |   |   |   |-- demarrer.py
+   |   |   |   |-- pauser.py
+   |   |   |   |-- reinitialiser.py
+   |   |   |-- grille.py
+   |   |   |-- parametres.py
+   |   |   |-- sliders
+   |   |   |   |-- taux_letalite.py
 
 
 ***
