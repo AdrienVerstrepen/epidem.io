@@ -2,7 +2,7 @@ from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from .sliders.taux_letalite import Taux_letalite
 
-class Parametres(QWidget):
+class Parametres(QGroupBox):
 	def __init__(self):
 		super().__init__()
 

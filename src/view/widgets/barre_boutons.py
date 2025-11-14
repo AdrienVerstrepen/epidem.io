@@ -9,7 +9,7 @@ from .boutons.arreter import Bouton_arreter
 if TYPE_CHECKING:
     from ..fenetre import Fenetre
 
-class Barre_boutons(QWidget):
+class Barre_boutons(QGroupBox):
     def __init__(self, sa_fenetre: "Fenetre"):
         super().__init__()
         self.sa_disposition = QGridLayout()
@@ -17,7 +17,6 @@ class Barre_boutons(QWidget):
         self.setLayout(self.sa_disposition)
 
         self.boutons = []
-        # bouton_lancer = QPushButton("Lancer la simulation")
         self.bouton_demarrer = Bouton_demarrer(self, "Démarrer la simulation")
         self.boutons.append(self.bouton_demarrer)
 

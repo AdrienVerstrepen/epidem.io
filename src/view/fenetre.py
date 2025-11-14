@@ -1,6 +1,5 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
-import sys
 from .widgets.grille import Grille_visualisation
 from .widgets.parametres import Parametres
 from .widgets.barre_boutons import Barre_boutons
