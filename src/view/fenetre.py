@@ -12,23 +12,30 @@ class Fenetre(QMainWindow):
 
 		self.largeur = taille_fenetre["largeur"]
 		self.hauteur = taille_fenetre["hauteur"]
+		self.nb_personnes = nb_personnes
+		self.taille_fenetre = taille_fenetre
 
 		self.resize(self.largeur, self.hauteur)
 
 		widget_central = QWidget()
 		self.setCentralWidget(widget_central)
 
-		disposition_principal = QHBoxLayout()
+		self.disposition_principale = QHBoxLayout()
 
 		self.sa_grille = Grille_visualisation(taille_fenetre, nb_personnes)
 		self.widget_parametres = Parametres()
 
-		disposition_principal.addWidget(self.sa_grille, stretch=3)
-		disposition_principal.addWidget(self.widget_parametres, stretch=1)
+		self.disposition_principale.addWidget(self.sa_grille, stretch=3)
+		self.disposition_principale.addWidget(self.widget_parametres, stretch=1)
 
 		self.boutons_haut = Barre_boutons(self)
 		disposition_haut = QVBoxLayout()
 		disposition_haut.addWidget(self.boutons_haut)
-		disposition_haut.addLayout(disposition_principal)
+		disposition_haut.addLayout(self.disposition_principale)
 
 		widget_central.setLayout(disposition_haut)
+
+	# def reinitialiser_simulation(self):
+	# 	self.disposition_principale.removeWidget(self.sa_grille)
+	# 	self.sa_grille = Grille_visualisation(self.taille_fenetre, self.nb_personnes)
+	# 	self.disposition_principale.addWidget(self.sa_grille, stretch=3)

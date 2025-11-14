@@ -16,35 +16,30 @@ class Grille_visualisation(QWidget):
                  temps_guerison : int = 20, 
                  taux_infectes : int = 4,
                  taux_immunodeprimes : int = 10
-    ):
+                 ):
+        
         super().__init__()
+
         self.sa_disposition = QGridLayout()
         self.setLayout(self.sa_disposition)
 
         self.taille_fenetre = taille_fenetre
 
+        self.taux_infectes = taux_infectes
+        self.taux_immunodeprimes = taux_immunodeprimes
+
         # Initialisation des paramètres de la simulation
-        self.sa_maladie = Maladie(
-            taux_letalite=taux_letalite,
-            distance_infection=distance_infection,
-            risque_transmission=taux_transmission,
-            immunite_apres_guerison=True,
-            temps_guerison=temps_guerison
-        )
+        
+        self.nb_personnes = nb_personnes
+        self.nb_iterations = nb_iterations
+        self.taux_letalite = taux_letalite
+        self.distance_infection = distance_infection
+        self.taux_transmission = taux_transmission
+        self.temps_guerison = temps_guerison
+        self.taux_infectes = taux_infectes
+        self.taux_immunodeprimes = taux_immunodeprimes
 
-        self.sa_simulation = Simulation(
-            self.sa_maladie, 
-            largeur_fenetre=self.taille_fenetre["largeur"], 
-            hauteur_fenetre=self.taille_fenetre["hauteur"], 
-            nb_personnes=nb_personnes
-        )
-
-        self.sa_simulation.initialiser_population(
-            largeur_fenetre=self.taille_fenetre["largeur"], 
-            hauteur_fenetre=self.taille_fenetre["hauteur"],
-            pourcentage_infectes=taux_infectes,
-            pourcentage_immunodeprimes=taux_immunodeprimes
-        )
+        self.initialiser_simulation()
 
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
@@ -54,22 +49,57 @@ class Grille_visualisation(QWidget):
         # self.visualisation.hideAxis('bottom')
         # self.visualisation.hideAxis('left')
 
-    def demarrer_simulation(self) :
+    def initialiser_simulation(self):
+        self.sa_maladie = Maladie(
+            taux_letalite=self.taux_letalite,
+            distance_infection=self.distance_infection,
+            risque_transmission=self.taux_transmission,
+            immunite_apres_guerison=True,
+            temps_guerison=self.temps_guerison
+        )
+
+        self.sa_simulation = Simulation(
+            self.sa_maladie, 
+            largeur_fenetre=self.taille_fenetre["largeur"], 
+            hauteur_fenetre=self.taille_fenetre["hauteur"], 
+            nb_personnes=self.nb_personnes
+        )
+
+        self.sa_simulation.initialiser_population(
+            largeur_fenetre=self.taille_fenetre["largeur"], 
+            hauteur_fenetre=self.taille_fenetre["hauteur"],
+            pourcentage_infectes=self.taux_infectes,
+            pourcentage_immunodeprimes=self.taux_immunodeprimes
+        )
+
+    def creer_nuage_de_point(self, taille_point, personnes):
+        if not taille_point:
+            taille_point = 10
+        graphique = ScatterPlotItem(size=taille_point, spots=personnes)
+        
+        return graphique
+
+    def initialiser_nuage_de_point(self):
         donnees = recuperer_points_personnes(self.sa_simulation.grille.carreaux)
+        personnes = donnees[2]
+        taille_point = 10
+        self.nuage_de_points = self.creer_nuage_de_point(taille_point, personnes)
+
+        self.nuage_de_points.sigClicked.connect(afficher_information_personne)
+        
+        self.visualisation.addItem(self.nuage_de_points)
+
+    def demarrer_simulation(self) :
+        
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
 
-        personnes = donnees[2]
-        
-        self.nuage_de_points = ScatterPlotItem(size=10, spots=personnes)
-        
-        self.nuage_de_points.sigClicked.connect(afficher_information_personne)
-
-        self.visualisation.addItem(self.nuage_de_points)
+        self.initialiser_nuage_de_point()
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(300)
         self.timer.timeout.connect(self.actualiser_simulation)
         self.timer.start()
+        self.en_cours = True
 
     def mettre_en_pause_simulation(self, etat):
         if (etat) :
@@ -78,12 +108,27 @@ class Grille_visualisation(QWidget):
             self.timer.start()
 
     def actualiser_simulation(self) -> None :
+        if not self.en_cours:
+            return
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         self.nuage_de_points.setData(spots=recuperer_points_personnes(self.sa_simulation.grille.carreaux)[2])
         if (self.sa_simulation.iterations >= 20):
             self.timer.stop()
             print(self.sa_simulation.df_historique)
+
+    def reinitialiser_simulation(self):
+        self.mettre_en_pause_simulation(True)
+        self.visualisation.setTitle(f"")
+        self.initialiser_simulation()
+        self.nuage_de_points.setData([])
+
+    def arreter_simulation(self):
+        self.timer.stop()
+        self.en_cours = False
+        
+    def est_en_cours(self):
+        return self.en_cours
 
 def recuperer_points_personnes(cases: list) -> tuple :
     ordonnees = []
