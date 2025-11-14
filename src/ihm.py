@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
-from view.fenetre import Fenetre
+from .view.fenetre import Fenetre
 
 if __name__ == "__main__":
     application = QApplication()

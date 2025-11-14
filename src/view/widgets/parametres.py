@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
-from view.widgets.sliders.taux_letalite import Taux_letalite
+from .sliders.taux_letalite import Taux_letalite
 
 class Parametres(QWidget):
 	def __init__(self):
