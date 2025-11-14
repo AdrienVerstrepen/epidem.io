@@ -4,7 +4,7 @@ from PySide6.QtCore import *
 class Barre_boutons(QWidget):
     def __init__(self):
         super().__init__()
-        disposition = QHBoxLayout()
+        disposition = QGridLayout()
         self.setLayout(disposition)
 
         self.boutons = []
@@ -17,7 +17,9 @@ class Barre_boutons(QWidget):
         bouton_reinitialiser = QPushButton("Réinitialiser la simulation")
         self.boutons.append(bouton_reinitialiser)
 
+        i = 0
         for bouton in self.boutons:
-            disposition.addWidget(bouton)
+            disposition.addWidget(bouton, 0, i)
+            i+=1
 
-        disposition.addStretch()
+        # disposition.addStretch()
