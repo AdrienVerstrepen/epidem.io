@@ -22,6 +22,8 @@ Le dossier src contient le code source du projet
 
 Le dossier src/bin contient les binaires préconstruits et compilés avec [PyInstaller](url:https://pyinstaller.org/en/stable/index.html)
 
+### Structure du projet
+
 
 
 ***
