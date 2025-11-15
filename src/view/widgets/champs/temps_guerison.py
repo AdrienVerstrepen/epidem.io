@@ -24,8 +24,8 @@ class Champ_temps_guerison(QComboBox):
 		return valeurs_possibles[self.currentText()]
 
 valeurs_possibles = {
-    "Incurable": "-1",
-    "Courte": "5",
-    "Moyenne": "20",
-    "Longue": "50"
+    "Incurable": -1,
+    "Courte": 5,
+    "Moyenne": 20,
+    "Longue": 50
 }

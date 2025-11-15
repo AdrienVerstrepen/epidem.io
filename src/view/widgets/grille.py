@@ -47,10 +47,6 @@ class Grille_visualisation(QWidget):
         self.taux_infectes = 4
         self.taux_immunodeprimes = 10
 
-        self.recuperer_parametres_utilisateur()
-
-        self.initialiser_simulation()
-
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
         self.sa_disposition.addWidget(self.visualisation)
@@ -100,6 +96,13 @@ class Grille_visualisation(QWidget):
         self.visualisation.addItem(self.nuage_de_points)
 
     def demarrer_simulation(self) :
+
+        self.recuperer_parametres_utilisateur()
+
+
+        self.initialiser_simulation()
+
+
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         
         self.initialiser_nuage_de_point()
@@ -142,6 +145,11 @@ class Grille_visualisation(QWidget):
 
     def recuperer_parametres_utilisateur(self):
         self.nb_personnes = self.sa_fenetre.ses_parametres.champ_nb_personnes.value()
+        self.temps_guerison = self.sa_fenetre.ses_parametres.champ_temps_guerison.recuperer_valeur_depuis_champ()
+        self.taux_infectes = self.sa_fenetre.ses_parametres.slider_infectes.value()
+        self.taux_letalite = self.sa_fenetre.ses_parametres.slider_letalite.value()
+        self.taux_transmission = self.sa_fenetre.ses_parametres.slider_transmission.value()
+        self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
         # self.nb_iterations = nb_iterations
         # self.taux_letalite = taux_letalite
         # self.distance_infection = distance_infection

@@ -2,6 +2,7 @@ from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from .sliders.taux_letalite import Slider_letalite
 from .sliders.taux_transmission import Slider_transmission
+from .sliders.taux_immunodeprimes import Slider_immunodeprime
 from .sliders.taux_infectes import Slider_infectes
 from .champs.nombre_personnes import Champ_nb_personnes
 from .champs.temps_guerison import Champ_temps_guerison
@@ -24,6 +25,8 @@ class Parametres(QGroupBox):
 		self.initialiser_champ_nb_personnes("Effectif de la population", 20)
 
 		self.initialiser_slider_transmission("Pourcentage de transmission", 50)
+		
+		self.initialiser_slider_immunodeprime("Pourcentage de personnes immunodéprimées", 50)
 
 		self.initialiser_slider_infectes('Pourcentage de patient(s) "0"', 10)
 
@@ -63,6 +66,17 @@ class Parametres(QGroupBox):
 
 		self.slider_transmission.valueChanged.connect(self.slider_transmission.changement_valeur)
 		self.slider_transmission.sliderReleased.connect(self.slider_transmission.slider_relache)
+
+	def initialiser_slider_immunodeprime(self, nom: str, valeur_defaut: int):
+		self.label_immunodeprime = QLabel(f"{nom} : {valeur_defaut}%")
+		self.sa_disposition.addWidget(self.label_immunodeprime)
+		
+		self.slider_immunodeprime = Slider_immunodeprime(self, nom)
+		self.slider_immunodeprime.setValue(valeur_defaut)
+		self.sa_disposition.addWidget(self.slider_immunodeprime)
+
+		self.slider_immunodeprime.valueChanged.connect(self.slider_immunodeprime.changement_valeur)
+		self.slider_immunodeprime.sliderReleased.connect(self.slider_immunodeprime.slider_relache)
 
 	def initialiser_champ_nb_personnes(self, nom: str, valeur_defaut: int):	
 		self.label_nb_personnes = QLabel(f"{nom} : {valeur_defaut}")
