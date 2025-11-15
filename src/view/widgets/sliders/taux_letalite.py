@@ -1,20 +1,21 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..parametres import Parametres
 
 class Slider_letalite(QSlider):
-	def __init__(self, parent:QWidget, texte: str):
+	def __init__(self, menu:Parametres, texte: str):
 		super().__init__(Qt.Orientation.Horizontal)
 
+		self.setMinimum(1)
+		self.setMaximum(100)
 		self.texte = texte
-		self.parent = parent
+		self.son_menu = menu
 
 	def changement_valeur(self):
-		self.parent.label_letalite.setText(f"{self.texte}: {self.parent.slider_letalite.value()+1}")
-
-	def slider_selectionne(self):
-		# print("Taux letalite choisi")
+		self.son_menu.label_letalite.setText(f"{self.texte} : {self.son_menu.slider_letalite.value()}%")
 
 	def slider_relache(self):
-		# print("Taux letalite relaché")
-	def slider_deplace(self, position):
-		# print(f"Valeur déplacée à : {position}")
+		print(self.value())

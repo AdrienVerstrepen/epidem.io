@@ -3,6 +3,13 @@ from PySide6.QtCore import *
 from .sliders.taux_letalite import Slider_letalite
 from .sliders.taux_transmission import Slider_transmission
 from .sliders.taux_infectes import Slider_infectes
+from .champs.nombre_personnes import Champ_nb_personnes
+from .champs.temps_guerison import Champ_temps_guerison
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..parametres import Parametres
 
 class Parametres(QGroupBox):
 	def __init__(self):
@@ -14,29 +21,67 @@ class Parametres(QGroupBox):
 		# disposition.addWidget(QLabel("Valeur numérique 1"))
 		# disposition.addWidget(QSpinBox())
 
-		self.initialiser_slider_letalite("Taux de létalité de la maladie")
-		# self.initialiser_slider_infectes("")
-		# self.initialiser_slider_transmission("")
-		# self.initialiser_champ_nb_personnes("")
-		# self.initialiser_champ_temps_guerison("")
+		self.initialiser_slider_letalite("Taux de létalité de la maladie", 35)
+
+		self.initialiser_champ_nb_personnes("Effectif de la population", 20)
+
+		self.initialiser_slider_transmission("Pourcentage de transmission", 50)
+
+		self.initialiser_slider_infectes('Pourcentage de patient "0"', 10)
+
+		self.initialiser_champ_temps_guerison("Duree d'infection de la maladie", -1)
 
 		self.sa_disposition.addStretch()
 
-	def initialiser_slider_letalite(self, nom: str):
-		self.label_letalite = QLabel(nom)
+	def initialiser_slider_letalite(self, nom: str, valeur_defaut: int):
+		self.label_letalite = QLabel(f"{nom} : {valeur_defaut}%")
 		self.sa_disposition.addWidget(self.label_letalite)
+		
 		self.slider_letalite = Slider_letalite(self, nom)
+		self.slider_letalite.setValue(valeur_defaut)
 		self.sa_disposition.addWidget(self.slider_letalite)
+
 		self.slider_letalite.valueChanged.connect(self.slider_letalite.changement_valeur)
-		self.slider_letalite.sliderPressed.connect(self.slider_letalite.slider_selectionne)
 		self.slider_letalite.sliderReleased.connect(self.slider_letalite.slider_relache)
-		self.slider_letalite.sliderMoved.connect(self.slider_letalite.slider_deplace)
 
-	# def initialiser_slider_infectes(self):
+	def initialiser_slider_infectes(self, nom: str, valeur_defaut: int):
+		self.label_infectes = QLabel(f"{nom} : {valeur_defaut}%")
+		self.sa_disposition.addWidget(self.label_infectes)
+		
+		self.slider_infectes = Slider_infectes(self, nom)
+		self.slider_infectes.setValue(valeur_defaut)
+		self.sa_disposition.addWidget(self.slider_infectes)
 
-	# def initialiser_slider_transmission(self):
+		self.slider_infectes.valueChanged.connect(self.slider_infectes.changement_valeur)
+		self.slider_infectes.sliderReleased.connect(self.slider_infectes.slider_relache)
+	
+	def initialiser_slider_transmission(self, nom: str, valeur_defaut: int):
+		self.label_transmission = QLabel(f"{nom} : {valeur_defaut}%")
+		self.sa_disposition.addWidget(self.label_transmission)
+		
+		self.slider_transmission = Slider_transmission(self, nom)
+		self.slider_transmission.setValue(valeur_defaut)
+		self.sa_disposition.addWidget(self.slider_transmission)
 
-	# def initialiser_champ_nb_personnes(self):	
+		self.slider_transmission.valueChanged.connect(self.slider_transmission.changement_valeur)
+		self.slider_transmission.sliderReleased.connect(self.slider_transmission.slider_relache)
 
-	# def initialiser_champ_temps_guerison(self):
 
+	def initialiser_champ_nb_personnes(self, nom: str, valeur_defaut: int):	
+		self.label_nb_personnes = QLabel(f"{nom} : {valeur_defaut}")
+		self.sa_disposition.addWidget(self.label_nb_personnes)
+
+		self.champ_nb_personnes = Champ_nb_personnes(self, nom)
+		self.champ_nb_personnes.setValue(valeur_defaut)
+		self.sa_disposition.addWidget(self.champ_nb_personnes)
+
+		self.champ_nb_personnes.valueChanged.connect(self.champ_nb_personnes.changement_valeur)
+		# self.slider_letalite.sliderReleased.connect(self.champ_nb_personnes)
+
+	def initialiser_champ_temps_guerison(self, nom: str, valeur_defaut: int):
+		self.label_temps_guerison = QLabel(f"{nom} : {valeur_defaut}")
+		self.sa_disposition.addWidget(self.label_temps_guerison)
+
+		self.champ_temps_guerison = Champ_temps_guerison(self, nom)
+		# self.champ_temps_guerison.setValue(valeur_defaut)
+		self.sa_disposition.addWidget(self.champ_temps_guerison)
