@@ -5,39 +5,49 @@ from pyqtgraph import *
 import time
 import numpy as np
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..fenetre import Fenetre
+
 class Grille_visualisation(QWidget):
     def __init__(self, 
-                 taille_fenetre : dict,
-                 nb_personnes : int = 10, 
-                 nb_iterations : int = 20, 
-                 taux_letalite : int = 5,
-                 distance_infection : int = 50, 
-                 taux_transmission : int = 30, 
-                 temps_guerison : int = 20, 
-                 taux_infectes : int = 4,
-                 taux_immunodeprimes : int = 10
-                 ):
+                taille_fenetre : dict,
+                nb_personnes : int, 
+                #  nb_iterations : int = 20, 
+                #  taux_letalite : int = 5,
+                #  distance_infection : int = 50, 
+                #  taux_transmission : int = 30, 
+                #  temps_guerison : int = 20, 
+                #  taux_infectes : int = 4,
+                #  taux_immunodeprimes : int = 10,
+                fenetre: Fenetre
+                ):
         
         super().__init__()
+
+        self.sa_fenetre = fenetre
 
         self.sa_disposition = QGridLayout()
         self.setLayout(self.sa_disposition)
 
         self.taille_fenetre = taille_fenetre
 
-        self.taux_infectes = taux_infectes
-        self.taux_immunodeprimes = taux_immunodeprimes
+        # self.taux_infectes = taux_infectes
+        # self.taux_immunodeprimes = taux_immunodeprimes
 
         # Initialisation des paramètres de la simulation
         
-        self.nb_personnes = nb_personnes
-        self.nb_iterations = nb_iterations
-        self.taux_letalite = taux_letalite
-        self.distance_infection = distance_infection
-        self.taux_transmission = taux_transmission
-        self.temps_guerison = temps_guerison
-        self.taux_infectes = taux_infectes
-        self.taux_immunodeprimes = taux_immunodeprimes
+        self.nb_personnes = 10
+        self.nb_iterations = 20
+        self.taux_letalite = 5
+        self.distance_infection = 50
+        self.taux_transmission = 30
+        self.temps_guerison = 20
+        self.taux_infectes = 4
+        self.taux_immunodeprimes = 10
+
+        self.recuperer_parametres_utilisateur()
 
         self.initialiser_simulation()
 
@@ -90,9 +100,8 @@ class Grille_visualisation(QWidget):
         self.visualisation.addItem(self.nuage_de_points)
 
     def demarrer_simulation(self) :
-        
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
-
+        
         self.initialiser_nuage_de_point()
 
         self.timer = QtCore.QTimer()
@@ -120,6 +129,7 @@ class Grille_visualisation(QWidget):
     def reinitialiser_simulation(self):
         self.mettre_en_pause_simulation(True)
         self.visualisation.setTitle(f"")
+        self.recuperer_parametres_utilisateur()
         self.initialiser_simulation()
         self.nuage_de_points.setData([])
 
@@ -129,6 +139,16 @@ class Grille_visualisation(QWidget):
         
     def est_en_cours(self):
         return self.en_cours
+
+    def recuperer_parametres_utilisateur(self):
+        self.nb_personnes = self.sa_fenetre.ses_parametres.champ_nb_personnes.value()
+        # self.nb_iterations = nb_iterations
+        # self.taux_letalite = taux_letalite
+        # self.distance_infection = distance_infection
+        # self.taux_transmission = taux_transmission
+        # self.temps_guerison = temps_guerison
+        # self.taux_infectes = taux_infectes
+        # self.taux_immunodeprimes = taux_immunodeprimes
 
 def recuperer_points_personnes(cases: list) -> tuple :
     ordonnees = []

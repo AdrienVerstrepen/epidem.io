@@ -9,12 +9,13 @@ from .champs.temps_guerison import Champ_temps_guerison
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..parametres import Parametres
+    from ..fenetre import Fenetre
 
 class Parametres(QGroupBox):
-	def __init__(self):
+	def __init__(self, fenetre: Fenetre):
 		super().__init__()
 
+		self.sa_fenetre = fenetre
 		self.sa_disposition = QVBoxLayout()
 		self.setLayout(self.sa_disposition)
 

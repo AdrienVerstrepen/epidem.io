@@ -4,6 +4,11 @@ from .widgets.grille import Grille_visualisation
 from .widgets.parametres import Parametres
 from .widgets.barre_boutons import Barre_boutons
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .widgets.parametres import Parametres
+
 class Fenetre(QMainWindow):
 	def __init__(self, nb_personnes: int, taille_fenetre: dict):
 		super().__init__()
@@ -21,11 +26,11 @@ class Fenetre(QMainWindow):
 
 		self.disposition_principale = QHBoxLayout()
 
-		self.sa_grille = Grille_visualisation(taille_fenetre, nb_personnes)
-		self.widget_parametres = Parametres()
-
+		self.ses_parametres = Parametres(self)
+		self.sa_grille = Grille_visualisation(taille_fenetre, nb_personnes, self)
+		
 		self.disposition_principale.addWidget(self.sa_grille, stretch=3)
-		self.disposition_principale.addWidget(self.widget_parametres, stretch=1)
+		self.disposition_principale.addWidget(self.ses_parametres, stretch=1)
 
 		self.boutons_haut = Barre_boutons(self)
 		disposition_haut = QVBoxLayout()
