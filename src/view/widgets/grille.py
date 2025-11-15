@@ -46,8 +46,8 @@ class Grille_visualisation(QWidget):
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
         self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        # self.visualisation.hideAxis('bottom')
-        # self.visualisation.hideAxis('left')
+        self.visualisation.hideAxis('bottom')
+        self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(

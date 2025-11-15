@@ -18,16 +18,13 @@ class Parametres(QGroupBox):
 		self.sa_disposition = QVBoxLayout()
 		self.setLayout(self.sa_disposition)
 
-		# disposition.addWidget(QLabel("Valeur numérique 1"))
-		# disposition.addWidget(QSpinBox())
-
 		self.initialiser_slider_letalite("Taux de létalité de la maladie", 35)
 
 		self.initialiser_champ_nb_personnes("Effectif de la population", 20)
 
 		self.initialiser_slider_transmission("Pourcentage de transmission", 50)
 
-		self.initialiser_slider_infectes('Pourcentage de patient "0"', 10)
+		self.initialiser_slider_infectes('Pourcentage de patient(s) "0"', 10)
 
 		self.initialiser_champ_temps_guerison("Duree d'infection de la maladie", -1)
 
@@ -66,7 +63,6 @@ class Parametres(QGroupBox):
 		self.slider_transmission.valueChanged.connect(self.slider_transmission.changement_valeur)
 		self.slider_transmission.sliderReleased.connect(self.slider_transmission.slider_relache)
 
-
 	def initialiser_champ_nb_personnes(self, nom: str, valeur_defaut: int):	
 		self.label_nb_personnes = QLabel(f"{nom} : {valeur_defaut}")
 		self.sa_disposition.addWidget(self.label_nb_personnes)
@@ -76,12 +72,12 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.champ_nb_personnes)
 
 		self.champ_nb_personnes.valueChanged.connect(self.champ_nb_personnes.changement_valeur)
-		# self.slider_letalite.sliderReleased.connect(self.champ_nb_personnes)
 
 	def initialiser_champ_temps_guerison(self, nom: str, valeur_defaut: int):
-		self.label_temps_guerison = QLabel(f"{nom} : {valeur_defaut}")
+		self.label_temps_guerison = QLabel(f"{nom} : ")
 		self.sa_disposition.addWidget(self.label_temps_guerison)
 
 		self.champ_temps_guerison = Champ_temps_guerison(self, nom)
-		# self.champ_temps_guerison.setValue(valeur_defaut)
 		self.sa_disposition.addWidget(self.champ_temps_guerison)
+
+		self.champ_temps_guerison.currentIndexChanged.connect(self.champ_temps_guerison.changement_valeur)
