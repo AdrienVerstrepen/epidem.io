@@ -22,6 +22,44 @@ Le dossier src contient le code source du projet
 
 Le dossier src/bin contient les binaires préconstruits et compilés avec [PyInstaller](url:https://pyinstaller.org/en/stable/index.html)
 
+### Structure du projet
+
+```
+.gitignore
+README.md
+doc
+   |-- cahier_des_charges.md
+   |-- diagramme-de-classe-epidem.io.mdj
+launch-app.sh
+requirements.txt
+src
+   |-- __init__.py
+   |-- classes.py
+   |-- ihm.py
+   |-- main.py
+   |-- view
+   |   |-- __init__.py
+   |   |-- fenetre.py
+   |   |-- widgets
+   |   |   |-- __init__.py
+   |   |   |-- barre_boutons.py
+   |   |   |-- boutons
+   |   |   |   |-- __init__.py
+   |   |   |   |-- arreter.py
+   |   |   |   |-- demarrer.py
+   |   |   |   |-- pauser.py
+   |   |   |   |-- reinitialiser.py
+   |   |   |-- champs
+   |   |   |   |-- nombre_personnes.py
+   |   |   |   |-- temps_guerison.py
+   |   |   |-- grille.py
+   |   |   |-- parametres.py
+   |   |   |-- sliders
+   |   |   |   |-- __init__.py
+   |   |   |   |-- taux_infectes.py
+   |   |   |   |-- taux_letalite.py
+   |   |   |   |-- taux_transmission.py
+```
 
 
 ***
