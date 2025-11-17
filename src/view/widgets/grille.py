@@ -14,13 +14,6 @@ class Grille_visualisation(QWidget):
     def __init__(self, 
                 taille_fenetre : dict,
                 nb_personnes : int, 
-                #  nb_iterations : int = 20, 
-                #  taux_letalite : int = 5,
-                #  distance_infection : int = 50, 
-                #  taux_transmission : int = 30, 
-                #  temps_guerison : int = 20, 
-                #  taux_infectes : int = 4,
-                #  taux_immunodeprimes : int = 10,
                 fenetre: Fenetre
                 ):
         
@@ -32,9 +25,6 @@ class Grille_visualisation(QWidget):
         self.setLayout(self.sa_disposition)
 
         self.taille_fenetre = taille_fenetre
-
-        # self.taux_infectes = taux_infectes
-        # self.taux_immunodeprimes = taux_immunodeprimes
 
         # Initialisation des paramètres de la simulation
         
@@ -99,10 +89,8 @@ class Grille_visualisation(QWidget):
 
         self.recuperer_parametres_utilisateur()
 
-
         self.initialiser_simulation()
-
-
+        
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         
         self.initialiser_nuage_de_point()
@@ -126,7 +114,7 @@ class Grille_visualisation(QWidget):
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         self.nuage_de_points.setData(spots=recuperer_points_personnes(self.sa_simulation.grille.carreaux)[2])
         if (self.sa_simulation.iterations >= 20):
-            self.timer.stop()
+            self.arreter_simulation()
             print(self.sa_simulation.df_historique)
 
     def reinitialiser_simulation(self):
@@ -150,13 +138,6 @@ class Grille_visualisation(QWidget):
         self.taux_letalite = self.sa_fenetre.ses_parametres.slider_letalite.value()
         self.taux_transmission = self.sa_fenetre.ses_parametres.slider_transmission.value()
         self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
-        # self.nb_iterations = nb_iterations
-        # self.taux_letalite = taux_letalite
-        # self.distance_infection = distance_infection
-        # self.taux_transmission = taux_transmission
-        # self.temps_guerison = temps_guerison
-        # self.taux_infectes = taux_infectes
-        # self.taux_immunodeprimes = taux_immunodeprimes
 
 def recuperer_points_personnes(cases: list) -> tuple :
     ordonnees = []
