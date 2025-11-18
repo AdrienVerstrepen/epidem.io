@@ -21,6 +21,11 @@ class Parametres(QGroupBox):
 		self.sa_disposition = QVBoxLayout()
 		self.setLayout(self.sa_disposition)
 
+		self.initialiser_parametres()
+		
+		self.sa_disposition.addStretch()
+
+	def initialiser_parametres(self):
 		self.initialiser_slider_letalite("Taux de létalité de la maladie", 35)
 
 		self.initialiser_champ_nb_personnes("Effectif de la population", 20)
@@ -34,8 +39,6 @@ class Parametres(QGroupBox):
 		self.initialiser_champ_temps_guerison("Duree d'infection de la maladie", -1)
 
 		self.initialiser_champ_immunite("Immunité après guérison", False)
-
-		self.sa_disposition.addStretch()
 
 	def initialiser_slider_letalite(self, nom: str, valeur_defaut: int):
 		self.label_letalite = QLabel(f"{nom} : {valeur_defaut}%")

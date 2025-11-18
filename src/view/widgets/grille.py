@@ -11,12 +11,41 @@ if TYPE_CHECKING:
     from ..fenetre import Fenetre
 
 class Grille_visualisation(QWidget):
-    def __init__(self, 
-                taille_fenetre : dict,
-                nb_personnes : int, 
-                fenetre: "Fenetre"
-                ):
-        
+    """
+    Composant contenant la représentation graphique de la simulation.
+
+    Cette classe hérite de :class:`QWidget` et s'occupe de lier le modèle (la simulation) 
+    à l'IHM par le biais de différentes classes. Elle instancie et initialise la simulation 
+    ainsi que le composant graphique portant la représentation.
+
+    Attributs: 
+        sa_fenetre (Fenetre): la fenetre, objet parent.
+        sa_disposition (QGridLayout): 
+        taille_fenetre (dict): 
+        nb_personnes (int):
+        nb_iterations (int): 
+        taux_letalite (int): 
+        distance_infection (int): 
+        taux_transmission (int): 
+        temps_guerison (int): 
+        taux_infectes (int): 
+        taux_immunodeprimes (int): 
+        visualisation (PlotWidget): 
+        sa_maladie (Maladie):
+        sa_simulation (Simulation):
+        nuage_de_points (ScatterPlotItem): 
+        timer (QTimer): 
+
+    Méthodes:
+        __init__ (Grille_visualisation): constructeur de la grille, 
+                                         instancie la disposition du composant et
+                                         des sous-composants.
+    """
+    def __init__(self, fenetre: "Fenetre", taille_fenetre : dict):
+        """
+
+        """
+
         super().__init__()
 
         self.sa_fenetre = fenetre
@@ -42,8 +71,8 @@ class Grille_visualisation(QWidget):
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
         self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        # self.visualisation.hideAxis('bottom')
-        # self.visualisation.hideAxis('left')
+        self.visualisation.hideAxis('bottom')
+        self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(
@@ -95,8 +124,10 @@ class Grille_visualisation(QWidget):
         
         self.initialiser_nuage_de_point()
 
+        # gerer_la_taille_de_la_visualisation(self.visualisation)
+
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(150)
+        self.timer.setInterval(250)
         self.timer.timeout.connect(self.actualiser_simulation)
         self.timer.start()
         self.en_cours = True
@@ -108,7 +139,7 @@ class Grille_visualisation(QWidget):
             self.timer.start()
 
     def actualiser_simulation(self) -> None :
-        if not self.en_cours:
+        if not self.est_en_cours():
             return
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
@@ -142,6 +173,18 @@ class Grille_visualisation(QWidget):
         self.taux_letalite = self.sa_fenetre.ses_parametres.slider_letalite.value()
         self.taux_transmission = self.sa_fenetre.ses_parametres.slider_transmission.value()
         self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
+
+# def gerer_la_taille_de_la_visualisation(widget_graphique: PlotWidget):
+#     visualisation = widget_graphique.getViewBox()
+#     visualisation.disableAutoRange()
+#     visualisation.setLimits(xMin=-15, xMax=15, yMin=-5, yMax=10)
+#     visualisation.setRange(xRange=(-15, 15), yRange=(5, 10))
+
+#     x = widget_graphique.getAxis('bottom')
+#     y = widget_graphique.getAxis('left')
+
+#     x.setTickSpacing(major=1, minor=0.5)
+#     y.setTickSpacing(major=1, minor=0.5)
 
 def recuperer_points_personnes(cases: list) -> tuple :
     ordonnees = []
