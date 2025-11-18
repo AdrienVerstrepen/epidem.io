@@ -6,11 +6,11 @@ if TYPE_CHECKING:
     from ..parametres import Parametres
 
 class Champ_nb_personnes(QSpinBox):
-	def __init__(self, menu:Parametres, nom: str):
+	def __init__(self, menu:"Parametres", nom: str):
 		super().__init__()
 
 		self.setMinimum(1)
-		self.setMaximum(100)
+		self.setMaximum(400)
 
 		self.son_texte = nom
 		self.son_menu = menu

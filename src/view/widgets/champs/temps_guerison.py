@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ..parametres import Parametres
 
 class Champ_temps_guerison(QComboBox):
-	def __init__(self, menu:Parametres, nom:str):
+	def __init__(self, menu:"Parametres", nom:str):
 		super().__init__()
 
 		self.son_menu = menu

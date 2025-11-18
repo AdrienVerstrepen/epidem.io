@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..fenetre import Fenetre
 
 class Parametres(QGroupBox):
-	def __init__(self, fenetre: Fenetre):
+	def __init__(self, fenetre: "Fenetre"):
 		super().__init__()
 
 		self.sa_fenetre = fenetre

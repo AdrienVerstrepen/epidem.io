@@ -14,7 +14,7 @@ class Grille_visualisation(QWidget):
     def __init__(self, 
                 taille_fenetre : dict,
                 nb_personnes : int, 
-                fenetre: Fenetre
+                fenetre: "Fenetre"
                 ):
         
         super().__init__()
@@ -42,15 +42,15 @@ class Grille_visualisation(QWidget):
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
         self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        self.visualisation.hideAxis('bottom')
-        self.visualisation.hideAxis('left')
+        # self.visualisation.hideAxis('bottom')
+        # self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(
             taux_letalite=self.taux_letalite,
             distance_infection=self.distance_infection,
             risque_transmission=self.taux_transmission,
-            immunite_apres_guerison=True,
+            immunite_apres_guerison=False,
             temps_guerison=self.temps_guerison
         )
 
@@ -113,7 +113,7 @@ class Grille_visualisation(QWidget):
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         self.nuage_de_points.setData(spots=recuperer_points_personnes(self.sa_simulation.grille.carreaux)[2])
-        if (self.sa_simulation.iterations >= 20):
+        if (self.sa_simulation.iterations >= 100):
             self.arreter_simulation()
             print(self.sa_simulation.df_historique)
 
