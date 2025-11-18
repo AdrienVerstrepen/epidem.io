@@ -77,7 +77,7 @@ class Personne :
         Si la distance entre les personnes est inférieure à la valeur à partir de laquelle une personne peut en contaminer une autre, on retourne True, sinon False, car la personne sera donc trop loin pour être contaminée.
         Finalement, __str__ affiche toutes les informations sur une personne.
         """
-        return f"Personne n°{self.id} ; État : {self.etat} ; Immunodéprimé :{self.immunodeprime} ; Position : {self.position} ; Médecin :{self.medecin}\n"
+        return f"Personne n°{self.id} ; État : {self.etat} ; Immunodéprimé : {self.immunodeprime} ; Position : {self.position} ; Médecin : {self.medecin}\n"
 
 class Maladie :
     """
@@ -237,8 +237,8 @@ class Simulation :
         Finalement, on enregistre les statistiques actuelles sous forme de dataframe en calculant le nombre de personnes par état.
         """
         for personne in self.liste_personnes:
-            x = personne.position[0] + random(-5,5)
-            y = personne.position[1] + random(-5,5)
+            x = personne.position[0] + uniform(-5, 5)
+            y = personne.position[1] + uniform(-5, 5)
             if x < 0 :
                 x = 0
             elif x > self.grille.largeur :
@@ -248,7 +248,6 @@ class Simulation :
             elif y > self.grille.hauteur :
                 y = self.grille.hauteur
             personne.se_deplace([x, y])
-
         self.grille.construire_grille(self.liste_personnes)
         self.propager_infection()
         for personne in self.liste_personnes:
@@ -261,11 +260,13 @@ class Simulation :
                     if randint(1, 100) <= risque:
                         personne.mourir()
                         continue
-                elif self.maladie.temps_guerison != -1 and personne.cpt_iterations_infection >= self.maladie.temps_guerison:
+                if self.maladie.temps_guerison != -1 and \
+                personne.cpt_iterations_infection >= self.maladie.temps_guerison:
                     if self.maladie.immunite_apres_guerison == "oui":
                         personne.etre_immunise()
                     else:
                         personne.guerir()
+                    continue
         nb_sains = sum(1 for personne in self.liste_personnes if personne.etat == "sain")
         nb_infectes = sum(1 for personne in self.liste_personnes if personne.etat == "infecte")
         nb_immunises = sum(1 for personne in self.liste_personnes if personne.etat == "immunise")
