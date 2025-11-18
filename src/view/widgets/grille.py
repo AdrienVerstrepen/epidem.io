@@ -34,12 +34,39 @@ class Grille_visualisation(QWidget):
         sa_maladie (Maladie):
         sa_simulation (Simulation):
         nuage_de_points (ScatterPlotItem): 
+        en_cours (Boolean): 
         timer (QTimer): 
 
     Méthodes:
-        __init__ (Grille_visualisation): constructeur de la grille, 
-                                         instancie la disposition du composant et
-                                         des sous-composants.
+        __init__ (Grille_visualisation): constructeur de la grille, instancie la disposition du composant 
+                                         et des sous-composants.
+        
+        initialiser_simulation (None): fonction auxiliaire pour instancier les objets Maladie, Simulation 
+                                       et initialiser la simulation
+        
+        creer_nuage_de_point (ScatterPlotItem): fonction auxiliaire qui instancie le nuage de point portant 
+                                                les données de la simulation
+        
+        initialiser_nuage_de_point (None): fonction auxiliaire qui initialise le nuage de point en récupérant
+                                       les données depuis la simulation et en ajout l'objet à la visualisation
+        
+        demarrer_simulation (None): fonction auxilaire qui démarre le déroulement de la simulation en 
+                                    récupérant les paramètres saisis par l'utilisateur.
+                                    Ici, elle met à jour la visualisation toutes les 250 millisecondes.
+        
+        mettre_en_pause_simulation (None): fonction auxiliaire pour mettre en pause ou reprendre la simulation.
+        
+        actualiser_simulation (None): fonction auxiliaire pour passer à l'itération d'après
+        
+        reinitialiser_simulation (None): arrête la simulation, récupère les paramètres saisis par l'utilisateur 
+                                         et réinitialise une simulation avec ces nouvelles données.
+        
+        arreter_simulation (None): arrête l'actualisation la simulation à chaque X milliseconde.
+        
+        est_en_cours (Boolean): retourne l'état de la simulation
+        
+        recuperer_parametres_utilisateur (None): récupère les valeurs saisies par l'utilisateur 
+                                                 dans les différents champs
     """
     def __init__(self, fenetre: "Fenetre", taille_fenetre : dict):
         """
@@ -153,7 +180,7 @@ class Grille_visualisation(QWidget):
             print(personne)
 
     def reinitialiser_simulation(self):
-        self.mettre_en_pause_simulation(True)
+        self.arreter_simulation()
         self.visualisation.setTitle(f"")
         self.recuperer_parametres_utilisateur()
         self.initialiser_simulation()
@@ -187,6 +214,15 @@ class Grille_visualisation(QWidget):
 #     y.setTickSpacing(major=1, minor=0.5)
 
 def recuperer_points_personnes(cases: list) -> tuple :
+    """
+    Récupère la position des personnes
+
+    Paramètres:
+        cases (List): les cases contenant les personnes présentes dans la simulation
+
+    Retourne:
+       tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
+    """
     ordonnees = []
     abscisses = []
     coordonnes_personnes = []
@@ -203,7 +239,16 @@ def recuperer_points_personnes(cases: list) -> tuple :
                 abscisses.append(abscisse)
     return (abscisses, ordonnees, coordonnes_personnes)
 
-def afficher_information_personne(graphique : ScatterPlotItem, points : list) -> None :
+def afficher_information_personne(points : list) -> None :
+    """
+    Permet de récupérer les informations d'une personne cliquée
+
+    Parametres: 
+        points (List): la liste des points du graphique
+
+    Retourne: 
+        None
+    """
     for point in points:
         personne = point.data()
         print(str(personne[0]))
