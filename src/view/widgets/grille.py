@@ -96,7 +96,7 @@ class Grille_visualisation(QWidget):
         self.initialiser_nuage_de_point()
 
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(300)
+        self.timer.setInterval(150)
         self.timer.timeout.connect(self.actualiser_simulation)
         self.timer.start()
         self.en_cours = True
@@ -116,6 +116,10 @@ class Grille_visualisation(QWidget):
         if (self.sa_simulation.iterations >= 100):
             self.arreter_simulation()
             print(self.sa_simulation.df_historique)
+
+        print("DEBUG PERSONNES")
+        for personne in self.sa_simulation.liste_personnes:
+            print(personne)
 
     def reinitialiser_simulation(self):
         self.mettre_en_pause_simulation(True)

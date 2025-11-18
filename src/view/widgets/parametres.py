@@ -6,6 +6,7 @@ from .sliders.taux_immunodeprimes import Slider_immunodeprime
 from .sliders.taux_infectes import Slider_infectes
 from .champs.nombre_personnes import Champ_nb_personnes
 from .champs.temps_guerison import Champ_temps_guerison
+from .champs.immunite import Champ_immunite
 
 from typing import TYPE_CHECKING
 
@@ -31,6 +32,8 @@ class Parametres(QGroupBox):
 		self.initialiser_slider_infectes('Pourcentage de patient(s) "0"', 10)
 
 		self.initialiser_champ_temps_guerison("Duree d'infection de la maladie", -1)
+
+		self.initialiser_champ_immunite("Immunité après guérison", False)
 
 		self.sa_disposition.addStretch()
 
@@ -96,3 +99,12 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.champ_temps_guerison)
 
 		self.champ_temps_guerison.currentIndexChanged.connect(self.champ_temps_guerison.changement_valeur)
+
+	def initialiser_champ_immunite(self, nom: str, valeur_defaut: int):
+		self.label_immunite = QLabel(f"{nom} : {valeur_defaut}")
+		self.sa_disposition.addWidget(self.label_immunite)
+
+		self.champ_immunite = Champ_immunite(self, nom)
+		self.sa_disposition.addWidget(self.champ_immunite)
+
+		self.champ_immunite.stateChanged.connect(self.champ_immunite.changement_valeur)
