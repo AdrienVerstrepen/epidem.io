@@ -1,6 +1,7 @@
 from math import *
 from random import uniform, sample, randint
 import pandas as pd
+import random
 
 class Personne :
     """
@@ -236,8 +237,8 @@ class Simulation :
         Finalement, on enregistre les statistiques actuelles sous forme de dataframe en calculant le nombre de personnes par état.
         """
         for personne in self.liste_personnes:
-            x = personne.position[0] + randint(-5,5)
-            y = personne.position[1] + randint(-5,5)
+            x = personne.position[0] + random(-5,5)
+            y = personne.position[1] + random(-5,5)
             if x < 0 :
                 x = 0
             elif x > self.grille.largeur :
