@@ -20,22 +20,22 @@ class Grille_visualisation(QWidget):
 
     Attributs: 
         sa_fenetre (Fenetre): la fenetre, objet parent.
-        sa_disposition (QGridLayout): 
-        taille_fenetre (dict): 
-        nb_personnes (int):
-        nb_iterations (int): 
-        taux_letalite (int): 
-        distance_infection (int): 
-        taux_transmission (int): 
-        temps_guerison (int): 
-        taux_infectes (int): 
-        taux_immunodeprimes (int): 
-        visualisation (PlotWidget): 
-        sa_maladie (Maladie):
-        sa_simulation (Simulation):
-        nuage_de_points (ScatterPlotItem): 
-        en_cours (Boolean): 
-        timer (QTimer): 
+        sa_disposition (QGridLayout): objet hébergeant la visualisation des données
+        taille_fenetre (dict): dictionnaire portant la hauteur et la largeur
+        nb_personnes (int): le nombre de personnes de la simulation
+        nb_iterations (int): le nombre d'iteration à l'instant T
+        taux_letalite (int): le taux de mortalité de la maladie
+        distance_infection (int): la distance à partir de laquelle une personne peut être infectée par une autre
+        taux_transmission (int): le taux pour que l'infection se produise
+        temps_guerison (int): le temps pour qu'une personne infectée devienne saine
+        taux_infectes (int): le taux de personnes qui sont infectés au départ
+        taux_immunodeprimes (int): le taux de personnes immunodeprimés au départ
+        visualisation (PlotWidget): objet portant le nuage de point représentant les données
+        sa_maladie (Maladie): maladie de la simulation
+        sa_simulation (Simulation): la simulation instanciée
+        nuage_de_points (ScatterPlotItem): le nuage de point qui visualise l'état T de la simulation
+        en_cours (Boolean): indique si la simulation est en cours
+        timer (QTimer): horloge permettant d'actualiser la simulation toutes les X millisecondes
 
     Méthodes:
         __init__ (Grille_visualisation): constructeur de la grille, instancie la disposition du composant 

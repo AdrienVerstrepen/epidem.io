@@ -23,8 +23,8 @@ class Barre_boutons(QGroupBox):
         self.bouton_mettre_en_pause = Bouton_mettre_en_pause(self, "Mettre en pause")
         self.boutons.append(self.bouton_mettre_en_pause)
 
-        bouton_arreter = Bouton_arreter(self, "Arrêter")
-        self.boutons.append(bouton_arreter)
+        self.bouton_arreter = Bouton_arreter(self, "Arrêter")
+        self.boutons.append(self.bouton_arreter)
 
         self.bouton_reinitialiser = Bouton_reinitialiser(self, "Réinitialiser la simulation")
         self.boutons.append(self.bouton_reinitialiser)

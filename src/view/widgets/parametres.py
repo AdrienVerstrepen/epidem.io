@@ -49,7 +49,6 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_letalite)
 
 		self.slider_letalite.valueChanged.connect(self.slider_letalite.changement_valeur)
-		self.slider_letalite.sliderReleased.connect(self.slider_letalite.slider_relache)
 
 	def initialiser_slider_infectes(self, nom: str, valeur_defaut: int):
 		self.label_infectes = QLabel(f"{nom} : {valeur_defaut}%")
@@ -60,7 +59,6 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_infectes)
 
 		self.slider_infectes.valueChanged.connect(self.slider_infectes.changement_valeur)
-		self.slider_infectes.sliderReleased.connect(self.slider_infectes.slider_relache)
 	
 	def initialiser_slider_transmission(self, nom: str, valeur_defaut: int):
 		self.label_transmission = QLabel(f"{nom} : {valeur_defaut}%")
@@ -71,7 +69,6 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_transmission)
 
 		self.slider_transmission.valueChanged.connect(self.slider_transmission.changement_valeur)
-		self.slider_transmission.sliderReleased.connect(self.slider_transmission.slider_relache)
 
 	def initialiser_slider_immunodeprime(self, nom: str, valeur_defaut: int):
 		self.label_immunodeprime = QLabel(f"{nom} : {valeur_defaut}%")
@@ -82,7 +79,6 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_immunodeprime)
 
 		self.slider_immunodeprime.valueChanged.connect(self.slider_immunodeprime.changement_valeur)
-		self.slider_immunodeprime.sliderReleased.connect(self.slider_immunodeprime.slider_relache)
 
 	def initialiser_champ_nb_personnes(self, nom: str, valeur_defaut: int):	
 		self.label_nb_personnes = QLabel(f"{nom} : {valeur_defaut}")

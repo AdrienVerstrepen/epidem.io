@@ -16,6 +16,3 @@ class Slider_immunodeprime(QSlider):
 
 	def changement_valeur(self):
 		self.son_menu.label_immunodeprime.setText(f"{self.texte} : {self.son_menu.slider_immunodeprime.value()}%")
-
-	def slider_relache(self):
-		print(self.value())
