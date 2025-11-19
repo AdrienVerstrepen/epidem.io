@@ -16,6 +16,3 @@ class Slider_infectes(QSlider):
 
 	def changement_valeur(self):
 		self.son_menu.label_infectes.setText(f"{self.texte} : {self.son_menu.slider_infectes.value()}%")
-
-	def slider_relache(self):
-		print(self.value())
