@@ -236,9 +236,10 @@ class Simulation :
         Si on est immunisé après la maladie, la personne gagne ce statut, sinon elle est juste saine à nouveau.
         Finalement, on enregistre les statistiques actuelles sous forme de dataframe en calculant le nombre de personnes par état.
         """
+        random.seed()
         for personne in self.liste_personnes:
-            x = personne.position[0] + uniform(-5, 5)
-            y = personne.position[1] + uniform(-5, 5)
+            x = personne.position[0] + random.randrange(-10, 10)
+            y = personne.position[1] + random.randrange(-10, 10)
             if x < 0 :
                 x = 0
             elif x > self.grille.largeur :
