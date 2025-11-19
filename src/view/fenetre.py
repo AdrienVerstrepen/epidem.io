@@ -10,13 +10,39 @@ if TYPE_CHECKING:
     from .widgets.parametres import Parametres
 
 class Fenetre(QMainWindow):
-	def __init__(self, nb_personnes: int, taille_fenetre: dict):
+	"""
+	Fenêtre principale de l'application.
+
+	Cette classe hérite de :class:`QMainWindow` et s'occupe de l'assemblage 
+	des différents éléments composants de l'interface. 
+
+	Attributs:
+		largeur (int): largeur de la fenêtre
+		hauteur (int): hauteur de la fenêtre
+		taille_fenetre (dict): le dictionnaire contenant la largeur et la hauteur
+		disposition_principale (QHBoxLayout): disposition comportant les 3 sections de l'interface
+		ses_parametres (Parametres): section comportant les paramètres modifiables par l'utilisateur
+		sa_grille (Grille_visualisation): section comportant la représentation graphique de la simulation
+		boutons_haut (Barre_boutons): section comportant les boutons permettant de gérer l'état de la simulation
+	
+	Méthodes:
+		__init__ (Fenetre): constructeur
+	"""
+	def __init__(self, taille_fenetre: dict):
+		"""
+		Constructeur de la classe Fenetre.
+
+		Paramètres:
+			taille_fenetre (dict): dictionnaire permettant l'accès par clé à la hauteur et la largeur souhaitée
+
+		Retourne: 
+			Fenetre: l'objet Fenetre initialisé avec ses 3 sections.
+		"""
 		super().__init__()
 		self.setWindowTitle("épidém.io")
 
 		self.largeur = taille_fenetre["largeur"]
 		self.hauteur = taille_fenetre["hauteur"]
-		self.nb_personnes = nb_personnes
 		self.taille_fenetre = taille_fenetre
 
 		self.resize(self.largeur, self.hauteur)
@@ -27,7 +53,7 @@ class Fenetre(QMainWindow):
 		self.disposition_principale = QHBoxLayout()
 
 		self.ses_parametres = Parametres(self)
-		self.sa_grille = Grille_visualisation(taille_fenetre, nb_personnes, self)
+		self.sa_grille = Grille_visualisation(self, taille_fenetre)
 		
 		self.disposition_principale.addWidget(self.sa_grille, stretch=3)
 		self.disposition_principale.addWidget(self.ses_parametres, stretch=1)
