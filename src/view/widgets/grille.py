@@ -14,7 +14,7 @@ class Grille_visualisation(QWidget):
     """
     Composant contenant la représentation graphique de la simulation.
 
-    Cette classe hérite de :class:`QWidget` et s'occupe de lier le modèle (la simulation) 
+    Cette classe hérite de QWidget et s'occupe de lier le modèle (la simulation) 
     à l'IHM par le biais de différentes classes. Elle instancie et initialise la simulation 
     ainsi que le composant graphique portant la représentation.
 
@@ -69,9 +69,6 @@ class Grille_visualisation(QWidget):
                                                  dans les différents champs
     """
     def __init__(self, fenetre: "Fenetre", taille_fenetre : dict):
-        """
-
-        """
 
         super().__init__()
 

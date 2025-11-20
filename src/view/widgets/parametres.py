@@ -47,6 +47,7 @@ class Parametres(QGroupBox):
 		self.slider_letalite = Slider_letalite(self, nom)
 		self.slider_letalite.setValue(valeur_defaut)
 		self.sa_disposition.addWidget(self.slider_letalite)
+		self.label_letalite.setToolTip("Le pourcentage de mortalité d'une personne infectée à chaque itération")
 
 		self.slider_letalite.valueChanged.connect(self.slider_letalite.changement_valeur)
 
@@ -59,6 +60,7 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_infectes)
 
 		self.slider_infectes.valueChanged.connect(self.slider_infectes.changement_valeur)
+		self.label_infectes.setToolTip("Le pourcentage de personnes infectées au lancement d'une simulation")
 	
 	def initialiser_slider_transmission(self, nom: str, valeur_defaut: int):
 		self.label_transmission = QLabel(f"{nom} : {valeur_defaut}%")
@@ -69,6 +71,7 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_transmission)
 
 		self.slider_transmission.valueChanged.connect(self.slider_transmission.changement_valeur)
+		self.label_transmission.setToolTip("Le pourcentage qu'une personne infectée transmette la maladie à une autre")
 
 	def initialiser_slider_immunodeprime(self, nom: str, valeur_defaut: int):
 		self.label_immunodeprime = QLabel(f"{nom} : {valeur_defaut}%")
@@ -79,6 +82,7 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.slider_immunodeprime)
 
 		self.slider_immunodeprime.valueChanged.connect(self.slider_immunodeprime.changement_valeur)
+		self.label_immunodeprime.setToolTip("Le pourcentage de personnes immunodéprimées au lancement de la simulation")
 
 	def initialiser_champ_nb_personnes(self, nom: str, valeur_defaut: int):	
 		self.label_nb_personnes = QLabel(f"{nom} : {valeur_defaut}")
@@ -89,6 +93,7 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.champ_nb_personnes)
 
 		self.champ_nb_personnes.valueChanged.connect(self.champ_nb_personnes.changement_valeur)
+		self.label_nb_personnes.setToolTip("Le nombre de personnes au lancement d'une simulation")
 
 	def initialiser_champ_temps_guerison(self, nom: str, valeur_defaut: int):
 		self.label_temps_guerison = QLabel(f"{nom} : ")
@@ -98,6 +103,7 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.champ_temps_guerison)
 
 		self.champ_temps_guerison.currentIndexChanged.connect(self.champ_temps_guerison.changement_valeur)
+		self.label_temps_guerison.setToolTip("Le temps pour guérir de la maladie")
 
 	def initialiser_champ_immunite(self, nom: str, valeur_defaut: int):
 		self.label_immunite = QLabel(f"{nom} : {valeur_defaut}")
@@ -107,3 +113,4 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(self.champ_immunite)
 
 		self.champ_immunite.stateChanged.connect(self.champ_immunite.changement_valeur)
+		self.label_immunite.setToolTip("La possibilité ou non d'être immunisé après avoir guéri de la maladie")
