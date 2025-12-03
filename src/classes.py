@@ -228,6 +228,11 @@ class Simulation :
                             voisin.etre_infecte()
     
     def deplacements_aleatoires(self):
+        """
+        On fait se déplacer chaque personne de manière totalement aléatoire, pour ça on ajoute une petite variation en x et en y, dans un intervalle défini.
+        On vérifie ensuite que la nouvelle position reste dans les limites de la fenêtre : si la personne dépasse le bord, on la replace exactement sur la limite.
+        Finalement, on met à jour la position et on reconstruit la grille pour la prochaine itération.
+        """
         random.seed()
         for personne in self.liste_personnes:
             x = personne.position[0] + random.randrange(-10, 10)
@@ -243,7 +248,11 @@ class Simulation :
             personne.se_deplace([x, y])
         self.grille.construire_grille(self.liste_personnes)
 
-    def deplacements_par_grille(self):
+    def deplacements_grille(self):
+        """
+        Chaque personne choisit un carreau voisin au hasard et se déplace si ce carreau est disponible
+        À l'intérieur du carreau, la position est légèrement aléatoire pour éviter que tout le monde soit exactement au centre.
+        """
         nouvelle_positions = []
         for personne in self.liste_personnes:
             carreau_x, carreau_y = self.grille.coordonnees_carreau(personne.position)
@@ -263,7 +272,12 @@ class Simulation :
             personne.se_deplace(position)
         self.grille.construire_grille(self.liste_personnes)
     
-    def deplacement_stochastique(self):
+    def deplacement_stochastique_directionnel(self):
+        """
+        Chaque personne garde une direction générale qui change un peu entre chaque itération avec du hasard
+        S'il y a des clusters fort proche de la personne, on limite l'attractivité de la direction, pour éviter des regroupements trop massifs.
+        Cela permet d'avoir de la cohésion mais garder quand même des directions qui sont influencées par les voisins sans centrer tout le monde en un point.
+        """
         nouvelle_positions = []
         for personne in self.liste_personnes:
             if not hasattr(personne, "direction"):
@@ -276,7 +290,7 @@ class Simulation :
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
             personne.direction[0] /= norme
             personne.direction[1] /= norme
-            pas = 4
+            pas = 10
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
             x = min(max(0, x), self.grille.largeur)
@@ -286,7 +300,13 @@ class Simulation :
             personne.se_deplace(position)
         self.grille.construire_grille(self.liste_personnes)
 
-    def deplacement_attraction_repulsion(self):
+    def deplacement_cohesion_separation(self):
+        """
+        Cette approche calcule la direction que doivent prendre les personnes en utilisant deux calculs :
+        un point moyen des voisins proches pour tourner la direction vers ce point pour créer de la cohésion,
+        et une force de séparation si des voisins sont très proches pour éviter qu'ils se stackent.
+        On ajoute aussi une petite valeur aléatoire pour modifier un peu la direction à chaque étape.
+        """
         nouvelle_positions = []
         for personne in self.liste_personnes:
             if not hasattr(personne, "direction"):
@@ -327,7 +347,7 @@ class Simulation :
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
             personne.direction[0] /= norme
             personne.direction[1] /= norme
-            pas = 4
+            pas = 10
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
             x = min(max(0, x), self.grille.largeur)
@@ -338,6 +358,13 @@ class Simulation :
         self.grille.construire_grille(self.liste_personnes)
 
     def deplacement_boids_simplifie(self):
+        """ 
+        Cette méthode met à jour la direction des personnes en utilisant deux des trois principes de Boids.
+        D'abord, on calcule un point moyen des voisins proches pour ajuster légèrement la direction vers ce point.
+        Ensuite, on ajoute une force de répulsion si des voisins sont trop proches pour éviter qu'ils se stackent.
+        On ajoute aussi une petite valeur aléatoire pour modifier légèrement la direction à chaque étape.
+        Enfin, on applique un poids aux murs pour qu'ils qui poussent les personnes vers l'intérieur lorsqu'elles s'approchent trop pour éviter les regroupement contre les murs.
+        """
         nouvelle_positions = []
         for personne in self.liste_personnes:
             if not hasattr(personne, "direction"):
@@ -388,7 +415,7 @@ class Simulation :
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
             personne.direction[0] /= norme
             personne.direction[1] /= norme
-            pas = 4
+            pas = 10
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
             x = min(max(0, x), self.grille.largeur)
@@ -401,15 +428,18 @@ class Simulation :
     def mise_a_jour_iteration(self):
         """
         On met à jour après chaque itération.
-        Actuellement, la mise à jour de la position des personnes, c'est-à-dire leurs mouvements, est aléatoire sans tendance guidée.
-        Ensuite, on reconstruit la grille avec les nouvelles positions, on propage l’infection et on met à jour les états pour chaque personne.
+        La mise à jour de la position des personnes suit l'approche de Boids simplifié..
+        Ensuite, on reconstruit la grille avec les nouvelles positions, on propage l'infection et on met à jour les états pour chaque personne.
         Pour les calculs, on va estimer que les personnes immunodéprimées ont deux fois plus de chances de mourir.
         Si la personne n'a pas une maladie permanente et qu'elle a survécu à toutes les itérations nécessaires pour que la maladie passe, la personne est guérie.
         Si on est immunisé après la maladie, la personne gagne ce statut, sinon elle est juste saine à nouveau.
         Finalement, on enregistre les statistiques actuelles sous forme de dataframe en calculant le nombre de personnes par état.
         """
-        # self.deplacement_boids_simplifie()
-        self.deplacements_par_grille()
+        #self.deplacements_aleatoires()
+        #self.deplacements_grille()
+        #self.deplacement_stochastique_directionnel()
+        #self.deplacement_cohesion_separation()
+        self.deplacement_boids_simplifie()
         self.propager_infection()
         for personne in self.liste_personnes:
             if personne.etat == "infecte":
