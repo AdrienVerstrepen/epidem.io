@@ -2,6 +2,8 @@ from src.classes import Maladie, Personne, Grille, Simulation
 from math import sqrt
 
 # pour lancer le code, il faut se mettre au niveau d'epidem.io et entrer pytest src/tests/test_classes.py dans le terminal
+# coverage run -m pytest
+# coverage report -m
 
 class TestMaladie :
     def test_initialisation(self):
@@ -175,31 +177,13 @@ class TestSimulation:
             for personne in simulation.liste_personnes
         )
         assert personnes_dans_grille
-    
-    def test_deplacements_grille(self):
-        maladie = Maladie(0, 5, 0, "non", 1)
-        simulation = Simulation(maladie, 50, 50, nb_personnes=5)
-        simulation.initialiser_population(50, 50, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
-        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
-        simulation.deplacements_grille()
-        for personne in simulation.liste_personnes:
-            x, y = personne.position
-            assert 0 <= x <= simulation.grille.largeur
-            assert 0 <= y <= simulation.grille.hauteur
-        positions_apres = [personne.position for personne in simulation.liste_personnes]
-        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, positions_apres))
-        personnes_dans_grille = all(
-            any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne)
-            for personne in simulation.liste_personnes
-        )
-        assert personnes_dans_grille
-    
-    def test_deplacement_stochastique_directionnel(self):
+        
+    def test_deplacement_boids_simplifie(self):
         maladie = Maladie(0, 5, 0, "non", 1)
         simulation = Simulation(maladie, 100, 100, nb_personnes=5)
         simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
         positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
-        simulation.deplacement_stochastique_directionnel()
+        simulation.deplacement_boids_simplifie()
         for personne in simulation.liste_personnes:
             x, y = personne.position
             assert 0 <= x <= simulation.grille.largeur
@@ -212,6 +196,46 @@ class TestSimulation:
         )
         assert personnes_dans_grille
 
+    def test_deplacements_grille(self):
+        maladie = Maladie(0, 5, 0, "non", 1)
+        simulation = Simulation(maladie, 50, 50, nb_personnes=5)
+        simulation.initialiser_population(50, 50, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
+        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
+        simulation.deplacements_grille()
+        for personne in simulation.liste_personnes:
+            x, y = personne.position
+            assert 0 <= x <= simulation.grille.largeur
+            assert 0 <= y <= simulation.grille.hauteur
+        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, [personne.position for personne in simulation.liste_personnes]))
+        assert all(any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne) for personne in simulation.liste_personnes)
+
+    def test_deplacement_stochastique_directionnel(self):
+        maladie = Maladie(0, 5, 0, "non", 1)
+        simulation = Simulation(maladie, 100, 100, nb_personnes=5)
+        simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
+        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
+        simulation.deplacement_stochastique_directionnel()
+        for personne in simulation.liste_personnes:
+            x, y = personne.position
+            assert 0 <= x <= simulation.grille.largeur
+            assert 0 <= y <= simulation.grille.hauteur
+        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, [personne.position for personne in simulation.liste_personnes]))
+        assert all(any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne) for personne in simulation.liste_personnes)
+
+    def test_mise_a_jour_iteration_cas_complets(self, monkeypatch):
+        maladie = Maladie(100, 5, 100, "oui", 1)
+        simulation = Simulation(maladie, 100, 100, nb_personnes=2)
+        personne_1 = Personne("infecte", "oui", [10, 10], 1)
+        personne_2 = Personne("infecte", "non", [20, 20], 2)
+        simulation.liste_personnes = [personne_1, personne_2]
+        simulation.grille.construire_grille(simulation.liste_personnes)
+        monkeypatch.setattr("random.randint", lambda a, b: 1)
+        simulation.mise_a_jour_iteration()
+        assert personne_1.etat == "mort" or personne_1.etat == "immunise"
+        assert personne_2.etat == "mort" or personne_2.etat == "immunise"
+        assert simulation.iterations == 1
+        assert len(simulation.df_historique) == 1
+        assert simulation.df_historique.loc[0, "nb_total"] == len(simulation.liste_personnes)
 
     def test_mise_a_jour_iteration_enregistre_stats(self):
         maladie = Maladie(0, 5, 0, "non", 1)
