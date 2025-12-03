@@ -2,6 +2,7 @@ from math import *
 from random import uniform, sample, randint
 import pandas as pd
 import random
+import math
 
 class Personne :
     """
@@ -226,16 +227,7 @@ class Simulation :
                         if randint(0, 100) < self.maladie.risque_transmission:
                             voisin.etre_infecte()
     
-    def mise_a_jour_iteration(self):
-        """
-        On met à jour après chaque itération.
-        Actuellement, la mise à jour de la position des personnes, c'est-à-dire leurs mouvements, est aléatoire sans tendance guidée.
-        Ensuite, on reconstruit la grille avec les nouvelles positions, on propage l’infection et on met à jour les états pour chaque personne.
-        Pour les calculs, on va estimer que les personnes immunodéprimées ont deux fois plus de chances de mourir.
-        Si la personne n'a pas une maladie permanente et qu'elle a survécu à toutes les itérations nécessaires pour que la maladie passe, la personne est guérie.
-        Si on est immunisé après la maladie, la personne gagne ce statut, sinon elle est juste saine à nouveau.
-        Finalement, on enregistre les statistiques actuelles sous forme de dataframe en calculant le nombre de personnes par état.
-        """
+    def deplacements_aleatoires(self):
         random.seed()
         for personne in self.liste_personnes:
             x = personne.position[0] + random.randrange(-10, 10)
@@ -250,6 +242,174 @@ class Simulation :
                 y = self.grille.hauteur
             personne.se_deplace([x, y])
         self.grille.construire_grille(self.liste_personnes)
+
+    def deplacements_par_grille(self):
+        nouvelle_positions = []
+        for personne in self.liste_personnes:
+            carreau_x, carreau_y = self.grille.coordonnees_carreau(personne.position)
+            direction_x = random.choice([-1, 0, 1])
+            direction_y = random.choice([-1, 0, 1])
+            nouveau_carreau_x = min(max(carreau_x + direction_x, 0), self.grille.nb_colonnes - 1)
+            nouveau_carreau_y = min(max(carreau_y + direction_y, 0), self.grille.nb_lignes - 1)
+            if self.grille.carreaux[nouveau_carreau_x][nouveau_carreau_y]:
+                deplacement_x = random.uniform(-self.grille.taille_carreau/2, self.grille.taille_carreau/2)
+                deplacement_y = random.uniform(-self.grille.taille_carreau/2, self.grille.taille_carreau/2)
+            else:
+                deplacement_x, deplacement_y = 0, 0
+            x = min(max(nouveau_carreau_x * self.grille.taille_carreau + deplacement_x, 0), self.grille.largeur)
+            y = min(max(nouveau_carreau_y * self.grille.taille_carreau + deplacement_y, 0), self.grille.hauteur)
+            nouvelle_positions.append([x, y])
+        for personne, position in zip(self.liste_personnes, nouvelle_positions):
+            personne.se_deplace(position)
+        self.grille.construire_grille(self.liste_personnes)
+    
+    def deplacement_stochastique(self):
+        nouvelle_positions = []
+        for personne in self.liste_personnes:
+            if not hasattr(personne, "direction"):
+                angle = random.uniform(0, 2 * math.pi)
+                personne.direction = [math.cos(angle), math.sin(angle)]
+            densite = len(self.grille.voisins_de_personne(personne))
+            exploration = [random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1)]
+            personne.direction[0] = 0.7 * personne.direction[0] + 0.3 * exploration[0] - 0.01 * densite
+            personne.direction[1] = 0.7 * personne.direction[1] + 0.3 * exploration[1] - 0.01 * densite
+            norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
+            personne.direction[0] /= norme
+            personne.direction[1] /= norme
+            pas = 4
+            x = personne.position[0] + personne.direction[0] * pas
+            y = personne.position[1] + personne.direction[1] * pas
+            x = min(max(0, x), self.grille.largeur)
+            y = min(max(0, y), self.grille.hauteur)
+            nouvelle_positions.append([x, y])
+        for personne, position in zip(self.liste_personnes, nouvelle_positions):
+            personne.se_deplace(position)
+        self.grille.construire_grille(self.liste_personnes)
+
+    def deplacement_attraction_repulsion(self):
+        nouvelle_positions = []
+        for personne in self.liste_personnes:
+            if not hasattr(personne, "direction"):
+                angle = random.uniform(0, 2 * math.pi)
+                personne.direction = [math.cos(angle), math.sin(angle)]
+            voisins = self.grille.voisins_de_personne(personne)
+            centre = [0, 0]
+            repulsion = [0, 0]
+            compteur_centre = 0
+            compteur_repulsion = 0
+            for voisin in voisins:
+                if voisin is personne or voisin.etat == "mort":
+                    continue
+                direction_x = voisin.position[0] - personne.position[0]
+                direction_y = voisin.position[1] - personne.position[1]
+                distance = math.sqrt(direction_x**2 + direction_y**2)
+                if distance < 50:
+                    centre[0] += voisin.position[0]
+                    centre[1] += voisin.position[1]
+                    compteur_centre += 1
+                if distance < 15:
+                    repulsion[0] -= direction_x
+                    repulsion[1] -= direction_y
+                    compteur_repulsion += 1
+            if compteur_centre > 0:
+                centre[0] /= compteur_centre
+                centre[1] /= compteur_centre
+                personne.direction[0] += (centre[0] - personne.position[0]) * 0.003
+                personne.direction[1] += (centre[1] - personne.position[1]) * 0.003
+            if compteur_repulsion > 0:
+                repulsion[0] /= compteur_repulsion
+                repulsion[1] /= compteur_repulsion
+                personne.direction[0] += repulsion[0] * 0.05
+                personne.direction[1] += repulsion[1] * 0.05
+            exploration = [random.uniform(-0.05, 0.05), random.uniform(-0.05, 0.05)]
+            personne.direction[0] += exploration[0]
+            personne.direction[1] += exploration[1]
+            norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
+            personne.direction[0] /= norme
+            personne.direction[1] /= norme
+            pas = 4
+            x = personne.position[0] + personne.direction[0] * pas
+            y = personne.position[1] + personne.direction[1] * pas
+            x = min(max(0, x), self.grille.largeur)
+            y = min(max(0, y), self.grille.hauteur)
+            nouvelle_positions.append([x, y])
+        for personne, position in zip(self.liste_personnes, nouvelle_positions):
+            personne.se_deplace(position)
+        self.grille.construire_grille(self.liste_personnes)
+
+    def deplacement_boids_simplifie(self):
+        nouvelle_positions = []
+        for personne in self.liste_personnes:
+            if not hasattr(personne, "direction"):
+                angle = random.uniform(0, 2 * math.pi)
+                personne.direction = [math.cos(angle), math.sin(angle)]
+            voisins = self.grille.voisins_de_personne(personne)
+            centre_voisins = [0, 0]
+            repulsion = [0, 0]
+            compteur_centre = 0
+            compteur_repulsion = 0
+            for voisin in voisins:
+                if voisin is personne or voisin.etat == "mort":
+                    continue
+                direction_x = voisin.position[0] - personne.position[0]
+                direction_y = voisin.position[1] - personne.position[1]
+                distance = math.sqrt(direction_x**2 + direction_y**2)
+                if distance < 50:
+                    centre_voisins[0] += voisin.position[0]
+                    centre_voisins[1] += voisin.position[1]
+                    compteur_centre += 1
+                if distance < 15:
+                    repulsion[0] -= (voisin.position[0] - personne.position[0])
+                    repulsion[1] -= (voisin.position[1] - personne.position[1])
+                    compteur_repulsion += 1
+            if compteur_centre > 0:
+                centre_voisins[0] /= compteur_centre
+                centre_voisins[1] /= compteur_centre
+                personne.direction[0] += (centre_voisins[0] - personne.position[0]) * 0.003
+                personne.direction[1] += (centre_voisins[1] - personne.position[1]) * 0.003
+            if compteur_repulsion > 0:
+                repulsion[0] /= compteur_repulsion
+                repulsion[1] /= compteur_repulsion
+                personne.direction[0] += repulsion[0] * 0.05
+                personne.direction[1] += repulsion[1] * 0.05
+            exploration = [random.uniform(-0.05, 0.05), random.uniform(-0.05, 0.05)]
+            personne.direction[0] += exploration[0]
+            personne.direction[1] += exploration[1]
+            marge = 20
+            force_mur = 0.1
+            if personne.position[0] < marge:
+                personne.direction[0] += force_mur
+            if personne.position[0] > self.grille.largeur - marge:
+                personne.direction[0] -= force_mur
+            if personne.position[1] < marge:
+                personne.direction[1] += force_mur
+            if personne.position[1] > self.grille.hauteur - marge:
+                personne.direction[1] -= force_mur
+            norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
+            personne.direction[0] /= norme
+            personne.direction[1] /= norme
+            pas = 4
+            x = personne.position[0] + personne.direction[0] * pas
+            y = personne.position[1] + personne.direction[1] * pas
+            x = min(max(0, x), self.grille.largeur)
+            y = min(max(0, y), self.grille.hauteur)
+            nouvelle_positions.append([x, y])
+        for personne, position in zip(self.liste_personnes, nouvelle_positions):
+            personne.se_deplace(position)
+        self.grille.construire_grille(self.liste_personnes)
+
+    def mise_a_jour_iteration(self):
+        """
+        On met à jour après chaque itération.
+        Actuellement, la mise à jour de la position des personnes, c'est-à-dire leurs mouvements, est aléatoire sans tendance guidée.
+        Ensuite, on reconstruit la grille avec les nouvelles positions, on propage l’infection et on met à jour les états pour chaque personne.
+        Pour les calculs, on va estimer que les personnes immunodéprimées ont deux fois plus de chances de mourir.
+        Si la personne n'a pas une maladie permanente et qu'elle a survécu à toutes les itérations nécessaires pour que la maladie passe, la personne est guérie.
+        Si on est immunisé après la maladie, la personne gagne ce statut, sinon elle est juste saine à nouveau.
+        Finalement, on enregistre les statistiques actuelles sous forme de dataframe en calculant le nombre de personnes par état.
+        """
+        # self.deplacement_boids_simplifie()
+        self.deplacements_par_grille()
         self.propager_infection()
         for personne in self.liste_personnes:
             if personne.etat == "infecte":
