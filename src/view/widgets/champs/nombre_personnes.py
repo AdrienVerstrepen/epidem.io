@@ -6,6 +6,22 @@ if TYPE_CHECKING:
     from ..parametres import Parametres
 
 class Champ_nb_personnes(QSpinBox):
+	"""
+    Champ numérique permettant de définir le nombre total de personnes
+    présentes au lancement de la simulation.
+
+    Hérite de QSpinBox et restreint la saisie entre 1 et 400 individus,
+    puis met à jour dynamiquement le label associé dans le menu Parametres.
+
+    Attributs :
+        son_texte (str): Texte de base affiché dans le label associé.
+        son_menu (Parametres): Référence au menu des paramètres permettant
+                               d'accéder et de modifier le label correspondant.
+
+    Méthodes :
+        changement_valeur (None): Met à jour le QLabel associé pour afficher
+                                  la nouvelle valeur du nombre de personnes.
+    """
 	def __init__(self, menu:"Parametres", nom: str):
 		super().__init__()
 

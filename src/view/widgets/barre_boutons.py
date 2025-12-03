@@ -10,6 +10,30 @@ if TYPE_CHECKING:
     from ..fenetre import Fenetre
 
 class Barre_boutons(QGroupBox):
+    """
+    Composant graphique contenant les différents boutons de l'interface.
+
+    Cette classe hérite de QGroupBox et s'occupe d'instancier les différents boutons.
+
+    Attributs:
+        sa_disposition (QGridLayout): objet hébergeant les différents boutons
+        sa_fenetre (Fenetre): la fenetre, objet parent
+        boutons (List): ensemble des boutons à instancier
+        bouton_demarrer (Bouton_demarrer): bouton permettant de lancer la simulation
+        bouton_mettre_en_pause (Bouton_mettre_en_pause): bouton permettant de 
+                                                         mettre en pause ou 
+                                                         reprendre la simulation
+        bouton_arreter (Bouton_arreter): bouton permettant d'arrêter définitivement 
+                                         la simulation en cours
+        bouton_reinitialiser (Bouton_reinitialiser): bouton permettant de réinitialiser 
+                                                     les états des boutons et de la 
+                                                     simulation
+
+    Méthodes:
+        get_bouton_demarrer (Bouton_demarrer): getter du bouton de démarrage
+        get_bouton_pause (Bouton_mettre_en_pause): getter du bouton de mise en pause
+        get_bouton_reinitialiser (Bouton_reinitialiser): getter du bouton de réinitialisation
+    """
     def __init__(self, sa_fenetre: "Fenetre"):
         super().__init__()
         self.sa_disposition = QGridLayout()

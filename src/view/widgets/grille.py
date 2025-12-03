@@ -19,7 +19,7 @@ class Grille_visualisation(QWidget):
     ainsi que le composant graphique portant la représentation.
 
     Attributs: 
-        sa_fenetre (Fenetre): la fenetre, objet parent.
+        sa_fenetre (Fenetre): la fenetre, objet parent
         sa_disposition (QGridLayout): objet hébergeant la visualisation des données
         taille_fenetre (dict): dictionnaire portant la hauteur et la largeur
         nb_personnes (int): le nombre de personnes de la simulation

@@ -14,6 +14,41 @@ if TYPE_CHECKING:
     from ..fenetre import Fenetre
 
 class Parametres(QGroupBox):
+	"""
+	Composant graphique portant les champs de saisi des paramètres
+	modifiables par l'utilisateur
+
+	Hérite de QGroupBox et instancie les champs et leurs labels associés
+
+	Attributs: 
+		sa_fenetre (Fenetre): son objet parent Fenetre
+		sa_disposition (QVBoxLayout): le layout suivi par ses composants
+		label_letalite (QLabel): Le QLabel associé au slider letalite
+		slider_letalite (Slider_letalite): Le composant à glisser permettant de récupérer la valeur pour le taux de létalité
+		label_infectes (QLabel): Le QLabel associé au slider infectés
+		slider_infectes (Slider_infectes): Composant permettant de récupérer la valeur du taux de personnes infectés
+		label_transmission (QLabel): Le QLabel associé au slider transmissio
+		slider_transmission (Slider_transmission): Composant récupérant la valeur du taux de transmission de la maladie
+		label_immunodeprime (QLabel): QLabel associé au slider immunodéprimé
+		slider_immunodeprime (Slider_immunodeprime): Composant récupérant la valeur du taux de personne immunodéprimés de la maladie
+		label_nb_personnes (QLabel): QLabel associé au champ du nombre de personnes
+		champ_nb_personnes (Champ_nb_personnes): Composant récupérant la valeur du nombre de personnes
+		label_temps_guerison (QLabel): QLabel associé au champ du temps de guérison
+		champ_temps_guerison (Champ_temps_guerison): Composant récupérant la valeur du temps de guérison de la maladie
+		label_immunite (QLabel): QLabel associé au champ activant ou non l'immunité après guérison
+		champ_immunite (Champ_immunite): Composant récupérant la possibilté ou non d'avoir une immunité
+
+	Méthodes:
+		initialiser_parametres (None): fonction auxiliaire qui initialie tous les composants
+		initialiser_slider_letalite (None): 
+		initialiser_slider_infectes (None): 
+		initialiser_slider_transmission (None): 
+		initialiser_slider_immunodeprime (None): 
+		initialiser_champ_nb_personnes (None): 
+		initialiser_champ_temps_guerison (None): 
+		initialiser_champ_immunite (None): 
+
+	"""
 	def __init__(self, fenetre: "Fenetre"):
 		super().__init__()
 

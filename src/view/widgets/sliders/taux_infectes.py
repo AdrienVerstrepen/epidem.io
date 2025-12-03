@@ -6,6 +6,21 @@ if TYPE_CHECKING:
     from ..parametres import Parametres
 
 class Slider_infectes(QSlider):
+	"""
+    Slider permettant de définir le pourcentage initial de personnes infectées
+
+    Hérite de QSlider, orienté horizontalement, et met à jour le label associé
+    dans le menu des paramètres en fonction de la valeur actuelle.
+
+    Attributs :
+        texte (str): Texte de base affiché dans le label associé.
+        son_menu (Parametres): Référence au composant Parametres permettant
+                               de modifier le label lié à ce slider.
+
+    Méthodes :
+        changement_valeur (None): Met à jour le QLabel associé en affichant
+                                  la valeur actuelle du slider suivie d’un pourcentage.
+    """
 	def __init__(self, menu:"Parametres", texte: str):
 		super().__init__(Qt.Orientation.Horizontal)
 
