@@ -95,8 +95,8 @@ class Grille_visualisation(QWidget):
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
         self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        self.visualisation.hideAxis('bottom')
-        self.visualisation.hideAxis('left')
+        # self.visualisation.hideAxis('bottom')
+        # self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(
@@ -129,8 +129,8 @@ class Grille_visualisation(QWidget):
         return graphique
 
     def initialiser_nuage_de_point(self):
-        donnees = recuperer_points_personnes(self.sa_simulation.grille.carreaux)
-        personnes = donnees[2]
+        donnees = self.recuperer_points_personnes(self.sa_simulation.grille.carreaux)
+        personnes = donnees
         taille_point = 10
         self.nuage_de_points = self.creer_nuage_de_point(taille_point, personnes)
 
@@ -167,14 +167,14 @@ class Grille_visualisation(QWidget):
             return
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
-        self.nuage_de_points.setData(spots=recuperer_points_personnes(self.sa_simulation.grille.carreaux)[2])
+        self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.grille.carreaux))
         if (self.sa_simulation.iterations >= 100):
             self.arreter_simulation()
             print(self.sa_simulation.df_historique)
 
-        print("DEBUG PERSONNES")
-        for personne in self.sa_simulation.liste_personnes:
-            print(personne)
+        # print("DEBUG PERSONNES")
+        # for personne in self.sa_simulation.liste_personnes:
+        #     print(personne)
 
     def reinitialiser_simulation(self):
         self.arreter_simulation()
@@ -210,31 +210,28 @@ class Grille_visualisation(QWidget):
 #     x.setTickSpacing(major=1, minor=0.5)
 #     y.setTickSpacing(major=1, minor=0.5)
 
-def recuperer_points_personnes(cases: list) -> tuple :
-    """
-    Récupère la position des personnes
+    def recuperer_points_personnes(self, cases: list) -> list :
+        """
+        Récupère la position des personnes
 
-    Paramètres:
-        cases (List): les cases contenant les personnes présentes dans la simulation
+        Paramètres:
+            cases (List): les cases contenant les personnes présentes dans la simulation
 
-    Retourne:
-       tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
-    """
-    ordonnees = []
-    abscisses = []
-    coordonnes_personnes = []
-    for ordonnee, ligne in enumerate(cases):
-        for abscisse, personne in enumerate(ligne):
-            if personne:
-                coordonnes_personnes.append({
-                    'pos' : (abscisse, ordonnee),
-                    'data' : personne,
-                    'brush' : couleurs_personnes.get(personne[0].couleur),
-                    'symbol' : "o",
-                })
-                ordonnees.append(ordonnee)
-                abscisses.append(abscisse)
-    return (abscisses, ordonnees, coordonnes_personnes)
+        Retourne:
+        tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
+        """
+        coordonnes_personnes = []
+        for ligne in cases:
+            for personne in ligne:
+                if personne:
+                    coordonnes_personnes.append({
+                        'pos' : personne[0].position,
+                        'data' : personne,
+                        'brush' : couleurs_personnes.get(personne[0].couleur),
+                        'symbol' : "o",
+                    })
+
+        return coordonnes_personnes
 
 def afficher_information_personne(points : list) -> None :
     """
