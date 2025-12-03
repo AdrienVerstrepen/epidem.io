@@ -158,6 +158,61 @@ class TestSimulation:
         simulation.propager_infection()
         assert personne_2.etat == "infecte"
 
+    def test_deplacements_aleatoires(self):
+        maladie = Maladie(0, 5, 0, "non", 1)
+        simulation = Simulation(maladie, 100, 100, nb_personnes=5)
+        simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
+        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
+        simulation.deplacements_aleatoires()
+        for personne in simulation.liste_personnes:
+            x, y = personne.position
+            assert 0 <= x <= simulation.grille.largeur
+            assert 0 <= y <= simulation.grille.hauteur
+        positions_apres = [personne.position for personne in simulation.liste_personnes]
+        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, positions_apres))
+        personnes_dans_grille = all(
+            any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne)
+            for personne in simulation.liste_personnes
+        )
+        assert personnes_dans_grille
+    
+    def test_deplacements_grille(self):
+        maladie = Maladie(0, 5, 0, "non", 1)
+        simulation = Simulation(maladie, 50, 50, nb_personnes=5)
+        simulation.initialiser_population(50, 50, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
+        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
+        simulation.deplacements_grille()
+        for personne in simulation.liste_personnes:
+            x, y = personne.position
+            assert 0 <= x <= simulation.grille.largeur
+            assert 0 <= y <= simulation.grille.hauteur
+        positions_apres = [personne.position for personne in simulation.liste_personnes]
+        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, positions_apres))
+        personnes_dans_grille = all(
+            any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne)
+            for personne in simulation.liste_personnes
+        )
+        assert personnes_dans_grille
+    
+    def test_deplacement_stochastique_directionnel(self):
+        maladie = Maladie(0, 5, 0, "non", 1)
+        simulation = Simulation(maladie, 100, 100, nb_personnes=5)
+        simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
+        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
+        simulation.deplacement_stochastique_directionnel()
+        for personne in simulation.liste_personnes:
+            x, y = personne.position
+            assert 0 <= x <= simulation.grille.largeur
+            assert 0 <= y <= simulation.grille.hauteur
+        positions_apres = [personne.position for personne in simulation.liste_personnes]
+        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, positions_apres))
+        personnes_dans_grille = all(
+            any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne)
+            for personne in simulation.liste_personnes
+        )
+        assert personnes_dans_grille
+
+
     def test_mise_a_jour_iteration_enregistre_stats(self):
         maladie = Maladie(0, 5, 0, "non", 1)
         simulation = Simulation(maladie, 100, 100, nb_personnes=1)
