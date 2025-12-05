@@ -299,64 +299,7 @@ class Simulation :
         for personne, position in zip(self.liste_personnes, nouvelle_positions):
             personne.se_deplace(position)
         self.grille.construire_grille(self.liste_personnes)
-
-    def deplacement_cohesion_separation(self):
-        """
-        Cette approche calcule la direction que doivent prendre les personnes en utilisant deux calculs :
-        un point moyen des voisins proches pour tourner la direction vers ce point pour créer de la cohésion,
-        et une force de séparation si des voisins sont très proches pour éviter qu'ils se stackent.
-        On ajoute aussi une petite valeur aléatoire pour modifier un peu la direction à chaque étape.
-        """
-        nouvelle_positions = []
-        for personne in self.liste_personnes:
-            if not hasattr(personne, "direction"):
-                angle = random.uniform(0, 2 * math.pi)
-                personne.direction = [math.cos(angle), math.sin(angle)]
-            voisins = self.grille.voisins_de_personne(personne)
-            centre = [0, 0]
-            repulsion = [0, 0]
-            compteur_centre = 0
-            compteur_repulsion = 0
-            for voisin in voisins:
-                if voisin is personne or voisin.etat == "mort":
-                    continue
-                direction_x = voisin.position[0] - personne.position[0]
-                direction_y = voisin.position[1] - personne.position[1]
-                distance = math.sqrt(direction_x**2 + direction_y**2)
-                if distance < 50:
-                    centre[0] += voisin.position[0]
-                    centre[1] += voisin.position[1]
-                    compteur_centre += 1
-                if distance < 15:
-                    repulsion[0] -= direction_x
-                    repulsion[1] -= direction_y
-                    compteur_repulsion += 1
-            if compteur_centre > 0:
-                centre[0] /= compteur_centre
-                centre[1] /= compteur_centre
-                personne.direction[0] += (centre[0] - personne.position[0]) * 0.003
-                personne.direction[1] += (centre[1] - personne.position[1]) * 0.003
-            if compteur_repulsion > 0:
-                repulsion[0] /= compteur_repulsion
-                repulsion[1] /= compteur_repulsion
-                personne.direction[0] += repulsion[0] * 0.05
-                personne.direction[1] += repulsion[1] * 0.05
-            exploration = [random.uniform(-0.05, 0.05), random.uniform(-0.05, 0.05)]
-            personne.direction[0] += exploration[0]
-            personne.direction[1] += exploration[1]
-            norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
-            personne.direction[0] /= norme
-            personne.direction[1] /= norme
-            pas = 10
-            x = personne.position[0] + personne.direction[0] * pas
-            y = personne.position[1] + personne.direction[1] * pas
-            x = min(max(0, x), self.grille.largeur)
-            y = min(max(0, y), self.grille.hauteur)
-            nouvelle_positions.append([x, y])
-        for personne, position in zip(self.liste_personnes, nouvelle_positions):
-            personne.se_deplace(position)
-        self.grille.construire_grille(self.liste_personnes)
-
+ 
     def deplacement_boids_simplifie(self):
         """ 
         Cette méthode met à jour la direction des personnes en utilisant deux des trois principes de Boids.
@@ -366,7 +309,7 @@ class Simulation :
         Enfin, on applique un poids aux murs pour qu'ils qui poussent les personnes vers l'intérieur lorsqu'elles s'approchent trop pour éviter les regroupement contre les murs.
         """
         nouvelle_positions = []
-        for personne in self.liste_personnes:
+        for personne in self.liste_personnes :
             if not hasattr(personne, "direction"):
                 angle = random.uniform(0, 2 * math.pi)
                 personne.direction = [math.cos(angle), math.sin(angle)]
@@ -424,6 +367,8 @@ class Simulation :
         for personne, position in zip(self.liste_personnes, nouvelle_positions):
             personne.se_deplace(position)
         self.grille.construire_grille(self.liste_personnes)
+    
+    
 
     def mise_a_jour_iteration(self):
         """
