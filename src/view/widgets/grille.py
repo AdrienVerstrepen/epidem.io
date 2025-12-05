@@ -88,35 +88,36 @@ class Grille_visualisation(QWidget):
         self.taux_transmission = 30
         self.temps_guerison = 20
         self.taux_infectes = 4
+        self.immunite = False
         self.taux_immunodeprimes = 10
 
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
-        self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        # self.visualisation.hideAxis('bottom')
-        # self.visualisation.hideAxis('left')
+        # self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
+        self.visualisation.hideAxis('bottom')
+        self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(
             taux_letalite=self.taux_letalite,
             distance_infection=self.distance_infection,
             risque_transmission=self.taux_transmission,
-            immunite_apres_guerison=False,
+            immunite_apres_guerison=self.immunite,
             temps_guerison=self.temps_guerison
         )
 
         self.sa_simulation = Simulation(
             self.sa_maladie, 
-            largeur_fenetre=self.taille_fenetre["largeur"], 
-            hauteur_fenetre=self.taille_fenetre["hauteur"], 
+            largeur_fenetre=500, 
+            hauteur_fenetre=500, 
             nb_personnes=self.nb_personnes
         )
 
         self.sa_simulation.initialiser_population(
-            largeur_fenetre=self.taille_fenetre["largeur"], 
-            hauteur_fenetre=self.taille_fenetre["hauteur"],
+            largeur_fenetre=500, 
+            hauteur_fenetre=500,
             pourcentage_infectes=self.taux_infectes,
             pourcentage_immunodeprimes=self.taux_immunodeprimes
         )
@@ -125,18 +126,30 @@ class Grille_visualisation(QWidget):
         if not taille_point:
             taille_point = 10
         graphique = ScatterPlotItem(size=taille_point, spots=personnes)
-        
         return graphique
 
     def initialiser_nuage_de_point(self):
         donnees = self.recuperer_points_personnes(self.sa_simulation.grille.carreaux)
         personnes = donnees
-        taille_point = 10
+        nb_reel_personnes = (len(self.sa_simulation.liste_personnes))
+        
+        if nb_reel_personnes >= 200 and nb_reel_personnes <= 300:
+            taille_point = 6
+        if nb_reel_personnes > 300 and nb_reel_personnes <= 400:
+            taille_point = 4
+        else:
+            taille_point = 10
         self.nuage_de_points = self.creer_nuage_de_point(taille_point, personnes)
 
         self.nuage_de_points.sigClicked.connect(afficher_information_personne)
         
         self.visualisation.addItem(self.nuage_de_points)
+        self.visualisation.enableAutoRange()
+        self.visualisation.repaint()
+        (xmin, xmax), (ymin, ymax) = self.visualisation.getViewBox().viewRange()
+        print((xmin, xmax), (ymin, ymax))
+        self.visualisation.disableAutoRange()
+        self.visualisation.getViewBox().setLimits(xMin=xmin, xMax=xmax, yMin=ymin, yMax=ymax)
 
     def demarrer_simulation(self) :
 
@@ -147,8 +160,6 @@ class Grille_visualisation(QWidget):
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         
         self.initialiser_nuage_de_point()
-
-        # gerer_la_taille_de_la_visualisation(self.visualisation)
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(250)
@@ -172,10 +183,6 @@ class Grille_visualisation(QWidget):
             self.arreter_simulation()
             print(self.sa_simulation.df_historique)
 
-        # print("DEBUG PERSONNES")
-        # for personne in self.sa_simulation.liste_personnes:
-        #     print(personne)
-
     def reinitialiser_simulation(self):
         self.arreter_simulation()
         self.visualisation.setTitle(f"")
@@ -197,18 +204,7 @@ class Grille_visualisation(QWidget):
         self.taux_letalite = self.sa_fenetre.ses_parametres.slider_letalite.value()
         self.taux_transmission = self.sa_fenetre.ses_parametres.slider_transmission.value()
         self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
-
-# def gerer_la_taille_de_la_visualisation(widget_graphique: PlotWidget):
-#     visualisation = widget_graphique.getViewBox()
-#     visualisation.disableAutoRange()
-#     visualisation.setLimits(xMin=-15, xMax=15, yMin=-5, yMax=10)
-#     visualisation.setRange(xRange=(-15, 15), yRange=(5, 10))
-
-#     x = widget_graphique.getAxis('bottom')
-#     y = widget_graphique.getAxis('left')
-
-#     x.setTickSpacing(major=1, minor=0.5)
-#     y.setTickSpacing(major=1, minor=0.5)
+        self.immunite = self.sa_fenetre.ses_parametres.champ_immunite.isChecked()
 
     def recuperer_points_personnes(self, cases: list) -> list :
         """
@@ -230,10 +226,9 @@ class Grille_visualisation(QWidget):
                         'brush' : couleurs_personnes.get(personne[0].couleur),
                         'symbol' : "o",
                     })
-
         return coordonnes_personnes
 
-def afficher_information_personne(points : list) -> None :
+def afficher_information_personne(scatter, points : list) -> None :
     """
     Permet de récupérer les informations d'une personne cliquée
 
@@ -243,6 +238,7 @@ def afficher_information_personne(points : list) -> None :
     Retourne: 
         None
     """
+    print(points)
     for point in points:
         personne = point.data()
         print(str(personne[0]))

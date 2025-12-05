@@ -9,7 +9,7 @@ class Champ_immunite(QCheckBox):
 	"""
     Case à cocher définissant si l'immunité est activée après guérison.
 
-    Hérite de QCheckBox et permet de notifier le menu des paramètres lors d’un changement d’état.
+    Hérite de QCheckBox et permet de notifier le menu des paramètres lors d'un changement d'état.
 
     Attributs :
         son_texte (str): Texte affiché dans le label associé.
@@ -28,4 +28,4 @@ class Champ_immunite(QCheckBox):
 		self.son_menu = menu
 
 	def changement_valeur(self):
-		self.son_menu.label_immunite.setText(f"{self.son_texte} : {self.son_menu.champ_immunite.value()}")
+		self.son_menu.label_immunite.setText(f"{self.son_texte} : {self.son_menu.champ_immunite.isChecked()}")

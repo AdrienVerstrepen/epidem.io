@@ -18,10 +18,10 @@ class Champ_temps_guerison(QComboBox):
         son_texte (str): Intitulé affiché dans le label associé.
 
     Méthodes :
-        changement_valeur (None): Déclenchée lors d'un changement d’option,
+        changement_valeur (None): Déclenchée lors d'un changement d'option,
                                   affiche en console la valeur correspondante.
         recuperer_valeur_depuis_champ () -> int:
-            Retourne la valeur numérique associée à l’option sélectionnée.
+            Retourne la valeur numérique associée à l'option sélectionnée.
     """
 	def __init__(self, menu:"Parametres", nom:str):
 		super().__init__()
@@ -33,13 +33,15 @@ class Champ_temps_guerison(QComboBox):
 		self.addItem("Courte")
 		self.addItem("Moyenne")
 		self.addItem("Longue")
+		self.setCurrentIndex(2)
 
 	def changement_valeur(self):
 		print(self.recuperer_valeur_depuis_champ())
+		self.setCurrentIndex(self.currentIndex())
 
 	def recuperer_valeur_depuis_champ(self) -> int:
 		return valeurs_possibles[self.currentText()]
-
+	
 valeurs_possibles = {
     "Incurable": -1,
     "Courte": 5,
