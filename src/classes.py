@@ -389,9 +389,9 @@ class Simulation :
                 voisins = self.grille.voisins_de_personne(personne)
                 medecin_autour = 0
                 for voisin in voisins:
-                    if voisin.medecins == 1:
+                    if voisin.medecin == 1:
                         medecin_autour = 1
-                        
+
                 if personne.cpt_iterations_infection == 0:
                     risque = self.maladie.taux_letalite
                     if personne.immunodeprime == "oui":
