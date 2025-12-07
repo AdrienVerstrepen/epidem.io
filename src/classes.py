@@ -16,7 +16,7 @@ class Personne :
         Par défaut, les personnes commencent avec un état sain et non malade.
         Le paramètre immunodéprimé peut valoir la valeur "oui" ou "non".
         La couleur correspond à l'état de la personne, on a choisi sain : vert, infecte : orange, mort : rouge et immunise : bleu.
-        La valeur de medecin est "oui" ou "non".
+        La valeur de medecin est 1 (oui) ou 0 (non).
         La position est représentée par une liste de deux éléments : l'abscisse x en premier et l'ordonnée y en deuxième, donnant donc [x,y].
         Nous avons choisi de faire une représentation en 2D.
         On met en place un système d'id pour pouvoir identifier chaque personne précisément.
@@ -368,8 +368,6 @@ class Simulation :
             personne.se_deplace(position)
         self.grille.construire_grille(self.liste_personnes)
     
-    
-
     def mise_a_jour_iteration(self):
         """
         On met à jour après chaque itération.
@@ -388,16 +386,28 @@ class Simulation :
         self.propager_infection()
         for personne in self.liste_personnes:
             if personne.etat == "infecte":
-                personne.cpt_iterations_infection += 1
-                if personne.cpt_iterations_infection == 1:
+                voisins = self.grille.voisins_de_personne(personne)
+                medecin_autour = 0
+                for voisin in voisins:
+                    if voisin.medecins == 1:
+                        medecin_autour = 1
+                        
+                if personne.cpt_iterations_infection == 0:
                     risque = self.maladie.taux_letalite
                     if personne.immunodeprime == "oui":
                         risque *= 1.5
+                    if medecin_autour == 1 :
+                        risque /= 2
                     if randint(1, 100) <= risque:
                         personne.mourir()
                         continue
-                if self.maladie.temps_guerison != -1 and \
-                personne.cpt_iterations_infection >= self.maladie.temps_guerison:
+
+                if medecin_autour == 1 :
+                    personne.cpt_iterations_infection += 2
+                else :
+                    personne.cpt_iterations_infection += 1
+
+                if self.maladie.temps_guerison != -1 and personne.cpt_iterations_infection >= self.maladie.temps_guerison:
                     if self.maladie.immunite_apres_guerison == "oui":
                         personne.etre_immunise()
                     else:
