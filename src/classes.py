@@ -210,11 +210,9 @@ class Simulation :
             else :
                 personne = Personne(etat="sain", immunodeprime="non", position=position, id=i)
             self.liste_personnes.append(personne)
-        nb_infectes_initiaux = int(self.nb_personnes * (pourcentage_infectes/100))
-        infectes_initiaux = sample(self.liste_personnes, nb_infectes_initiaux)
-        for personne in infectes_initiaux:
-            personne.etre_infecte()
         for personne in self.liste_personnes:
+            if randint(0, 100) <= pourcentage_infectes:
+                personne.etre_infecte()
             if randint(0, 1000) <= 5:
                 personne.etre_medecin()
         self.grille.construire_grille(self.liste_personnes)
@@ -428,5 +426,4 @@ class Simulation :
         nb_morts = sum(1 for personne in self.liste_personnes if personne.etat == "mort")
         nb_total = nb_sains + nb_infectes + nb_immunises + nb_morts
         self.df_historique.loc[self.iterations] = [nb_sains, nb_infectes, nb_immunises, nb_morts, nb_total]
-        # print(nb_morts/nb_total)
         self.iterations += 1
