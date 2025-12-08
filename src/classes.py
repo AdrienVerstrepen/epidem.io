@@ -214,10 +214,9 @@ class Simulation :
         infectes_initiaux = sample(self.liste_personnes, nb_infectes_initiaux)
         for personne in infectes_initiaux:
             personne.etre_infecte()
-        nb_medecins = int(self.nb_personnes * 0.005)
-        medecins = sample(self.liste_personnes, nb_medecins)
-        for personne in medecins:
-            personne.etre_medecin()
+        for personne in self.liste_personnes:
+            if randint(0, 1000) <= 5:
+                personne.etre_medecin()
         self.grille.construire_grille(self.liste_personnes)
     
     def propager_infection(self):
@@ -368,7 +367,7 @@ class Simulation :
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
             personne.direction[0] /= norme
             personne.direction[1] /= norme
-            pas = 5
+            pas = 3
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
             x = min(max(0, x), self.grille.largeur)
@@ -429,5 +428,5 @@ class Simulation :
         nb_morts = sum(1 for personne in self.liste_personnes if personne.etat == "mort")
         nb_total = nb_sains + nb_infectes + nb_immunises + nb_morts
         self.df_historique.loc[self.iterations] = [nb_sains, nb_infectes, nb_immunises, nb_morts, nb_total]
-        print(nb_morts/nb_total)
+        # print(nb_morts/nb_total)
         self.iterations += 1
