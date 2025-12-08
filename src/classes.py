@@ -356,7 +356,7 @@ class Simulation :
             personne.direction[0] += exploration[0]
             personne.direction[1] += exploration[1]
             marge = 20
-            force_mur = 0.1
+            force_mur = 1
             if personne.position[0] < marge:
                 personne.direction[0] += force_mur
             if personne.position[0] > self.grille.largeur - marge:
@@ -368,7 +368,7 @@ class Simulation :
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
             personne.direction[0] /= norme
             personne.direction[1] /= norme
-            pas = 10
+            pas = 5
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
             x = min(max(0, x), self.grille.largeur)
@@ -402,15 +402,15 @@ class Simulation :
                     if voisin.medecin == 1 and voisin.etat != "mort":
                         medecin_autour = 1
 
-                if personne.cpt_iterations_infection == 0:
-                    risque = self.maladie.taux_letalite
-                    if personne.immunodeprime == "oui":
-                        risque *= 1.5
-                    if medecin_autour == 1 :
-                        risque /= 2
-                    if randint(1, 100) <= risque:
-                        personne.mourir()
-                        continue
+                risque_mort = self.maladie.taux_letalite / self.maladie.temps_guerison
+                if personne.immunodeprime == "oui":
+                    risque_mort *= 1.5
+                if medecin_autour == 1 :
+                    risque_mort /= 1.5
+                dé = random.uniform(0, 99)
+                if dé <= risque_mort:
+                    personne.mourir()
+                    continue
 
                 if medecin_autour == 1 :
                     personne.cpt_iterations_infection += 2
@@ -418,7 +418,7 @@ class Simulation :
                     personne.cpt_iterations_infection += 1
 
                 if self.maladie.temps_guerison != -1 and personne.cpt_iterations_infection >= self.maladie.temps_guerison:
-                    if self.maladie.immunite_apres_guerison == "oui":
+                    if self.maladie.immunite_apres_guerison == True:
                         personne.etre_immunise()
                     else:
                         personne.guerir()
@@ -429,5 +429,5 @@ class Simulation :
         nb_morts = sum(1 for personne in self.liste_personnes if personne.etat == "mort")
         nb_total = nb_sains + nb_infectes + nb_immunises + nb_morts
         self.df_historique.loc[self.iterations] = [nb_sains, nb_infectes, nb_immunises, nb_morts, nb_total]
-
+        print(nb_morts/nb_total)
         self.iterations += 1
