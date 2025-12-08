@@ -6,6 +6,8 @@ from .widgets.barre_boutons import Barre_boutons
 
 from typing import TYPE_CHECKING
 
+from .stats import *
+
 if TYPE_CHECKING:
     from .widgets.parametres import Parametres
 
@@ -41,6 +43,8 @@ class Fenetre(QMainWindow):
 		super().__init__()
 		self.setWindowTitle("épidém.io")
 
+		self.w = None
+
 		self.largeur = taille_fenetre["largeur"]
 		self.hauteur = taille_fenetre["hauteur"]
 		self.taille_fenetre = taille_fenetre
@@ -64,3 +68,15 @@ class Fenetre(QMainWindow):
 		disposition_haut.addLayout(self.disposition_principale)
 
 		widget_central.setLayout(disposition_haut)
+
+		self.bouton = QPushButton("Stats")
+		self.bouton.clicked.connect(self.show_other_window)
+		self.ses_parametres.sa_disposition.addWidget(self.bouton)
+
+	def show_other_window(self, checked):
+		if self.w is None:
+			self.w = FenetreStats(self.sa_grille.sa_simulation)
+		else:
+			self.w.destroy()
+			self.w = FenetreStats(self.sa_grille.sa_simulation)
+		self.w.show()

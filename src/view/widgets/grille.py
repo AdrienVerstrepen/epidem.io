@@ -79,25 +79,27 @@ class Grille_visualisation(QWidget):
 
         self.taille_fenetre = taille_fenetre
 
-        # Initialisation des paramètres de la simulation
-        
-        self.nb_personnes = 10
-        self.nb_iterations = 20
-        self.taux_letalite = 5
         self.distance_infection = 50
-        self.taux_transmission = 30
-        self.temps_guerison = 20
-        self.taux_infectes = 4
-        self.immunite = False
-        self.taux_immunodeprimes = 10
 
+        dim = 520
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
-        # self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        self.visualisation.hideAxis('bottom')
-        self.visualisation.hideAxis('left')
+        self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
+        self.visualisation.getViewBox().setAspectLocked(True, ratio=1)
+        self.visualisation.getViewBox().setLimits(
+            xMin=-10, xMax=dim,
+            yMin=-10, yMax=dim,
+            minXRange=dim, maxXRange=dim,
+            minYRange=dim, maxYRange=dim
+        )
+        self.visualisation.setXRange(0, 500, padding=0)
+        self.visualisation.setYRange(0, 500, padding=0)
+        self.visualisation.enableAutoRange(False)
+        self.visualisation.getViewBox()
+        # self.visualisation.hideAxis('bottom')
+        # self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(
@@ -129,9 +131,10 @@ class Grille_visualisation(QWidget):
         return graphique
 
     def initialiser_nuage_de_point(self):
-        donnees = self.recuperer_points_personnes(self.sa_simulation.grille.carreaux)
+        donnees = self.recuperer_points_personnes(self.sa_simulation.liste_personnes)
         personnes = donnees
         nb_reel_personnes = (len(self.sa_simulation.liste_personnes))
+        # print(f"Nombre reel de personnes : {nb_reel_personnes}")
         
         if nb_reel_personnes >= 200 and nb_reel_personnes <= 300:
             taille_point = 6
@@ -144,12 +147,6 @@ class Grille_visualisation(QWidget):
         self.nuage_de_points.sigClicked.connect(afficher_information_personne)
         
         self.visualisation.addItem(self.nuage_de_points)
-        self.visualisation.enableAutoRange()
-        self.visualisation.repaint()
-        (xmin, xmax), (ymin, ymax) = self.visualisation.getViewBox().viewRange()
-        print((xmin, xmax), (ymin, ymax))
-        self.visualisation.disableAutoRange()
-        self.visualisation.getViewBox().setLimits(xMin=xmin, xMax=xmax, yMin=ymin, yMax=ymax)
 
     def demarrer_simulation(self) :
 
@@ -178,10 +175,11 @@ class Grille_visualisation(QWidget):
             return
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
-        self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.grille.carreaux))
-        if (self.sa_simulation.iterations >= 100):
-            self.arreter_simulation()
-            print(self.sa_simulation.df_historique)
+        self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.liste_personnes))
+        # print(f"Liste de personnes : ")
+        # print(self.sa_simulation.grille.carreaux)
+        # print(len(self.sa_simulation.grille.carreaux))
+        # print(f"Personne n°{self.sa_simulation.liste_personnes[0].id} en {self.sa_simulation.liste_personnes[0].position}")
 
     def reinitialiser_simulation(self):
         self.arreter_simulation()
@@ -206,7 +204,7 @@ class Grille_visualisation(QWidget):
         self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
         self.immunite = self.sa_fenetre.ses_parametres.champ_immunite.isChecked()
 
-    def recuperer_points_personnes(self, cases: list) -> list :
+    def recuperer_points_personnes(self, personnes: list) -> list :
         """
         Récupère la position des personnes
 
@@ -217,16 +215,33 @@ class Grille_visualisation(QWidget):
         tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
         """
         coordonnes_personnes = []
-        for ligne in cases:
-            for personne in ligne:
-                if personne:
-                    coordonnes_personnes.append({
-                        'pos' : personne[0].position,
-                        'data' : personne,
-                        'brush' : couleurs_personnes.get(personne[0].couleur),
-                        'symbol' : "o",
-                    })
+        # for ligne in cases:
+        for personne in personnes:
+            # print(personne)
+            # if personne:
+            coordonnes_personnes.append({
+                'pos' : personne.position,
+                'data' : personne,
+                'brush' : couleurs_personnes.get(personne.couleur),
+                'symbol' : 'star' if (personne.medecin == 1) else 'o',
+                'size' : 15 if (personne.medecin == 1) else 10
+            })
+        self.distance_contagion_visu(coordonnes_personnes)
         return coordonnes_personnes
+
+    def distance_contagion_visu(self, personnes):
+        x, y = personnes[0]['pos']
+        rayon = 25
+        couleur = (255, 0, 0)
+
+        spot_cercle = {
+            'pos': (x, y),
+            'size': 2 * rayon,
+            'pen': mkPen(couleur, width=2),
+            'brush': None,
+            'symbol': 'o'
+        }
+        personnes.append(spot_cercle)
 
 def afficher_information_personne(scatter, points : list) -> None :
     """
@@ -238,10 +253,10 @@ def afficher_information_personne(scatter, points : list) -> None :
     Retourne: 
         None
     """
-    print(points)
     for point in points:
-        personne = point.data()
-        print(str(personne[0]))
+        data = point.data()
+        if type(data) == Personne:
+            print(str(data))
 
 couleurs_personnes = {
     "rouge": "red",
