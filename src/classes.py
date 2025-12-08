@@ -53,7 +53,7 @@ class Personne :
 
     def etre_infecte(self):
         """
-        Etre infecté est appelée lors de l'infection d'une personne pour changer ses attributs.
+        Etre infecté est appelée lors de l'infection d'une personne pour changer son état.
         """
         self.etat = "infecte"
         self.couleur = "orange"
@@ -64,6 +64,12 @@ class Personne :
         """
         self.etat = "immunise"
         self.couleur = "bleu"
+
+    def etre_medecin(self):
+        """
+        Etre médecin est appelée lors de l'initialisation pour affecter le rôle de médecin à une personne.
+        """
+        self.medecin = 1
 
     def etre_en_contact(self, position, distance_infection):
         """
@@ -208,6 +214,10 @@ class Simulation :
         infectes_initiaux = sample(self.liste_personnes, nb_infectes_initiaux)
         for personne in infectes_initiaux:
             personne.etre_infecte()
+        nb_medecins = int(self.nb_personnes * 0.005)
+        medecins = sample(self.liste_personnes, nb_medecins)
+        for personne in medecins:
+            personne.etre_medecin()
         self.grille.construire_grille(self.liste_personnes)
     
     def propager_infection(self):
