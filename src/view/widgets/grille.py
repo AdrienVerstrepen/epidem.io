@@ -1,6 +1,9 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
-from ...classes import *
+from ...algorithmie.maladie import *
+from ...algorithmie.grille import *
+from ...algorithmie.personne import *
+from ...algorithmie.simulation import *
 from pyqtgraph import *
 import time
 import numpy as np
