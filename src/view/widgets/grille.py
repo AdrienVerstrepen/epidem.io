@@ -5,8 +5,6 @@ from ...algorithmie.grille import *
 from ...algorithmie.personne import *
 from ...algorithmie.simulation import *
 from pyqtgraph import *
-import time
-import numpy as np
 
 from typing import TYPE_CHECKING
 
@@ -80,6 +78,7 @@ class Grille_visualisation(QWidget):
         self.setLayout(self.sa_disposition)
 
         self.taille_fenetre = taille_fenetre
+        self.sa_simulation = None
 
         self.distance_infection = 50
 
