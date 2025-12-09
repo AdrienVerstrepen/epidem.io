@@ -80,25 +80,24 @@ class Grille_visualisation(QWidget):
 
         self.distance_infection = 50
 
-        dim = 520
+        dimension_graphique = 520
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
+
+        viewBox = self.visualisation.getViewBox()
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
-        self.visualisation.showGrid(x=True, y=True, alpha=0.3) 
-        self.visualisation.getViewBox().setAspectLocked(True, ratio=1)
+        self.visualisation.getViewBox().disableAutoRange()
+        self.visualisation.getViewBox().setAutoPan(False)
         self.visualisation.getViewBox().setLimits(
-            xMin=-10, xMax=dim,
-            yMin=-10, yMax=dim,
-            minXRange=dim, maxXRange=dim,
-            minYRange=dim, maxYRange=dim
+            xMin=-10, xMax=dimension_graphique,
+            yMin=-10, yMax=dimension_graphique,
+            minXRange=dimension_graphique, maxXRange=dimension_graphique,
+            minYRange=dimension_graphique, maxYRange=dimension_graphique
         )
-        self.visualisation.setXRange(0, 500, padding=0)
-        self.visualisation.setYRange(0, 500, padding=0)
-        self.visualisation.enableAutoRange(False)
-        self.visualisation.getViewBox()
-        # self.visualisation.hideAxis('bottom')
-        # self.visualisation.hideAxis('left')
+        self.visualisation.getViewBox().setMouseEnabled(x=False, y=False)
+        self.visualisation.hideAxis('bottom')
+        self.visualisation.hideAxis('left')
 
     def initialiser_simulation(self):
         self.sa_maladie = Maladie(
@@ -183,7 +182,6 @@ class Grille_visualisation(QWidget):
         self.nuage_de_points.setData([])
         # Bug d'Athène : 
         # Une fois la simulation précédente était restée affichée lors de la réinitialisation
-        
 
     def arreter_simulation(self):
         self.timer.stop()
