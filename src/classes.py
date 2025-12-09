@@ -7,10 +7,9 @@ import math
 class Personne :
     """
     On représente un individu de la simulation.
-
     Une personne possède un état de santé, une position en 2D, et différents attributs permettant de suivre son évolution.
     """
-    def __init__(self, etat, immunodeprime, position, id=0, couleur="vert", medecin="non", cpt_iterations_infection=0):
+    def __init__(self, etat, immunodeprime, position, id=0, couleur="vert", medecin=0, cpt_iterations_infection=0):
         """
         La variable état représente l'état de santé de la personne, les valeurs possibles sont : "sain", "infecte", "immunise" et "mort".
         Par défaut, les personnes commencent avec un état sain et non malade.
@@ -29,6 +28,7 @@ class Personne :
         self.position = position
         self.id=id
         self.cpt_iterations_infection=cpt_iterations_infection
+        self.cooldown_immunite = 0
 
     def se_deplace(self, arrivee):
         """
@@ -43,6 +43,7 @@ class Personne :
         """
         self.etat = "sain"
         self.couleur = "vert"
+        self.cooldown_immunite = 20
 
     def mourir(self):
         """
@@ -192,6 +193,7 @@ class Simulation :
         self.df_historique = pd.DataFrame(columns=["nb_sains", "nb_infectes", "nb_immunises", "nb_morts", "nb_total"])
         self.iterations = 0
         self.grille = Grille(taille_carreau=self.maladie.distance_infection, largeur_fenetre=largeur_fenetre, hauteur_fenetre=hauteur_fenetre)
+        self.iterations_sans_infecte = 0
 
     def initialiser_population(self, largeur_fenetre, hauteur_fenetre, pourcentage_infectes = 5, pourcentage_immunodeprimes = 5):
         """
@@ -228,8 +230,8 @@ class Simulation :
         infectes = [personne for personne in self.liste_personnes if personne.etat == "infecte"]
         for infecte in infectes:
             voisins = self.grille.voisins_de_personne(infecte)
-            for voisin in voisins:
-                if voisin.etat == "sain":
+            for voisin in voisins :
+                if voisin.etat == "sain" and voisin.cooldown_immunite <= 0 :
                     if infecte.etre_en_contact(voisin.position, self.maladie.distance_infection):
                         if randint(0, 100) < self.maladie.risque_transmission:
                             voisin.etre_infecte()
@@ -404,8 +406,7 @@ class Simulation :
                     risque_mort *= 1.5
                 if medecin_autour == 1 :
                     risque_mort /= 1.5
-                dé = random.uniform(0, 99)
-                if dé <= risque_mort:
+                if random.uniform(0, 99) <= risque_mort:
                     personne.mourir()
                     continue
 
@@ -419,11 +420,25 @@ class Simulation :
                         personne.etre_immunise()
                     else:
                         personne.guerir()
+                        personne.cpt_iterations_infection = 0
                     continue
+            elif personne.etat == 'sain' :
+                if personne.cooldown_immunite >= 1 :
+                    personne.cooldown_immunite -= 1
+        if self.iterations_sans_infecte >= 5 :
+            quantite_infectes_relance = 0.5
+            for personne in self.liste_personnes:
+                if random.uniform(0, 100) <= quantite_infectes_relance and personne.etat != "mort":
+                    personne.etre_infecte()
+                    self.iterations_sans_infecte = 0
+                    personne.cooldown_immunite = 20
         nb_sains = sum(1 for personne in self.liste_personnes if personne.etat == "sain")
         nb_infectes = sum(1 for personne in self.liste_personnes if personne.etat == "infecte")
         nb_immunises = sum(1 for personne in self.liste_personnes if personne.etat == "immunise")
         nb_morts = sum(1 for personne in self.liste_personnes if personne.etat == "mort")
         nb_total = nb_sains + nb_infectes + nb_immunises + nb_morts
         self.df_historique.loc[self.iterations] = [nb_sains, nb_infectes, nb_immunises, nb_morts, nb_total]
+
+        if nb_infectes == 0 :
+            self.iterations_sans_infecte += 1
         self.iterations += 1
