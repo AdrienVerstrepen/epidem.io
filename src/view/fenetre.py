@@ -43,40 +43,40 @@ class Fenetre(QMainWindow):
 		super().__init__()
 		self.setWindowTitle("épidém.io")
 
-		self.w = None
+		self.sa_fenetre_enfant = None
 
-		self.largeur = taille_fenetre["largeur"]
-		self.hauteur = taille_fenetre["hauteur"]
+		self.sa_largeur = taille_fenetre["largeur"]
+		self.sa_hauteur = taille_fenetre["hauteur"]
 		self.taille_fenetre = taille_fenetre
 
-		self.resize(self.largeur, self.hauteur)
+		self.resize(self.sa_largeur, self.sa_hauteur)
 
 		widget_central = QWidget()
 		self.setCentralWidget(widget_central)
 
-		self.disposition_principale = QHBoxLayout()
+		self.sa_disposition_principale = QHBoxLayout()
 
 		self.ses_parametres = Parametres(self)
 		self.sa_grille = Grille_visualisation(self, taille_fenetre)
 		
-		self.disposition_principale.addWidget(self.sa_grille, stretch=3)
-		self.disposition_principale.addWidget(self.ses_parametres, stretch=1)
+		self.sa_disposition_principale.addWidget(self.sa_grille, stretch=3)
+		self.sa_disposition_principale.addWidget(self.ses_parametres, stretch=1)
 
-		self.boutons_haut = Barre_boutons(self)
-		disposition_haut = QVBoxLayout()
-		disposition_haut.addWidget(self.boutons_haut)
-		disposition_haut.addLayout(self.disposition_principale)
+		self.son_menu = Barre_boutons(self)
+		disposition_menu = QVBoxLayout()
+		disposition_menu.addWidget(self.son_menu)
+		disposition_menu.addLayout(self.sa_disposition_principale)
 
-		widget_central.setLayout(disposition_haut)
-
-		self.bouton = QPushButton("Stats")
-		self.bouton.clicked.connect(self.show_other_window)
+		widget_central.setLayout(disposition_menu)
+		self.bouton = QPushButton("Afficher les statistiques")
+		self.bouton.clicked.connect(self.ouvrir_fenetre)
 		self.ses_parametres.sa_disposition.addWidget(self.bouton)
 
-	def show_other_window(self, checked):
-		if self.w is None:
-			self.w = FenetreStats(self.sa_grille.sa_simulation)
+
+	def ouvrir_fenetre(self, checked):
+		if self.sa_fenetre_enfant is None:
+			self.sa_fenetre_enfant = Fenetre_statistiques(self.sa_grille.sa_simulation)
 		else:
-			self.w.destroy()
-			self.w = FenetreStats(self.sa_grille.sa_simulation)
-		self.w.show()
+			self.sa_fenetre_enfant.destroy()
+			self.sa_fenetre_enfant = Fenetre_statistiques(self.sa_grille.sa_simulation)
+		self.sa_fenetre_enfant.show()
