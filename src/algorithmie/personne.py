@@ -1,3 +1,5 @@
+from math import *
+
 class Personne :
     """
     On représente un individu de la simulation.
