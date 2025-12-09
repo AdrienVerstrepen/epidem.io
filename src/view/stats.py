@@ -30,5 +30,3 @@ class FenetreStats(QWidget):
 		graphique.plot(x, morts, pen=mkPen('k', width=2), name="Morts")
 
 		self.setLayout(layout)
-		
-		

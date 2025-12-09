@@ -134,7 +134,6 @@ class Grille_visualisation(QWidget):
         donnees = self.recuperer_points_personnes(self.sa_simulation.liste_personnes)
         personnes = donnees
         nb_reel_personnes = (len(self.sa_simulation.liste_personnes))
-        # print(f"Nombre reel de personnes : {nb_reel_personnes}")
         
         if nb_reel_personnes >= 200 and nb_reel_personnes <= 300:
             taille_point = 6
@@ -149,7 +148,6 @@ class Grille_visualisation(QWidget):
         self.visualisation.addItem(self.nuage_de_points)
 
     def demarrer_simulation(self) :
-
         self.recuperer_parametres_utilisateur()
 
         self.initialiser_simulation()
@@ -159,7 +157,7 @@ class Grille_visualisation(QWidget):
         self.initialiser_nuage_de_point()
 
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(250)
+        self.timer.setInterval(10)
         self.timer.timeout.connect(self.actualiser_simulation)
         self.timer.start()
         self.en_cours = True
@@ -176,17 +174,17 @@ class Grille_visualisation(QWidget):
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
         self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.liste_personnes))
-        # print(f"Liste de personnes : ")
-        # print(self.sa_simulation.grille.carreaux)
-        # print(len(self.sa_simulation.grille.carreaux))
-        # print(f"Personne n°{self.sa_simulation.liste_personnes[0].id} en {self.sa_simulation.liste_personnes[0].position}")
 
     def reinitialiser_simulation(self):
         self.arreter_simulation()
         self.visualisation.setTitle(f"")
         self.recuperer_parametres_utilisateur()
         self.initialiser_simulation()
+        print(self.nuage_de_points.getData())
         self.nuage_de_points.setData([])
+        # Bug d'Athène : 
+        # Une fois la simulation précédente était restée affichée lors de la réinitialisation
+        
 
     def arreter_simulation(self):
         self.timer.stop()
@@ -215,10 +213,7 @@ class Grille_visualisation(QWidget):
         tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
         """
         coordonnes_personnes = []
-        # for ligne in cases:
         for personne in personnes:
-            # print(personne)
-            # if personne:
             coordonnes_personnes.append({
                 'pos' : personne.position,
                 'data' : personne,
