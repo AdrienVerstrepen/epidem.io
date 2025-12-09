@@ -35,13 +35,13 @@ class Personne :
         if (self.etat != "mort"):
             self.position = arrivee
             
-    def guerir(self):
+    def guerir(self, cooldown_immunite):
         """
         Guerir sert à faire repasser une personne infectée à l'état sain si elle a survécu à la maladie.
         """
         self.etat = "sain"
         self.couleur = "vert"
-        self.cooldown_immunite = 20
+        self.cooldown_immunite = cooldown_immunite
 
     def mourir(self):
         """

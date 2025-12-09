@@ -44,7 +44,7 @@ class Champ_temps_guerison(QComboBox):
 	
 valeurs_possibles = {
     "Incurable": -1,
-    "Courte": 5*5,
-    "Moyenne": 20*5,
-    "Longue": 50*5
+    "Courte": 25,
+    "Moyenne": 100,
+    "Longue": 250
 }
