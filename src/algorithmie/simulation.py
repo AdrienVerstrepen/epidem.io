@@ -258,6 +258,9 @@ class Simulation :
             elif personne.etat == 'sain' :
                 if personne.cooldown_immunite >= 1 :
                     personne.cooldown_immunite -= 1
+            elif personne.etat == 'mort':
+                if personne.cooldown_affichage_apres_mort >= 1 :
+                    personne.cooldown_affichage_apres_mort -= 1
         if self.iterations_sans_infecte >= 5 :
             quantite_infectes_relance = 0.5
             for personne in self.liste_personnes:

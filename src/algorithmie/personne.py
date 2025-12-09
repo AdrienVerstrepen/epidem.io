@@ -26,6 +26,7 @@ class Personne :
         self.id=id
         self.cpt_iterations_infection=cpt_iterations_infection
         self.cooldown_immunite = 0
+        self.cooldown_affichage_apres_mort = 0
 
     def se_deplace(self, arrivee):
         """
@@ -48,6 +49,7 @@ class Personne :
         """
         self.etat = "mort"
         self.couleur = "rouge"
+        self.cooldown_affichage_apres_mort = 50
 
     def etre_infecte(self):
         """
