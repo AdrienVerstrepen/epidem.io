@@ -69,7 +69,6 @@ class Grille_visualisation(QWidget):
                                                  dans les différents champs
     """
     def __init__(self, fenetre: "Fenetre", taille_fenetre : dict):
-
         super().__init__()
 
         self.sa_fenetre = fenetre
