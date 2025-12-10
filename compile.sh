@@ -1,0 +1,1 @@
+pyinstaller --noconsole --name epidem.io --onefile launch.py --distpath ./src/bin
