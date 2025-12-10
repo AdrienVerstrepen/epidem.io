@@ -83,10 +83,10 @@ class Grille_visualisation(QWidget):
         self.distance_infection = 50
 
         dimension_graphique = 520
+        self.afficher_distance_contagion = False
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
 
-        viewBox = self.visualisation.getViewBox()
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
         self.visualisation.getViewBox().disableAutoRange()
@@ -180,7 +180,7 @@ class Grille_visualisation(QWidget):
         self.visualisation.setTitle(f"")
         self.recuperer_parametres_utilisateur()
         self.initialiser_simulation()
-        print(self.nuage_de_points.getData())
+        # print(self.nuage_de_points.getData())
         self.nuage_de_points.setData([])
         # Bug d'Athène : 
         # Une fois la simulation précédente était restée affichée lors de la réinitialisation
@@ -201,7 +201,7 @@ class Grille_visualisation(QWidget):
         self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
         self.immunite = self.sa_fenetre.ses_parametres.champ_immunite.isChecked()
 
-    def recuperer_points_personnes(self, personnes: list) -> list :
+    def recuperer_points_personnes(self, personnes: list[Personne]) -> list :
         """
         Récupère la position des personnes
 
@@ -213,14 +213,17 @@ class Grille_visualisation(QWidget):
         """
         coordonnes_personnes = []
         for personne in personnes:
-            coordonnes_personnes.append({
-                'pos' : personne.position,
-                'data' : personne,
-                'brush' : couleurs_personnes.get(personne.couleur),
-                'symbol' : 'star' if (personne.medecin == 1) else 'o',
-                'size' : 15 if (personne.medecin == 1) else 10
-            })
-        self.distance_contagion_visu(coordonnes_personnes)
+            if personne.cooldown_affichage_apres_mort != 0 :
+                coordonnes_personnes.append({
+                    'pos' : personne.position,
+                    'data' : personne,
+                    'brush' : couleurs_personnes.get(personne.couleur),
+                    'symbol' : 'star' if (personne.medecin == 1) else 'o',
+                    'size' : 15 if (personne.medecin == 1) else 10
+                })
+        print(len(coordonnes_personnes))
+        if self.afficher_distance_contagion == True:
+            self.distance_contagion_visu(coordonnes_personnes)
         return coordonnes_personnes
 
     def distance_contagion_visu(self, personnes):

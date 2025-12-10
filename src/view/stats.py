@@ -20,11 +20,8 @@ class Fenetre_statistiques(QWidget):
 		self.simu = simu
 
 		self.son_graphique = Figure(figsize=(5, 4), dpi=100)
-		
 		self.ses_axes = self.son_graphique.add_subplot(111)
-
 		self.ses_axes.set_title("Evolution du nombre de personnes mortes au fil du temps")
-
 		self.ses_axes.set_xlabel("Nombre d'itérations")
 		self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
 

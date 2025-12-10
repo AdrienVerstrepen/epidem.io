@@ -7,6 +7,7 @@ from .sliders.taux_infectes import Slider_infectes
 from .champs.nombre_personnes import Champ_nb_personnes
 from .champs.temps_guerison import Champ_temps_guerison
 from .champs.immunite import Champ_immunite
+from .champs.rayon_contagion import Champ_distance_infection
 
 from typing import TYPE_CHECKING
 
@@ -57,6 +58,11 @@ class Parametres(QGroupBox):
 		self.setLayout(self.sa_disposition)
 
 		self.initialiser_parametres()
+		
+		self.afficher_distance_infection = QCheckBox("Afficher la distance d'infection", self)
+		self.afficher_distance_infection.stateChanged.connect(self.gerer_affichage_distance_contagion)
+
+		self.sa_disposition.addWidget(self.afficher_distance_infection)
 		
 		self.sa_disposition.addStretch()
 
@@ -149,3 +155,19 @@ class Parametres(QGroupBox):
 
 		self.champ_immunite.stateChanged.connect(self.champ_immunite.changement_valeur)
 		self.label_immunite.setToolTip("La possibilité ou non d'être immunisé après avoir guéri de la maladie")
+
+	def initialiser_dropdown_distance_infection(self, nom: str, valeur_defaut: int):
+		self.label_dist_infection = QLabel(f"{nom} : {valeur_defaut}")
+		self.sa_disposition.addWidget(self.label_dist_infection)
+
+		self.champ_dist_infection = Champ_distance_infection(self, nom)
+		self.sa_disposition.addWidget(self.champ_dist_infection)
+
+		self.champ_dist_infection.currentIndexChanged.connect(self.champ_dist_infection.changement_valeur)
+		self.label_dist_infection.setToolTip("La distance de contagion de la maladie")
+
+	def gerer_affichage_distance_contagion(self):
+		if self.afficher_distance_infection.isChecked():
+			self.sa_fenetre.sa_grille.afficher_distance_contagion = True
+		else : 
+			self.sa_fenetre.sa_grille.afficher_distance_contagion = False
