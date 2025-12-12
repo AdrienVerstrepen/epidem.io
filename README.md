@@ -23,15 +23,15 @@ python -m src.ihm
 
 ## Fonctionnalités
 * Simulation de la propagation d'épidémie en fonction de différents paramètres :
-* * Effectif de la population
-* * Pourcentage de transmission de la maladie
-* * Pourcentage de mortalité de la maladie
-* * Pourcentage de personnes qui sont initialement immunodéprimées
-* * Pourcentage de patients 0 au lancement de la simulation
-* * Durée d'infection de la maladie
-* * Immunité lors de la guérison
+   * Effectif de la population
+   * Pourcentage de transmission de la maladie
+   * Pourcentage de mortalité de la maladie
+   * Pourcentage de personnes qui sont initialement immunodéprimées
+   * Pourcentage de patients 0 au lancement de la simulation
+   * Durée d'infection de la maladie
+   * Immunité lors de la guérison
 * Suivi de la propagation :
-* * Vous pouvez suivre l'évolution du nombre de personnes mortes au cours de la simulation dans l'onglet statistiques
+   * Vous pouvez suivre l'évolution du nombre de personnes mortes au cours de la simulation dans l'onglet statistiques
 
 ## Organisation du projet
 
