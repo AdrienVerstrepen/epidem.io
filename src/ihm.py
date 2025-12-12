@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
-from .view.fenetre import Fenetre
+from src.view.fenetre import Fenetre
 
 def main():
     application = QApplication()
