@@ -1,1 +1,2 @@
-pyinstaller --noconsole --name epidem.io --onefile launch.py --distpath ./src/bin
+pyinstaller --noconsole --name epidem.io --onefile src/ihm.py --distpath ./src/bin
+rm -r ./build
