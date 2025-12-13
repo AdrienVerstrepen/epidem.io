@@ -221,7 +221,7 @@ class Grille_visualisation(QWidget):
                     'symbol' : 'star' if (personne.medecin == 1) else 'o',
                     'size' : 15 if (personne.medecin == 1) else 10
                 })
-        print(len(coordonnes_personnes))
+        #print(len(coordonnes_personnes))
         if self.afficher_distance_contagion == True:
             self.distance_contagion_visu(coordonnes_personnes)
         return coordonnes_personnes
@@ -252,8 +252,8 @@ def afficher_information_personne(scatter, points : list) -> None :
     """
     for point in points:
         data = point.data()
-        if type(data) == Personne:
-            print(str(data))
+        #if type(data) == Personne:
+            #print(str(data))
 
 couleurs_personnes = {
     "rouge": "red",
