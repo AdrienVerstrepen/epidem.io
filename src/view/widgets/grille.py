@@ -97,6 +97,8 @@ class Grille_visualisation(QWidget):
             minXRange=dimension_graphique, maxXRange=dimension_graphique,
             minYRange=dimension_graphique, maxYRange=dimension_graphique
         )
+        self.visualisation.setMenuEnabled(False)
+        self.visualisation.hideButtons()
         self.visualisation.getViewBox().setMouseEnabled(x=False, y=False)
         self.visualisation.hideAxis('bottom')
         self.visualisation.hideAxis('left')
@@ -180,7 +182,6 @@ class Grille_visualisation(QWidget):
         self.visualisation.setTitle(f"")
         self.recuperer_parametres_utilisateur()
         self.initialiser_simulation()
-        # print(self.nuage_de_points.getData())
         self.nuage_de_points.setData([])
         # Bug d'Athène : 
         # Une fois la simulation précédente était restée affichée lors de la réinitialisation
@@ -195,10 +196,10 @@ class Grille_visualisation(QWidget):
     def recuperer_parametres_utilisateur(self):
         self.nb_personnes = self.sa_fenetre.ses_parametres.champ_nb_personnes.value()
         self.temps_guerison = self.sa_fenetre.ses_parametres.champ_temps_guerison.recuperer_valeur_depuis_champ()
-        self.taux_infectes = self.sa_fenetre.ses_parametres.slider_infectes.value()
-        self.taux_letalite = self.sa_fenetre.ses_parametres.slider_letalite.value()
-        self.taux_transmission = self.sa_fenetre.ses_parametres.slider_transmission.value()
-        self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.slider_immunodeprime.value()
+        self.taux_infectes = self.sa_fenetre.ses_parametres.champ_infectes.value()
+        self.taux_letalite = self.sa_fenetre.ses_parametres.champ_letalite.value()
+        self.taux_transmission = self.sa_fenetre.ses_parametres.champ_transmission.value()
+        self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.champ_immunodeprime.value()
         self.immunite = self.sa_fenetre.ses_parametres.champ_immunite.isChecked()
 
     def recuperer_points_personnes(self, personnes: list[Personne]) -> list :
@@ -221,7 +222,6 @@ class Grille_visualisation(QWidget):
                     'symbol' : 'star' if (personne.medecin == 1) else 'o',
                     'size' : 15 if (personne.medecin == 1) else 10
                 })
-        print(len(coordonnes_personnes))
         if self.afficher_distance_contagion == True:
             self.distance_contagion_visu(coordonnes_personnes)
         return coordonnes_personnes
