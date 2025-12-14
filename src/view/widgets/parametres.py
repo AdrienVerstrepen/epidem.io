@@ -8,6 +8,8 @@ from .sliders.taux_infectes import Slider_infectes
 from .champs.nombre_personnes import Champ_nb_personnes
 from .champs.temps_guerison import Champ_temps_guerison
 from .champs.immunite import Champ_immunite
+from .champs.natalite import Champ_taux_natalite
+from .champs.transmission import Champ_taux_transmission
 
 from typing import TYPE_CHECKING
 
@@ -128,11 +130,19 @@ class Parametres(QGroupBox):
 		self.initialiser_composant(
 			"transmission", 
 			"Pourcentage de transmission de la maladie",
-			20,
+			20.0,
 			"%",
-			Slider_transmission,
+			Champ_taux_transmission,
 			"La probabilité qu'une personne infectée transmette la maladie à une autre"
 		)
+		# self.initialiser_composant(
+		# 	"transmission", 
+		# 	"Pourcentage de transmission de la maladie",
+		# 	20,
+		# 	"%",
+		# 	Slider_transmission,
+		# 	"La probabilité qu'une personne infectée transmette la maladie à une autre"
+		# )
 		# self.initialiser_slider_transmission("Pourcentage de transmission", 25)
 		self.initialiser_composant(
 			"immunodeprime", 
@@ -170,6 +180,14 @@ class Parametres(QGroupBox):
 			"La possibilité ou non d'être immunisé après avoir guéri de la maladie"
 		)
 		# self.initialiser_champ_immunite("Immunité après guérison", False)
+		self.initialiser_composant(
+			"natalite",
+			"Taux de natalité",
+			1,
+			"%",
+			Champ_taux_natalite,
+			"Le taux de natalité au sein de la population"
+		)
 
 	def initialiser_slider_letalite(self, nom: str, valeur_defaut: int):
 		self.label_letalite = QLabel(f"{nom} : {valeur_defaut}%")
