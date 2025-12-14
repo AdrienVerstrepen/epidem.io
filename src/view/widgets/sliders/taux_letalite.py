@@ -29,4 +29,4 @@ class Slider_letalite(QSlider):
 		self.son_menu = menu
 
 	def changement_valeur(self):
-		self.son_menu.label_letalite.setText(f"{self.texte} : {self.son_menu.slider_letalite.value()}%")
+		self.son_menu.label_letalite.setText(f"{self.texte} : {self.son_menu.champ_letalite.value()}%")

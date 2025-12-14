@@ -30,4 +30,4 @@ class Slider_transmission(QSlider):
 		self.son_menu = menu
 
 	def changement_valeur(self):
-		self.son_menu.label_transmission.setText(f"{self.texte} : {self.son_menu.slider_transmission.value()}%")
+		self.son_menu.label_transmission.setText(f"{self.texte} : {self.son_menu.champ_transmission.value()}%")
