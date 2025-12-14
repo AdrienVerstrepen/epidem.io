@@ -8,7 +8,6 @@ from .sliders.taux_infectes import Slider_infectes
 from .champs.nombre_personnes import Champ_nb_personnes
 from .champs.temps_guerison import Champ_temps_guerison
 from .champs.immunite import Champ_immunite
-from .champs.rayon_contagion import Champ_distance_infection
 
 from typing import TYPE_CHECKING
 

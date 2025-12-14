@@ -10,7 +10,7 @@ class Simulation :
     """
     On implémente ensuite la classe simulation, qui permet de construire toute la structure pour la simulation.
     """
-    def __init__(self, maladie, largeur_fenetre, hauteur_fenetre, duree_cooldown_avant_naissance = 50, nb_personnes=50):
+    def __init__(self, maladie, largeur_fenetre, hauteur_fenetre, duree_cooldown_avant_naissance = 50, nb_personnes=50, taux_naissance=0.02):
         """
         Nb personnes est le nombre de personnes totales dans la simulation, tout état confondu.
         Maladie est l'objet de classe Maladie que la simulation va répandre.
@@ -19,6 +19,7 @@ class Simulation :
         On fait le stockage directement dans un dataframe pour que ce soit plus simple pour la réalisation des schémas matplotlib; car c'est la structure priviligiée pour ça.
         Iteration est le numéro de l'itération en cours.
         Grille est l'objet de classe Grille associé à la simulation.
+        Taux naissance représente le pourcentage d'enfants nés dans la population.
         """
         self.nb_personnes = nb_personnes
         self.maladie = maladie
@@ -32,6 +33,7 @@ class Simulation :
         self.duree_cooldown_avant_naissance = duree_cooldown_avant_naissance
         self.cooldown_avant_naissance = duree_cooldown_avant_naissance
         self.pourcentage_immunodeprimes = 0
+        self.taux_naissance = taux_naissance
 
     def initialiser_population(self, largeur_fenetre, hauteur_fenetre, pourcentage_infectes = 5, pourcentage_immunodeprimes = 5):
         """
@@ -223,10 +225,9 @@ class Simulation :
                 personne = Personne(etat="sain", immunodeprime="oui", position=position, id=i)
             else :
                 personne = Personne(etat="sain", immunodeprime="non", position=position, id=i)
-            self.liste_personnes.append(personne)
-        for personne in self.liste_personnes:
             if randint(0, 1000) <= 5:
                 personne.etre_medecin()
+            self.liste_personnes.append(personne)
         self.grille.construire_grille(self.liste_personnes)
     
     def mise_a_jour_iteration(self):
@@ -246,7 +247,7 @@ class Simulation :
             self.cooldown_avant_naissance -= 1
         else :
             nb_total = self.df_historique.loc[self.iterations - 1].iloc[4] - self.df_historique.loc[self.iterations - 1].iloc[3]
-            nb_naissance = math.ceil(nb_total * 0.01)
+            nb_naissance = math.ceil(nb_total * self.taux_naissance)
             self.naissance(nb_naissance)
             self.cooldown_avant_naissance = self.duree_cooldown_avant_naissance
 
@@ -258,12 +259,12 @@ class Simulation :
                     if voisin.medecin == 1 and voisin.etat != "mort":
                         medecin_autour = 1
 
-                risque_mort = self.maladie.taux_letalite / self.maladie.temps_guerison
+                risque_mort = self.maladie.taux_letalite / (2* self.maladie.temps_guerison)
                 if personne.immunodeprime == "oui":
-                    risque_mort *= 1.5
+                    risque_mort *= 1.2
                 if medecin_autour == 1 :
-                    risque_mort /= 1.5
-                if random.uniform(0, 99) <= risque_mort:
+                    risque_mort /= 2
+                if random.uniform(0, 100) <= risque_mort:
                     personne.mourir()
                     continue
 
@@ -286,7 +287,7 @@ class Simulation :
                     if self.maladie.immunite_apres_guerison == True:
                         personne.etre_immunise()
                     else:
-                        personne.guerir(self.maladie.temps_guerison*0.75)
+                        personne.guerir(self.maladie.temps_guerison)
                         personne.cpt_iterations_infection = 0
                     continue
             elif personne.etat == 'sain' :
@@ -295,10 +296,10 @@ class Simulation :
             elif personne.etat == 'mort':
                 if personne.cooldown_affichage_apres_mort >= 1 :
                     personne.cooldown_affichage_apres_mort -= 1
-        if self.iterations_sans_infecte >= 5 :
-            quantite_infectes_relance = 0.5
+        if self.iterations_sans_infecte >= 200 :
+            quantite_infectes_relance = 5
             for personne in self.liste_personnes:
-                if random.uniform(0, 100) <= quantite_infectes_relance and personne.etat != "mort":
+                if random.uniform(0, 1000) <= quantite_infectes_relance and personne.etat != "mort":
                     personne.etre_infecte()
                     self.iterations_sans_infecte = 0
                     personne.cooldown_immunite = self.maladie.temps_guerison*0.75
@@ -311,7 +312,4 @@ class Simulation :
 
         if nb_infectes == 0 :
             self.iterations_sans_infecte += 1
-        # if self.cooldown_avant_naissance == 0 :
-        #     print(nb_total)
-        #     print(nb_morts/nb_total)
         self.iterations += 1
