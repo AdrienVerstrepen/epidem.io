@@ -9,7 +9,7 @@ from .champs.nombre_personnes import Champ_nb_personnes
 from .champs.temps_guerison import Champ_temps_guerison
 from .champs.immunite import Champ_immunite
 from .champs.natalite import Champ_taux_natalite
-from .champs.transmission import Champ_taux_transmission
+from .champs.letalite import Champ_taux_letalite
 
 from typing import TYPE_CHECKING
 
@@ -68,12 +68,9 @@ class Parametres(QGroupBox):
 		arrangement_distance_infection.addWidget(self.afficher_distance_infection)
 		self.composant_distance_infection.setLayout(arrangement_distance_infection)
 		self.sa_disposition.addWidget(self.composant_distance_infection)
-		# self.sa_disposition.addWidget(self.afficher_distance_infection)
-		
 		self.sa_disposition.addStretch()
 
 	def initialiser_composant(self, nom, texte: str, valeur_defaut: int, unite : str, classe : type[QWidget], tooltip : str):
-		# print(f"Initialisation de {nom} de type {classe}")
 		composant = QWidget()
 		arrangement_principal = QVBoxLayout()
 		arrangement_label_icone = QHBoxLayout()
@@ -99,14 +96,11 @@ class Parametres(QGroupBox):
 			getattr(self, f"champ_{nom}").changer_valeur(valeur_defaut)
 			champ.stateChanged.connect(champ.changement_valeur)
 		else:
-			print(f"changement de valeur pour {nom} : {valeur_defaut}")
 			getattr(self, f"champ_{nom}").setValue(valeur_defaut)
 			champ.valueChanged.connect(champ.changement_valeur)
 		icone.setToolTip(tooltip)
 		composant.setLayout(arrangement_principal)
 		self.sa_disposition.addWidget(composant)
-		# print(getattr(self, f"label_{nom}"))
-		# print(getattr(self, f"champ_{nom}"))
 
 	def initialiser_parametres(self):
 		self.initialiser_composant(
@@ -114,7 +108,7 @@ class Parametres(QGroupBox):
 			"Taux de létalité de la maladie",
 			5,
 			"%",
-			Slider_letalite,
+			Champ_taux_letalite,
 			"Le pourcentage qu'une personne infectée meurt à chaque itération"
 		)
 		# self.initialiser_slider_letalite("Taux de létalité de la maladie", 20)
@@ -130,19 +124,11 @@ class Parametres(QGroupBox):
 		self.initialiser_composant(
 			"transmission", 
 			"Pourcentage de transmission de la maladie",
-			20.0,
+			20,
 			"%",
-			Champ_taux_transmission,
+			Slider_transmission,
 			"La probabilité qu'une personne infectée transmette la maladie à une autre"
 		)
-		# self.initialiser_composant(
-		# 	"transmission", 
-		# 	"Pourcentage de transmission de la maladie",
-		# 	20,
-		# 	"%",
-		# 	Slider_transmission,
-		# 	"La probabilité qu'une personne infectée transmette la maladie à une autre"
-		# )
 		# self.initialiser_slider_transmission("Pourcentage de transmission", 25)
 		self.initialiser_composant(
 			"immunodeprime", 

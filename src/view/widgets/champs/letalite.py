@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..parametres import Parametres
 
-class Champ_taux_transmission(QDoubleSpinBox):
+class Champ_taux_letalite(QDoubleSpinBox):
 	"""
     Champ numérique permettant de définir le nombre total de personnes
     présentes au lancement de la simulation.
@@ -34,4 +34,4 @@ class Champ_taux_transmission(QDoubleSpinBox):
 		self.setSingleStep(0.00001)
 
 	def changement_valeur(self):
-		self.son_menu.label_transmission.setText(f"{self.son_texte} : {round(self.son_menu.champ_transmission.value(),5)}%")
+		self.son_menu.label_letalite.setText(f"{self.son_texte} : {round(self.son_menu.champ_letalite.value(),5)}%")
