@@ -180,14 +180,14 @@ class Parametres(QGroupBox):
 			"La possibilité ou non d'être immunisé après avoir guéri de la maladie"
 		)
 		# self.initialiser_champ_immunite("Immunité après guérison", False)
-		self.initialiser_composant(
-			"natalite",
-			"Taux de natalité",
-			1,
-			"%",
-			Champ_taux_natalite,
-			"Le taux de natalité au sein de la population"
-		)
+		# self.initialiser_composant(
+		# 	"natalite",
+		# 	"Taux de natalité",
+		# 	1,
+		# 	"%",
+		# 	Champ_taux_natalite,
+		# 	"Le taux de natalité au sein de la population"
+		# )
 
 	def initialiser_slider_letalite(self, nom: str, valeur_defaut: int):
 		self.label_letalite = QLabel(f"{nom} : {valeur_defaut}%")
