@@ -32,9 +32,9 @@ class Fenetre_statistiques(QWidget):
 		self.son_widget_graphique = FigureCanvasQTAgg(self.son_graphique)
 		toolbar = NavigationToolbar(self.son_widget_graphique, self)
 
-		wanted = "Save"
+		parametre_voulu = "Save"
 		for action in toolbar.actions():
-			if action.text() != wanted:
+			if action.text() != parametre_voulu:
 				toolbar.removeAction(action)
 
 		layout = QVBoxLayout()
