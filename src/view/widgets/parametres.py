@@ -66,11 +66,11 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addStretch()
 
 	def initialiser_parametres(self):
-		self.initialiser_slider_letalite("Taux de létalité de la maladie", 5)
+		self.initialiser_slider_letalite("Taux de létalité de la maladie", 20)
 
 		self.initialiser_champ_nb_personnes("Effectif de la population", 200)
 
-		self.initialiser_slider_transmission("Pourcentage de transmission", 20)
+		self.initialiser_slider_transmission("Pourcentage de transmission", 25)
 		
 		self.initialiser_slider_immunodeprime("Pourcentage de personnes immunodéprimées", 15)
 
