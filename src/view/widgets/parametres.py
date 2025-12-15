@@ -163,7 +163,7 @@ class Parametres(QGroupBox):
 		self.initialiser_composant(
 			"natalite",
 			"Taux de natalité",
-			0.02,
+			2,
 			"%",
 			Champ_taux_natalite,
 			"Le taux de natalité au sein de la population"
