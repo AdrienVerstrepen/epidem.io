@@ -24,7 +24,7 @@ class Simulation :
         self.nb_personnes = nb_personnes
         self.maladie = maladie
         self.liste_personnes = []
-        self.df_historique = pd.DataFrame(columns=["nb_sains", "nb_infectes", "nb_immunises", "nb_morts", "nb_total"])
+        self.df_historique = pd.DataFrame(columns=["nb_morts", "nb_total"])
         self.iterations = 0
         self.largeur_fenetre = largeur_fenetre
         self.hauteur_fenetre = hauteur_fenetre
@@ -71,8 +71,9 @@ class Simulation :
         infectes = [personne for personne in self.liste_personnes if personne.etat == "infecte"]
         for infecte in infectes:
             voisins = self.grille.voisins_de_personne(infecte)
+            voisins = [personne for personne in voisins if personne.etat == "sain"]
             for voisin in voisins :
-                if voisin.etat == "sain" and voisin.cooldown_immunite <= 0 :
+                if voisin.cooldown_immunite <= 0 :
                     if infecte.etre_en_contact(voisin.position, self.maladie.distance_infection):
                         if randint(0, 100) < self.maladie.risque_transmission:
                             voisin.etre_infecte()
@@ -242,11 +243,10 @@ class Simulation :
         """
         self.deplacement_boids_simplifie()
         self.propager_infection()
-
         if self.cooldown_avant_naissance >= 1 :
             self.cooldown_avant_naissance -= 1
         else :
-            nb_total = self.df_historique.loc[self.iterations - 1].iloc[4] - self.df_historique.loc[self.iterations - 1].iloc[3]
+            nb_total = self.df_historique.loc[self.iterations - 1].iloc[1] - self.df_historique.loc[self.iterations - 1].iloc[0]
             nb_naissance = math.ceil(nb_total * self.taux_naissance)
             self.naissance(nb_naissance)
             self.cooldown_avant_naissance = self.duree_cooldown_avant_naissance
@@ -303,13 +303,10 @@ class Simulation :
                     personne.etre_infecte()
                     self.iterations_sans_infecte = 0
                     personne.cooldown_immunite = self.maladie.temps_guerison*0.75
-        nb_sains = sum(1 for personne in self.liste_personnes if personne.etat == "sain")
-        nb_infectes = sum(1 for personne in self.liste_personnes if personne.etat == "infecte")
-        nb_immunises = sum(1 for personne in self.liste_personnes if personne.etat == "immunise")
         nb_morts = sum(1 for personne in self.liste_personnes if personne.etat == "mort")
-        nb_total = nb_sains + nb_infectes + nb_immunises + nb_morts
-        self.df_historique.loc[self.iterations] = [nb_sains, nb_infectes, nb_immunises, nb_morts, nb_total]
-
+        nb_infectes = sum(1 for personne in self.liste_personnes if personne.etat == "infecte")
+        nb_total = len(self.liste_personnes)
+        self.df_historique.loc[self.iterations] = [nb_morts, nb_total]
         if nb_infectes == 0 :
             self.iterations_sans_infecte += 1
         self.iterations += 1
