@@ -23,11 +23,13 @@ class Fenetre_statistiques(QWidget):
 		self.ses_axes = self.son_graphique.add_subplot(111)
 		self.ses_axes.set_title("Evolution du nombre de personnes mortes au fil du temps")
 		self.ses_axes.set_xlabel("Nombre d'itérations")
+		
 		self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
-
 		if simu:
 			df = (simu.df_historique["nb_morts"] / simu.df_historique["nb_total"]) * 100
 			self.ses_axes.plot(df)
+
+		self.ses_axes.set_ylim(0, 100)
 
 		self.son_widget_graphique = FigureCanvasQTAgg(self.son_graphique)
 		toolbar = NavigationToolbar(self.son_widget_graphique, self)
@@ -50,11 +52,12 @@ class Fenetre_statistiques(QWidget):
 		self.show()
 		
 	def rafraichir_graphique(self):
-		# if (self.isActiveWindow()): 
-		self.ses_axes.clear()
-		self.ses_axes.set_title("Evolution du nombre de personnes mortes au fil du temps")
-		self.ses_axes.set_xlabel("Nombre d'itérations")
-		self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
-		df = (self.simu.df_historique["nb_morts"] / self.simu.df_historique["nb_total"]) * 100
-		self.ses_axes.plot(df)
-		self.son_widget_graphique.draw()
+		if (self.isActiveWindow()): 
+			self.ses_axes.clear()
+			self.ses_axes.set_title("Evolution du nombre de personnes mortes au fil du temps")
+			self.ses_axes.set_xlabel("Nombre d'itérations")
+			self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
+			df = (self.simu.df_historique["nb_morts"] / self.simu.df_historique["nb_total"]) * 100
+			self.ses_axes.plot(df)
+			self.son_widget_graphique.draw()
+			self.ses_axes.set_ylim(0, 100)
