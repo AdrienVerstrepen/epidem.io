@@ -26,10 +26,7 @@ class Champ_immunite(QCheckBox):
 
 		self.son_texte = nom
 		self.son_menu = menu
-		self.setText(f"{self.isChecked()}")
-
-	def changement_valeur(self):
-		self.son_menu.label_immunite.setText(f"{self.son_texte} : {self.son_menu.champ_immunite.isChecked()}")
+		self.setText(f"{nom}")
 
 	def changer_valeur(self, valeur):
 		self.setChecked(valeur)
