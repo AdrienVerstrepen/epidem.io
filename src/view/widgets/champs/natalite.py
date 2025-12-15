@@ -25,8 +25,8 @@ class Champ_taux_natalite(QDoubleSpinBox):
 	def __init__(self, menu:"Parametres", nom: str):
 		super().__init__()
 
-		self.setMinimum(1)
-		self.setMaximum(10)
+		self.setMinimum(0)
+		self.setMaximum(1)
 
 		self.son_texte = nom
 		self.son_menu = menu

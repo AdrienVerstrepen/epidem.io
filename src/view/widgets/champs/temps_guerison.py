@@ -44,7 +44,7 @@ class Champ_temps_guerison(QComboBox):
 	def changer_valeur(self, valeur):
 		index = self.findText(valeur)
 		self.setCurrentIndex(index)
-	
+
 valeurs_possibles = {
 	"Incurable": -1,
 	"Courte": 25,
