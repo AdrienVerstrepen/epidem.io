@@ -71,22 +71,16 @@ class Grille_visualisation(QWidget):
     """
     def __init__(self, fenetre: "Fenetre", taille_fenetre : dict):
         super().__init__()
-
         self.sa_fenetre = fenetre
-
         self.sa_disposition = QGridLayout()
         self.setLayout(self.sa_disposition)
-
         self.taille_fenetre = taille_fenetre
         self.sa_simulation = None
-
-        self.distance_infection = 50
-
+        self.distance_infection = None
         dimension_graphique = 520
         self.afficher_distance_contagion = False
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
-
         self.sa_disposition.addWidget(self.visualisation)
         self.visualisation.setBackground('w')
         self.visualisation.getViewBox().disableAutoRange()
@@ -116,7 +110,8 @@ class Grille_visualisation(QWidget):
             self.sa_maladie, 
             largeur_fenetre=500, 
             hauteur_fenetre=500, 
-            nb_personnes=self.nb_personnes
+            nb_personnes=self.nb_personnes,
+            taux_naissance=self.taux_natalite
         )
 
         self.sa_simulation.initialiser_population(
@@ -140,7 +135,7 @@ class Grille_visualisation(QWidget):
         if nb_reel_personnes >= 200 and nb_reel_personnes <= 300:
             taille_point = 6
         if nb_reel_personnes > 300 and nb_reel_personnes <= 400:
-            taille_point = 4
+            taille_point = 2
         else:
             taille_point = 10
         self.nuage_de_points = self.creer_nuage_de_point(taille_point, personnes)
@@ -175,7 +170,8 @@ class Grille_visualisation(QWidget):
             return
         self.sa_simulation.mise_a_jour_iteration()
         self.visualisation.setTitle(f"Itération n°{self.sa_simulation.iterations}")
-        self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.liste_personnes))
+        if self.isActiveWindow():
+            self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.liste_personnes))
 
     def reinitialiser_simulation(self):
         self.arreter_simulation()
@@ -201,6 +197,8 @@ class Grille_visualisation(QWidget):
         self.taux_transmission = self.sa_fenetre.ses_parametres.champ_transmission.value()
         self.taux_immunodeprimes = self.sa_fenetre.ses_parametres.champ_immunodeprime.value()
         self.immunite = self.sa_fenetre.ses_parametres.champ_immunite.isChecked()
+        self.taux_natalite = self.sa_fenetre.ses_parametres.champ_natalite.value()
+        self.distance_infection = self.sa_fenetre.ses_parametres.champ_distance_infection.recuperer_valeur_depuis_champ()
 
     def recuperer_points_personnes(self, personnes: list[Personne]) -> list :
         """
@@ -226,7 +224,7 @@ class Grille_visualisation(QWidget):
             self.distance_contagion_visu(coordonnes_personnes)
         return coordonnes_personnes
 
-    def distance_contagion_visu(self, personnes):
+    def distance_contagion_visu(self, personnes, rayon):
         x, y = personnes[0]['pos']
         rayon = 25
         couleur = (255, 0, 0)
