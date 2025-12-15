@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..parametres import Parametres
 
-class Champ_taux_natalite(QDoubleSpinBox):
+class Champ_taux_natalite(QSpinBox):
 	"""
     Champ numérique permettant de définir le taux de naissance 
 	d'une simulation à son lancement.
@@ -26,7 +26,7 @@ class Champ_taux_natalite(QDoubleSpinBox):
 		super().__init__()
 
 		self.setMinimum(0)
-		self.setMaximum(1)
+		self.setMaximum(100)
 
 		self.son_texte = nom
 		self.son_menu = menu

@@ -111,7 +111,7 @@ class Grille_visualisation(QWidget):
             largeur_fenetre=500, 
             hauteur_fenetre=500, 
             nb_personnes=self.nb_personnes,
-            taux_naissance=self.taux_natalite
+            taux_naissance=self.taux_natalite/100
         )
 
         self.sa_simulation.initialiser_population(
@@ -166,6 +166,10 @@ class Grille_visualisation(QWidget):
             self.timer.start()
 
     def actualiser_simulation(self) -> None :
+        i = 0
+        for vivant in [p for p in self.sa_simulation.liste_personnes if p.etat != "mort"] :
+            i += 1
+        print(f"Nombre de vivants : {i}")
         if not self.est_en_cours():
             return
         self.sa_simulation.mise_a_jour_iteration()
@@ -224,14 +228,14 @@ class Grille_visualisation(QWidget):
             self.distance_contagion_visu(coordonnes_personnes)
         return coordonnes_personnes
 
-    def distance_contagion_visu(self, personnes, rayon):
+    def distance_contagion_visu(self, personnes):
         x, y = personnes[0]['pos']
-        rayon = 25
+        diametre = self.distance_infection
         couleur = (255, 0, 0)
 
         spot_cercle = {
             'pos': (x, y),
-            'size': 2 * rayon,
+            'size': diametre,
             'pen': mkPen(couleur, width=2),
             'brush': None,
             'symbol': 'o'
