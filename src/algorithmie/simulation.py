@@ -10,7 +10,7 @@ class Simulation :
     """
     On implémente ensuite la classe simulation, qui permet de construire toute la structure pour la simulation.
     """
-    def __init__(self, maladie, largeur_fenetre, hauteur_fenetre, duree_cooldown_avant_naissance = 50, nb_personnes=50, taux_naissance=0.02):
+    def __init__(self, maladie, largeur_fenetre, hauteur_fenetre, duree_cooldown_avant_naissance = 100, nb_personnes=50, taux_naissance=0.02):
         """
         Nb personnes est le nombre de personnes totales dans la simulation, tout état confondu.
         Maladie est l'objet de classe Maladie que la simulation va répandre.
