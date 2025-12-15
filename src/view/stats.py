@@ -59,5 +59,5 @@ class Fenetre_statistiques(QWidget):
 			self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
 			df = (self.simu.df_historique["nb_morts"] / self.simu.df_historique["nb_total"]) * 100
 			self.ses_axes.plot(df)
-			self.son_widget_graphique.draw()
 			self.ses_axes.set_ylim(0, 100)
+			self.son_widget_graphique.draw()
