@@ -214,9 +214,18 @@ class Grille_visualisation(QWidget):
         Retourne:
         tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
         """
+        afficher_morts = self.sa_fenetre.ses_parametres.champ_morts_visibles.isChecked()
         coordonnes_personnes = []
         for personne in personnes:
-            if personne.cooldown_affichage_apres_mort != 0 :
+            if afficher_morts:
+                coordonnes_personnes.append({
+                    'pos' : personne.position,
+                    'data' : personne,
+                    'brush' : couleurs_personnes.get(personne.couleur),
+                    'symbol' : 'star' if (personne.medecin == 1) else 'o',
+                    'size' : 15 if (personne.medecin == 1) else 10
+                })
+            elif personne.cooldown_affichage_apres_mort != 0:
                 coordonnes_personnes.append({
                     'pos' : personne.position,
                     'data' : personne,
@@ -225,10 +234,10 @@ class Grille_visualisation(QWidget):
                     'size' : 15 if (personne.medecin == 1) else 10
                 })
         if self.afficher_distance_contagion == True:
-            self.distance_contagion_visu(coordonnes_personnes)
+            self.distance_contagion_visuelle(coordonnes_personnes)
         return coordonnes_personnes
 
-    def distance_contagion_visu(self, personnes):
+    def distance_contagion_visuelle(self, personnes):
         x, y = personnes[0]['pos']
         diametre = self.distance_infection
         couleur = (255, 0, 0)

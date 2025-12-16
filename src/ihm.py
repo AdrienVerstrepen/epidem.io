@@ -6,7 +6,7 @@ from src.view.fenetre import Fenetre
 def main():
     application = QApplication()
     largeur = 900
-    hauteur = 700
+    hauteur = 725
     taille_fenetre = {"largeur": largeur,"hauteur": hauteur}
     ihm = Fenetre(taille_fenetre)
     ihm.show()

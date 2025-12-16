@@ -11,6 +11,7 @@ from .champs.immunite import Champ_immunite
 from .champs.natalite import Champ_taux_natalite
 from .champs.letalite import Champ_taux_letalite
 from .champs.distance_infection import Champ_distance_infection
+from .champs.voir_morts import Champ_voir_morts
 
 from typing import TYPE_CHECKING
 
@@ -28,13 +29,13 @@ class Parametres(QGroupBox):
 		sa_fenetre (Fenetre): son objet parent Fenetre
 		sa_disposition (QVBoxLayout): le layout suivi par ses composants
 		label_letalite (QLabel): Le QLabel associé au slider letalite
-		slider_letalite (Slider_letalite): Le composant à glisser permettant de récupérer la valeur pour le taux de létalité
+		champ_letalite (Slider_letalite): Le composant à glisser permettant de récupérer la valeur pour le taux de létalité
 		label_infectes (QLabel): Le QLabel associé au slider infectés
-		slider_infectes (Slider_infectes): Composant permettant de récupérer la valeur du taux de personnes infectés
+		champ_infectes (Slider_infectes): Composant permettant de récupérer la valeur du taux de personnes infectés
 		label_transmission (QLabel): Le QLabel associé au slider transmissio
-		slider_transmission (Slider_transmission): Composant récupérant la valeur du taux de transmission de la maladie
+		champ_transmission (Slider_transmission): Composant récupérant la valeur du taux de transmission de la maladie
 		label_immunodeprime (QLabel): QLabel associé au slider immunodéprimé
-		slider_immunodeprime (Slider_immunodeprime): Composant récupérant la valeur du taux de personne immunodéprimés de la maladie
+		champ_immunodeprime (Slider_immunodeprime): Composant récupérant la valeur du taux de personne immunodéprimés de la maladie
 		label_nb_personnes (QLabel): QLabel associé au champ du nombre de personnes
 		champ_nb_personnes (Champ_nb_personnes): Composant récupérant la valeur du nombre de personnes
 		label_temps_guerison (QLabel): QLabel associé au champ du temps de guérison
@@ -44,14 +45,7 @@ class Parametres(QGroupBox):
 
 	Méthodes:
 		initialiser_parametres (None): fonction auxiliaire qui initialie tous les composants
-		initialiser_slider_letalite (None): 
-		initialiser_slider_infectes (None): 
-		initialiser_slider_transmission (None): 
-		initialiser_slider_immunodeprime (None): 
-		initialiser_champ_nb_personnes (None): 
-		initialiser_champ_temps_guerison (None): 
-		initialiser_champ_immunite (None): 
-
+		initialiser_composant (None): 
 	"""
 	def __init__(self, fenetre: "Fenetre"):
 		super().__init__()
@@ -76,15 +70,15 @@ class Parametres(QGroupBox):
 		arrangement_principal = QVBoxLayout()
 		arrangement_label_icone = QHBoxLayout()
 		champ = classe(self, texte)
-		if not isinstance(champ, Champ_immunite):
+		if not (isinstance(champ, Champ_immunite) or isinstance(champ, Champ_voir_morts)):
 			label = QLabel(f"{texte} : {valeur_defaut}{unite}")
 			setattr(self, f"label_{nom}", label)
+			arrangement_label_icone.addWidget(label)
 			icone = QLabel()
 			pix = QPixmap("src/icons/tooltip.png").scaled(
 				16, 16, Qt.KeepAspectRatio, Qt.SmoothTransformation
 			)
 			icone.setPixmap(pix)
-			arrangement_label_icone.addWidget(label)
 			arrangement_label_icone.addStretch(1)
 			arrangement_label_icone.addWidget(icone)
 			arrangement_principal.addLayout(arrangement_label_icone)
@@ -95,7 +89,7 @@ class Parametres(QGroupBox):
 			getattr(self, f"champ_{nom}").changer_valeur(valeur_defaut)
 			champ.currentIndexChanged.connect(champ.changement_valeur)
 			icone.setToolTip(tooltip)
-		elif isinstance(champ, Champ_immunite):
+		elif isinstance(champ, Champ_immunite) or isinstance(champ, Champ_voir_morts):
 			getattr(self, f"champ_{nom}").changer_valeur(valeur_defaut)
 			# champ.stateChanged.connect(champ.changement_valeur)
 		else:
@@ -106,24 +100,25 @@ class Parametres(QGroupBox):
 		self.sa_disposition.addWidget(composant)
 
 	def initialiser_parametres(self):
+		# letalite
 		self.initialiser_composant(
 			"letalite", 
 			"Taux de létalité de la maladie",
-			5,
+			3.5,
 			"%",
 			Champ_taux_letalite,
 			"Le pourcentage de risque qu'une personne décède de la maladie"
 		)
-
+		# nb_personnes
 		self.initialiser_composant(
 			"nb_personnes", 
 			"Effectif de la population",
-			200,
+			100,
 			"",
 			Champ_nb_personnes,
 			"Le nombre de personnes présentes au lancement de la simulation"
 		)
-
+		# transmission
 		self.initialiser_composant(
 			"transmission", 
 			"Pourcentage de transmission de la maladie",
@@ -132,7 +127,7 @@ class Parametres(QGroupBox):
 			Slider_transmission,
 			"La probabilité qu'une personne infectée transmette la maladie à une autre"
 		)
-
+		# immunodeprimés
 		self.initialiser_composant(
 			"immunodeprime", 
 			"Pourcentage de personnes immunodéprimées",
@@ -141,16 +136,16 @@ class Parametres(QGroupBox):
 			Slider_immunodeprime,
 			"Le pourcentage de personnes immunodéprimées au lancement de la simulation (les personnes immunodéprimées sont notamment les personnes âgées)"
 		)
-
+		# infectés
 		self.initialiser_composant(
 			"infectes", 
 			'Pourcentage de patient(s) "0"',
-			10,
+			4,
 			"%",
 			Slider_infectes,
 			"Le pourcentage de personnes infectées au lancement de la simulation"
 		)
-
+		# temps_guerison
 		self.initialiser_composant(
 			"temps_guerison", 
 			"Duree d'infection de la maladie",
@@ -159,7 +154,7 @@ class Parametres(QGroupBox):
 			Champ_temps_guerison,
 			"Le temps pour guérir de la maladie"
 		)
-
+		# natalite
 		self.initialiser_composant(
 			"natalite",
 			"Taux de natalité",
@@ -168,7 +163,7 @@ class Parametres(QGroupBox):
 			Champ_taux_natalite,
 			"Le taux de natalité au sein de la population"
 		)
-
+		# distance_infection
 		self.initialiser_composant(
 			"distance_infection",
 			"Distance de contagion de la maladie",
@@ -177,7 +172,7 @@ class Parametres(QGroupBox):
 			Champ_distance_infection,
 			"La distance nécessaire entre chaque personne pour qu'il y ait une chance de tranmsission de la maladie"
 		)
-
+		# immunité
 		self.initialiser_composant(
 			"immunite", 
 			"Immunité après guérison",
@@ -185,6 +180,15 @@ class Parametres(QGroupBox):
 			"",
 			Champ_immunite,
 			"La possibilité ou non d'être immunisé après avoir guéri de la maladie"
+		)
+
+		self.initialiser_composant(
+			"morts_visibles",
+			"Voir les morts",
+			False,
+			"",
+			Champ_voir_morts,
+			"Si activé, toutes les personnes mortes sont conservées dans l'interface.\n Si désactivé, elles seront retirées progressivement"
 		)
 
 	def gerer_affichage_distance_contagion(self):
