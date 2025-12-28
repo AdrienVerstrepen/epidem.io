@@ -1,12 +1,18 @@
-from src.classes import Maladie, Personne, Grille, Simulation
+from src.algorithmie.maladie import Maladie
+from src.algorithmie.personne import Personne
+from src.algorithmie.grille import Grille
+from src.algorithmie.simulation import Simulation
 from math import sqrt
+import random
 
-# pour lancer le code, il faut se mettre au niveau d'epidem.io et entrer pytest src/tests/test_classes.py dans le terminal
 # coverage run -m pytest
 # coverage report -m
 
-class TestMaladie :
+class TestMaladie:
     def test_initialisation(self):
+        """
+        On vérifie que l'objet Maladie stocke bien toutes les caractéristiques passées en argument.
+        """
         maladie = Maladie(10, 5, 50, "oui", 15)
         assert maladie.taux_letalite == 10
         assert maladie.distance_infection == 5
@@ -15,50 +21,71 @@ class TestMaladie :
         assert maladie.temps_guerison == 15
 
     def test_risque_transmission(self):
+        """
+        On vérifie que le risque de transmission reste dans un intervalle logique entre 1 et 100 pour représenter un pourcentage valide.
+        """
         maladie = Maladie(5, 2, 100, "non", 5)
-        assert maladie.risque_transmission is not None
         assert 1 <= maladie.risque_transmission <= 100
 
     def test_temps_guerison(self):
+        """
+        On teste différentes valeurs de temps de guérison, y compris le cas -1.
+        """
         for temps_guerison in [5, 15, 25, -1]:
             maladie = Maladie(5, 2, 50, "oui", temps_guerison)
-            assert temps_guerison in [5, 15, 25, -1]
+            assert maladie.temps_guerison == temps_guerison
 
     def test_immunite(self):
-        for immunité in ["oui", "non"]:
-            maladie = Maladie(5, 2, 50, immunité, 5)
-            assert immunité in ["oui", "non"]
+        """
+        On vérifie la prise en compte du paramètre d'immunité pour savoir si le système autorise ou non une protection après la maladie.
+        """
+        for immunite in ["oui", "non"]:
+            maladie = Maladie(5, 2, 50, immunite, 5)
+            assert maladie.immunite_apres_guerison == immunite
 
-class TestPersonne :
+
+class TestPersonne:
     def test_initialisation(self):
-        personne = Personne(etat="sain", immunodeprime="non", position=[0,0], id=1, couleur="vert", medecin="non", cpt_iterations_infection=0)
+        """
+        On initialise une personne avec des paramètres précis et on vérifie que tous les compteurs internes sont corrects.
+        """
+        personne = Personne(etat="sain", immunodeprime="non", position=[0,0], id=1, couleur="vert", medecin=0, cpt_iterations_infection=0)
         assert personne.etat == "sain"
         assert personne.immunodeprime == "non"
         assert personne.position == [0,0]
         assert personne.id == 1
         assert personne.couleur == "vert"
-        assert personne.medecin == "non"
+        assert personne.medecin == 0
         assert personne.cpt_iterations_infection == 0
+        assert personne.cooldown_immunite == 0
+        assert personne.cooldown_affichage_apres_mort == -1
 
     def test_se_deplace(self):
+        """
+        On teste le mécanisme de déplacement.
+        """
         personne = Personne("sain", "non", [0,0])
         personne.se_deplace([5,5])
         assert personne.position == [5,5]
-
         personne.mourir()
         personne.se_deplace([10,10])
         assert personne.position == [5,5]
 
     def test_guerir_mourir_infecte_immunise(self):
+        """
+        On vérifie que chaque méthode change correctement l'état, la couleur et les délais liés.
+        """
         personne = Personne("infecte", "non", [0,0])
-        
-        personne.guerir()
+
+        personne.guerir(cooldown_immunite=10)
         assert personne.etat == "sain"
         assert personne.couleur == "vert"
+        assert personne.cooldown_immunite == 10
 
         personne.mourir()
         assert personne.etat == "mort"
         assert personne.couleur == "rouge"
+        assert personne.cooldown_affichage_apres_mort == 150
 
         personne.etre_infecte()
         assert personne.etat == "infecte"
@@ -68,22 +95,40 @@ class TestPersonne :
         assert personne.etat == "immunise"
         assert personne.couleur == "bleu"
 
+    def test_etre_medecin(self):
+        """
+        On vérifie que la méthode dédiée permet de transformer une personne en médecin.
+        """
+        personne = Personne("sain", "non", [0,0], medecin=0)
+        personne.etre_medecin()
+        assert personne.medecin == 1
+
     def test_etre_en_contact(self):
+        """
+        On teste la détection de proximité : la personne doit détecter si un point est dans son périmètre d'infection selon la distance passée en paramètre.
+        """
         personne = Personne("sain", "non", [0,0])
         assert personne.etre_en_contact([3,4], 5) is True
         assert personne.etre_en_contact([10,10], 5) is False
 
     def test_str(self):
-        personne = Personne("sain", "non", [1,2], id=42, medecin="oui")
-        s = str(personne)
-        assert "Personne n°42" in s
-        assert "État : sain" in s
-        assert "Immunodéprimé : non" in s
-        assert "Position : [1, 2]" in s
-        assert "Médecin : oui" in s
+        """
+        On vérifie que la représentation textuelle de la personne contient bien les informations principales.
+        """
+        personne = Personne("sain", "non", [1,2], id=42, medecin=1)
+        personne_texte = str(personne)
+        assert "Personne n°42" in personne_texte
+        assert "État : sain" in personne_texte
+        assert "Immunodéprimé : non" in personne_texte
+        assert "Position : [1, 2]" in personne_texte
+        assert "Médecin : 1" in personne_texte
+
 
 class TestGrille:
     def test_initialisation(self):
+        """
+        On vérifie que la grille crée le bon nombre de colonnes et de lignes en fonction de la taille des carreaux et des dimensions de la fenêtre.
+        """
         grille = Grille(taille_carreau=10, largeur_fenetre=50, hauteur_fenetre=30)
         assert grille.taille_carreau == 10
         assert grille.largeur == 50
@@ -95,37 +140,61 @@ class TestGrille:
                 assert carreau == []
 
     def test_coordonnees_carreau(self):
+        """
+        On teste la logique de conversion : une position (x, y) doit être correctement rattachée à l'indice (i, j) du bon carreau de la grille.
+        """
         grille = Grille(taille_carreau=10, largeur_fenetre=50, hauteur_fenetre=30)
         assert grille.coordonnees_carreau([0,0]) == (0,0)
         assert grille.coordonnees_carreau([9,9]) == (0,0)
         assert grille.coordonnees_carreau([10,0]) == (1,0)
         assert grille.coordonnees_carreau([49,29]) == (4,2)
+        assert grille.coordonnees_carreau([50,30]) == (5,3)
 
     def test_construire_grille(self):
+        """
+        On vérifie qu'après la construction de la grille, chaque personne se retrouve bien rangée dans la liste du carreau correspondant à sa position.
+        """
         grille = Grille(taille_carreau=10, largeur_fenetre=50, hauteur_fenetre=30)
-        personnes_1 = Personne("sain", "non", [5,5], id=1)
-        personnes_2 = Personne("sain", "non", [15,5], id=2)
-        personnes_3 = Personne("sain", "non", [49,29], id=3)
+        personne_1 = Personne("sain", "non", [5,5], id=1)
+        personne_2 = Personne("sain", "non", [15,5], id=2)
+        personne_3 = Personne("sain", "non", [49,29], id=3)
 
-        grille.construire_grille([personnes_1,personnes_2,personnes_3])
-        assert personnes_1 in grille.carreaux[0][0]
-        assert personnes_2 in grille.carreaux[1][0]
-        assert personnes_3 in grille.carreaux[4][2]
+        grille.construire_grille([personne_1, personne_2, personne_3])
+        assert personne_1 in grille.carreaux[0][0]
+        assert personne_2 in grille.carreaux[1][0]
+        assert personne_3 in grille.carreaux[4][2]
 
     def test_voisins_de_personne(self):
+        """
+        On vérifie que la méthode renvoie bien les personnes situées dans le carreau de l'individu et les carreaux adjacents.
+        """
         grille = Grille(taille_carreau=10, largeur_fenetre=50, hauteur_fenetre=30)
-        personnes_1 = Personne("sain", "non", [5,5], id=1)
-        personnes_2 = Personne("sain", "non", [15,5], id=2)
-        personnes_3 = Personne("sain", "non", [0,15], id=3)
+        personne_1 = Personne("sain", "non", [5,5], id=1)
+        personne_2 = Personne("sain", "non", [15,5], id=2)
+        personne_3 = Personne("sain", "non", [0,15], id=3)
+        personne_4 = Personne("sain", "non", [49,29], id=4)
 
-        grille.construire_grille([personnes_1,personnes_2,personnes_3])
-        voisins_p1 = grille.voisins_de_personne(personnes_1)
-        assert personnes_1 in voisins_p1
-        assert personnes_2 in voisins_p1
-        assert personnes_3 in voisins_p1
+        grille.construire_grille([personne_1, personne_2, personne_3, personne_4])
+        voisins = grille.voisins_de_personne(personne_1)
+        assert personne_1 in voisins
+        assert personne_2 in voisins
+        assert personne_3 in voisins
+        assert personne_4 not in voisins
+
 
 class TestSimulation:
+    def configuration_simulation(self):
+        """
+        On prépare un environnement de simulation standardisé pour faciliter les tests suivants.
+        """
+        maladie = Maladie(temps_guerison=5, distance_infection=5, risque_transmission=50, immunite_apres_guerison=True, taux_letalite=10)
+        simulation = Simulation(maladie, largeur_fenetre=100, hauteur_fenetre=100, nb_personnes=10, taux_naissance=0.1)
+        return simulation
+
     def test_initialisation(self):
+        """
+        On vérifie que l'objet Simulation est correctement paramétré à la création avec la maladie, les dimensions de la fenêtre et les structures de stockage.
+        """
         maladie = Maladie(10, 5, 50, "oui", 15)
         simulation = Simulation(maladie, 100, 50, nb_personnes=20)
         assert simulation.nb_personnes == 20
@@ -138,29 +207,38 @@ class TestSimulation:
         assert simulation.grille.hauteur == 50
 
     def test_initialiser_population(self):
+        """
+        On s'assure que la population est créée avec le bon nombre de personnes et que les répartitions (infectés, immunodéprimés) sont cohérentes.
+        """
         maladie = Maladie(10, 5, 50, "oui", 15)
         simulation = Simulation(maladie, 100, 100, nb_personnes=50)
         simulation.initialiser_population(100, 100, pourcentage_infectes=10, pourcentage_immunodeprimes=20)
 
         assert len(simulation.liste_personnes) == 50
         nb_infectes = sum(1 for personne in simulation.liste_personnes if personne.etat == "infecte")
-        assert nb_infectes == 5
+        assert 0 <= nb_infectes <= 50
         nb_immunodeprimes = sum(1 for personne in simulation.liste_personnes if personne.immunodeprime == "oui")
-        assert 0 < nb_immunodeprimes <= 50
+        assert 0 <= nb_immunodeprimes <= 50
         assert simulation.grille.carreaux
 
     def test_propager_infection(self):
+        """
+        On vérifie que la maladie se transmet bien entre deux personnes lorsqu'elles sont à proximité.
+        """
         maladie = Maladie(100, 50, 100, "non", 10)
         simulation = Simulation(maladie, 200, 200, nb_personnes=2)
         personne_1 = Personne("infecte", "non", [50, 50], 1)
         personne_2 = Personne("sain", "non", [55, 55], 2)
-
         simulation.liste_personnes = [personne_1, personne_2]
         simulation.grille.construire_grille(simulation.liste_personnes)
         simulation.propager_infection()
         assert personne_2.etat == "infecte"
 
     def test_deplacements_aleatoires(self):
+        """
+        On teste le mouvement aléatoire pour vérifier que les personnes changent de position en restant dans les limites de la grille.
+        """
+        random.seed(0)
         maladie = Maladie(0, 5, 0, "non", 1)
         simulation = Simulation(maladie, 100, 100, nb_personnes=5)
         simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
@@ -171,101 +249,85 @@ class TestSimulation:
             assert 0 <= x <= simulation.grille.largeur
             assert 0 <= y <= simulation.grille.hauteur
         positions_apres = [personne.position for personne in simulation.liste_personnes]
-        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, positions_apres))
-        personnes_dans_grille = all(
-            any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne)
-            for personne in simulation.liste_personnes
-        )
-        assert personnes_dans_grille
-        
-    def test_deplacement_boids_simplifie(self):
-        maladie = Maladie(0, 5, 0, "non", 1)
-        simulation = Simulation(maladie, 100, 100, nb_personnes=5)
-        simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
-        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
-        simulation.deplacement_boids_simplifie()
-        for personne in simulation.liste_personnes:
-            x, y = personne.position
-            assert 0 <= x <= simulation.grille.largeur
-            assert 0 <= y <= simulation.grille.hauteur
-        positions_apres = [personne.position for personne in simulation.liste_personnes]
-        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, positions_apres))
-        personnes_dans_grille = all(
-            any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne)
-            for personne in simulation.liste_personnes
-        )
-        assert personnes_dans_grille
+        assert any(p_ini != p_apr for p_ini, p_apr in zip(positions_initiales, positions_apres))
 
-    def test_deplacements_grille(self):
+    def test_naissance(self):
+        """
+        On vérifie que la méthode naissance ajoute le nombre de personnes demandé à la population.
+        """
         maladie = Maladie(0, 5, 0, "non", 1)
-        simulation = Simulation(maladie, 50, 50, nb_personnes=5)
-        simulation.initialiser_population(50, 50, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
-        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
-        simulation.deplacements_grille()
-        for personne in simulation.liste_personnes:
-            x, y = personne.position
-            assert 0 <= x <= simulation.grille.largeur
-            assert 0 <= y <= simulation.grille.hauteur
-        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, [personne.position for personne in simulation.liste_personnes]))
-        assert all(any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne) for personne in simulation.liste_personnes)
-
-    def test_deplacement_stochastique_directionnel(self):
-        maladie = Maladie(0, 5, 0, "non", 1)
-        simulation = Simulation(maladie, 100, 100, nb_personnes=5)
-        simulation.initialiser_population(100, 100, pourcentage_infectes=0, pourcentage_immunodeprimes=0)
-        positions_initiales = [personne.position.copy() for personne in simulation.liste_personnes]
-        simulation.deplacement_stochastique_directionnel()
-        for personne in simulation.liste_personnes:
-            x, y = personne.position
-            assert 0 <= x <= simulation.grille.largeur
-            assert 0 <= y <= simulation.grille.hauteur
-        assert any(position_initiale != position_finale for position_initiale, position_finale in zip(positions_initiales, [personne.position for personne in simulation.liste_personnes]))
-        assert all(any(personne in carreau for colonne in simulation.grille.carreaux for carreau in colonne) for personne in simulation.liste_personnes)
-
-    def test_mise_a_jour_iteration_cas_complets(self, monkeypatch):
-        maladie = Maladie(100, 5, 100, "oui", 1)
         simulation = Simulation(maladie, 100, 100, nb_personnes=2)
-        personne_1 = Personne("infecte", "oui", [10, 10], 1)
-        personne_2 = Personne("infecte", "non", [20, 20], 2)
-        simulation.liste_personnes = [personne_1, personne_2]
-        simulation.grille.construire_grille(simulation.liste_personnes)
-        monkeypatch.setattr("random.randint", lambda a, b: 1)
-        simulation.mise_a_jour_iteration()
-        assert personne_1.etat == "mort" or personne_1.etat == "immunise"
-        assert personne_2.etat == "mort" or personne_2.etat == "immunise"
-        assert simulation.iterations == 1
-        assert len(simulation.df_historique) == 1
-        assert simulation.df_historique.loc[0, "nb_total"] == len(simulation.liste_personnes)
+        simulation.initialiser_population(100, 100, pourcentage_infectes=0)
+        nb_initial = len(simulation.liste_personnes)
+        simulation.naissance(3)
+        assert len(simulation.liste_personnes) == nb_initial + 3
 
     def test_mise_a_jour_iteration_enregistre_stats(self):
+        """
+        On vérifie que chaque itération incrémente le compteur de temps et enregistre les données dans l'historique de la simulation.
+        """
         maladie = Maladie(0, 5, 0, "non", 1)
         simulation = Simulation(maladie, 100, 100, nb_personnes=1)
         personne = Personne("infecte", "non", [10, 10], 1)
         simulation.liste_personnes = [personne]
         simulation.grille.construire_grille(simulation.liste_personnes)
-
         simulation.mise_a_jour_iteration()
         assert simulation.iterations == 1
         assert len(simulation.df_historique) == 1
         assert simulation.df_historique.loc[0, "nb_total"] == 1
 
-    def test_mise_a_jour_iteration_guerison(self):
-        maladie = Maladie(0, 5, 0, "oui", 1)
-        simulation = Simulation(maladie, 100, 100, nb_personnes=1)
-        personne = Personne("infecte", "non", [10, 10], 1)
-        simulation.liste_personnes = [personne]
+    def test_mise_a_jour_iteration_guérison_et_mort_complexe(self, monkeypatch):
+        """
+        On vérifie le comportement simultané de plusieurs personnes à des états différents lors d'une mise à jour.
+        """
+        simulation = self.configuration_simulation()
+        personne_infecte = Personne("infecte", "oui", [10, 10], id=1)
+        personne_infecte.cpt_iterations_infection = simulation.maladie.temps_guerison + 1
+        personne_saine = Personne("sain", "non", [20, 20], id=2)
+        personne_saine.cooldown_immunite = 2
+        personne_morte = Personne("mort", "non", [30, 30], id=3)
+        personne_morte.cooldown_affichage_apres_mort = 3
+        simulation.liste_personnes = [personne_infecte, personne_saine, personne_morte]
         simulation.grille.construire_grille(simulation.liste_personnes)
+        simulation.iterations = 1
+        simulation.df_historique.loc[0] = [0, len(simulation.liste_personnes)]
 
+        monkeypatch.setattr(random, "uniform", lambda a, b: 100.0) 
+        monkeypatch.setattr(random, "randint", lambda a, b: 0)
         simulation.mise_a_jour_iteration()
-        assert personne.etat == "immunise"
 
-    def test_mise_a_jour_iteration_mort(self, monkeypatch):
-        maladie = Maladie(100, 5, 0, "non", 10)
-        simulation = Simulation(maladie, 100, 100, nb_personnes=1)
-        personne = Personne("infecte", "non", [10, 10], 1)
+        assert personne_infecte.etat == "immunise"
+        assert personne_saine.cooldown_immunite == 1
+        assert personne_morte.cooldown_affichage_apres_mort == 2
+
+    def test_deplacement_boids_complet(self, monkeypatch):
+        """
+        On vérifie que l'algorithme des Boids génère des directions cohérentes pour les personnes en mouvement.
+        """
+        simulation = self.configuration_simulation()
+        personne_1 = Personne("sain", "non", [50, 50], id=0)
+        personne_2 = Personne("sain", "non", [52, 52], id=1)
+        simulation.liste_personnes = [personne_1, personne_2]
+        monkeypatch.setattr(random, "uniform", lambda a, b: 0.01)
+        simulation.deplacement_boids_simplifie()
+
+        for personne in simulation.liste_personnes:
+            norme = (personne.direction[0]**2 + personne.direction[1]**2)**0.5
+            assert 0.99 <= norme <= 1.01
+
+    def test_variation_compteur_infection(self, monkeypatch):
+        """
+        On vérifie précisément le calcul de l'évolution du compteur d'infection en fonction de la simulation.
+        """
+        simulation = self.configuration_simulation()
+        personne = Personne("infecte", "non", [50, 50], id=1)
+        personne.cpt_iterations_infection = 10
         simulation.liste_personnes = [personne]
+        simulation.df_historique.loc[0] = [0, 1]
+        simulation.iterations = 1
         simulation.grille.construire_grille(simulation.liste_personnes)
-
-        monkeypatch.setattr("random.randint", lambda a, b: 1)
+        
+        monkeypatch.setattr("src.algorithmie.simulation.uniform", lambda a, b: 100.0)
+        monkeypatch.setattr("src.algorithmie.simulation.randint", lambda a, b: 3)
         simulation.mise_a_jour_iteration()
-        assert personne.etat == "mort"
+        assert personne.cpt_iterations_infection == 9

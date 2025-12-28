@@ -1,0 +1,12 @@
+Name                            Stmts   Miss  Cover   Missing
+-------------------------------------------------------------
+src\__init__.py                     0      0   100%
+src\algorithmie\__init__.py         0      0   100%
+src\algorithmie\grille.py          33      0   100%
+src\algorithmie\maladie.py          7      0   100%
+src\algorithmie\personne.py        36      0   100%
+src\algorithmie\simulation.py     239     15    94%   92, 94, 96, 98, 115-116, 143-144, 208, 212, 215-216, 293, 303-304
+src\tests\__init__.py               0      0   100%
+src\tests\test_classes.py         354      1    99%   310
+-------------------------------------------------------------
+TOTAL                             669     16    98%

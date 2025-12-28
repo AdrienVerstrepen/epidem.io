@@ -139,8 +139,12 @@ class Simulation :
             personne.direction[0] = 0.7 * personne.direction[0] + 0.3 * exploration[0] - 0.01 * densite
             personne.direction[1] = 0.7 * personne.direction[1] + 0.3 * exploration[1] - 0.01 * densite
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
-            personne.direction[0] /= norme
-            personne.direction[1] /= norme
+            if norme == 0:
+                angle = random.uniform(0, 2 * math.pi)
+                personne.direction = [math.cos(angle), math.sin(angle)]
+            else:
+                personne.direction[0] /= norme
+                personne.direction[1] /= norme
             pas = 10
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
@@ -207,8 +211,12 @@ class Simulation :
             if personne.position[1] > self.grille.hauteur - marge:
                 personne.direction[1] -= force_mur
             norme = math.sqrt(personne.direction[0]**2 + personne.direction[1]**2)
-            personne.direction[0] /= norme
-            personne.direction[1] /= norme
+            if norme == 0:
+                angle = random.uniform(0, 2 * math.pi)
+                personne.direction = [math.cos(angle), math.sin(angle)]
+            else:
+                personne.direction[0] /= norme
+                personne.direction[1] /= norme
             pas = 2
             x = personne.position[0] + personne.direction[0] * pas
             y = personne.position[1] + personne.direction[1] * pas
@@ -220,6 +228,11 @@ class Simulation :
         self.grille.construire_grille(self.liste_personnes)
     
     def naissance(self, nb_nouvelles_personnes):
+        """
+        Cette méthode permet d'ajouter de nouvelles personnes à la simulation.
+        Le nombre de personnes à créer est donné en paramètre. 
+        Une fois les personnes ajoutées, la grille est reconstruite pour mettre à jour la répartition des personnes.
+        """
         for i in range(nb_nouvelles_personnes):
             position = [uniform(0, self.largeur_fenetre), uniform(0, self.hauteur_fenetre)]
             if randint(0, 100) < self.pourcentage_immunodeprimes:

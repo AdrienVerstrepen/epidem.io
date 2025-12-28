@@ -19,11 +19,11 @@ class Grille:
         self.nb_colonnes = int(self.largeur // self.taille_carreau) + 1
         self.nb_lignes = int(self.hauteur // self.taille_carreau) + 1
         self.carreaux = []
-        for col in range(self.nb_colonnes):
-            ligne = []
-            for lig in range(self.nb_lignes):
-                ligne.append([])
-            self.carreaux.append(ligne)
+        for colonne in range(self.nb_colonnes):
+            liste_ligne = []
+            for ligne in range(self.nb_lignes):
+                liste_ligne.append([])
+            self.carreaux.append(liste_ligne)
 
     def coordonnees_carreau(self, position):
         """
