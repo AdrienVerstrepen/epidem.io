@@ -26,7 +26,7 @@ class Champ_taux_natalite(QSpinBox):
 		super().__init__()
 
 		self.setMinimum(0)
-		self.setMaximum(100)
+		self.setMaximum(5)
 
 		self.son_texte = nom
 		self.son_menu = menu

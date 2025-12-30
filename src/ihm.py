@@ -20,13 +20,16 @@ def presenter_application():
         <h1 align="center">Bienvenue sur <b>Epidem.io</b></h1>
 
         <p>
-        Cette application vous permet de suivre l'évolution de la propagation
-        d'une épidémie au sein d'une population humaine en fonction de différents 
-        paramètres.
-        Chaque personne est représenté par un point.
+        Cette application vous permet de suivre la propagation d'une épidémie 
+        au sein d'une population humaine en fonction de différents paramètres.
         </p>
-
-        <p><b>Présentation des états des personnes :</b></p>
+        <p>
+        Chaque personne est représenté par un point. Au cours de la simulation, la couleur de ces points 
+        sera amenée à changer car elle représente l'état actuel de la personne.
+        </p>
+        <p>
+        Les différents états sont les suivants : 
+        </p>
         <ul>
             <li>Les points verts indiquent les personnes en bonne santé</li>
             <li>Les points jaunes symbolisent les personnes infectées</li>

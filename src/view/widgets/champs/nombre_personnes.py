@@ -26,7 +26,7 @@ class Champ_nb_personnes(QSpinBox):
 		super().__init__()
 
 		self.setMinimum(1)
-		self.setMaximum(300)
+		self.setMaximum(200)
 
 		self.son_texte = nom
 		self.son_menu = menu
