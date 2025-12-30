@@ -72,7 +72,7 @@ class Fenetre(QMainWindow):
 		widget_central.setLayout(disposition_menu)
 		self.bouton = QPushButton("Afficher les statistiques")
 		self.bouton.clicked.connect(self.ouvrir_fenetre)
-		self.ses_parametres.sa_disposition.addWidget(self.bouton)
+		self.son_menu.sa_disposition.addWidget(self.bouton, 0, 5)
 
 	def ouvrir_fenetre(self, checked):
 		if self.sa_fenetre_enfant is None:
