@@ -18,6 +18,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..fenetre import Fenetre
 
+import src.ressources_rc
+
 class Parametres(QGroupBox):
 	"""
 	Composant graphique portant les champs de saisi des paramètres
@@ -54,6 +56,17 @@ class Parametres(QGroupBox):
 		self.sa_disposition = QVBoxLayout()
 		self.setLayout(self.sa_disposition)
 
+		self.groupement_non_instantane = QGroupBox("Paramètres non instantanés", self)
+		self.groupement_instantane = QGroupBox("Paramètres instantanés", self)
+
+		self.sa_disposition.addWidget(self.groupement_non_instantane)
+		self.sa_disposition.addWidget(self.groupement_instantane)
+
+		self.layout_non_instantane = QVBoxLayout()
+		self.layout_instantane = QVBoxLayout()
+
+		self.groupement_non_instantane.setLayout(self.layout_non_instantane)
+		self.groupement_instantane.setLayout(self.layout_instantane)
 		self.initialiser_parametres()
 		
 		self.composant_distance_infection = QWidget()
@@ -62,10 +75,13 @@ class Parametres(QGroupBox):
 		arrangement_distance_infection = QVBoxLayout()
 		arrangement_distance_infection.addWidget(self.afficher_distance_infection)
 		self.composant_distance_infection.setLayout(arrangement_distance_infection)
-		self.sa_disposition.addWidget(self.composant_distance_infection)
+		
+		self.layout_instantane.addWidget(self.composant_distance_infection)
 		self.sa_disposition.addStretch()
+		
 
-	def initialiser_composant(self, nom, texte: str, valeur_defaut: int, unite : str, classe : type[QWidget], tooltip : str):
+	def initialiser_composant(self, nom, texte: str, valeur_defaut: int, unite : str, classe : type[QWidget], tooltip : str, instantane : int = 0):
+		
 		composant = QWidget()
 		arrangement_principal = QVBoxLayout()
 		arrangement_label_icone = QHBoxLayout()
@@ -75,7 +91,7 @@ class Parametres(QGroupBox):
 			setattr(self, f"label_{nom}", label)
 			arrangement_label_icone.addWidget(label)
 			icone = QLabel()
-			pix = QPixmap("src/icons/tooltip.png").scaled(
+			pix = QPixmap(":/icons/tooltip.png").scaled(
 				16, 16, Qt.KeepAspectRatio, Qt.SmoothTransformation
 			)
 			icone.setPixmap(pix)
@@ -97,7 +113,10 @@ class Parametres(QGroupBox):
 			champ.valueChanged.connect(champ.changement_valeur)
 			icone.setToolTip(tooltip)
 		composant.setLayout(arrangement_principal)
-		self.sa_disposition.addWidget(composant)
+		if instantane != 0:
+			self.layout_instantane.addWidget(composant)
+		else:
+			self.layout_non_instantane.addWidget(composant)
 
 	def initialiser_parametres(self):
 		# letalite
@@ -188,7 +207,8 @@ class Parametres(QGroupBox):
 			False,
 			"",
 			Champ_voir_morts,
-			"Si activé, toutes les personnes mortes sont conservées dans l'interface.\n Si désactivé, elles seront retirées progressivement"
+			"Si activé, toutes les personnes mortes sont conservées dans l'interface.\n Si désactivé, elles seront retirées progressivement",
+			instantane=1
 		)
 
 	def gerer_affichage_distance_contagion(self):

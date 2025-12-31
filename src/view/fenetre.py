@@ -42,9 +42,6 @@ class Fenetre(QMainWindow):
 		"""
 		super().__init__()
 		self.setWindowTitle("épidém.io")
-		# icone_app = QtGui.QIcon()
-		# icone_app.addFile("../icons/tooltip.png", QtCore.QSize(16, 16))
-		# self.setWindowIcon(icone_app)
 		self.sa_fenetre_enfant = None
 
 		self.sa_largeur = taille_fenetre["largeur"]
