@@ -56,8 +56,8 @@ class Parametres(QGroupBox):
 		self.sa_disposition = QVBoxLayout()
 		self.setLayout(self.sa_disposition)
 
-		self.groupement_non_instantane = QGroupBox("Paramètres non instantanés", self)
-		self.groupement_instantane = QGroupBox("Paramètres instantanés", self)
+		self.groupement_non_instantane = QGroupBox("Paramètres mis à jour au lancement de la simulation", self)
+		self.groupement_instantane = QGroupBox("Paramètres mis à jour instantéments", self)
 
 		self.sa_disposition.addWidget(self.groupement_non_instantane)
 		self.sa_disposition.addWidget(self.groupement_instantane)

@@ -36,6 +36,14 @@ def presenter_application():
             <li>Les points rouges représentent les personnes décédées</li>
             <li>Les points bleus illustrent les personnes immunisées</li>
         </ul>
+        
+        <p>
+        Les simulations lancées par l'utilisateur sont paramétrables, 
+        une fois dans l'interface principale, vous aurez deux sections : une 
+        dont les changements ne seront pris en compte qu'au lancement d'une 
+        simulation; une autre où les changements sont pris en compte 
+        instantanément
+        </p>
 
         <p>Enfin, certaines personnes sont représentées par des étoiles, ce sont les médecins. 
         Leur rôle est d'accélérer la guérison des personnes proches d'eux.</p>
