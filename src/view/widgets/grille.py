@@ -18,58 +18,67 @@ class Grille_visualisation(QWidget):
     Cette classe hérite de QWidget et s'occupe de lier le modèle (la simulation) 
     à l'IHM par le biais de différentes classes. Elle instancie et initialise la simulation 
     ainsi que le composant graphique portant la représentation.
-
-    Attributs: 
-        sa_fenetre (Fenetre): la fenetre, objet parent
-        sa_disposition (QGridLayout): objet hébergeant la visualisation des données
-        taille_fenetre (dict): dictionnaire portant la hauteur et la largeur
-        nb_personnes (int): le nombre de personnes de la simulation
-        nb_iterations (int): le nombre d'iteration à l'instant T
-        taux_letalite (int): le taux de mortalité de la maladie
-        distance_infection (int): la distance à partir de laquelle une personne peut être infectée par une autre
-        taux_transmission (int): le taux pour que l'infection se produise
-        temps_guerison (int): le temps pour qu'une personne infectée devienne saine
-        taux_infectes (int): le taux de personnes qui sont infectés au départ
-        taux_immunodeprimes (int): le taux de personnes immunodeprimés au départ
-        visualisation (PlotWidget): objet portant le nuage de point représentant les données
-        sa_maladie (Maladie): maladie de la simulation
-        sa_simulation (Simulation): la simulation instanciée
-        nuage_de_points (ScatterPlotItem): le nuage de point qui visualise l'état T de la simulation
-        en_cours (Boolean): indique si la simulation est en cours
-        timer (QTimer): horloge permettant d'actualiser la simulation toutes les X millisecondes
-
-    Méthodes:
-        __init__ (Grille_visualisation): constructeur de la grille, instancie la disposition du composant 
-                                         et des sous-composants.
-        
-        initialiser_simulation (None): fonction auxiliaire pour instancier les objets Maladie, Simulation 
-                                       et initialiser la simulation
-        
-        creer_nuage_de_point (ScatterPlotItem): fonction auxiliaire qui instancie le nuage de point portant 
-                                                les données de la simulation
-        
-        initialiser_nuage_de_point (None): fonction auxiliaire qui initialise le nuage de point en récupérant
-                                       les données depuis la simulation et en ajout l'objet à la visualisation
-        
-        demarrer_simulation (None): fonction auxilaire qui démarre le déroulement de la simulation en 
-                                    récupérant les paramètres saisis par l'utilisateur.
-                                    Ici, elle met à jour la visualisation toutes les 250 millisecondes.
-        
-        mettre_en_pause_simulation (None): fonction auxiliaire pour mettre en pause ou reprendre la simulation.
-        
-        actualiser_simulation (None): fonction auxiliaire pour passer à l'itération d'après
-        
-        reinitialiser_simulation (None): arrête la simulation, récupère les paramètres saisis par l'utilisateur 
-                                         et réinitialise une simulation avec ces nouvelles données.
-        
-        arreter_simulation (None): arrête l'actualisation la simulation à chaque X milliseconde.
-        
-        est_en_cours (Boolean): retourne l'état de la simulation
-        
-        recuperer_parametres_utilisateur (None): récupère les valeurs saisies par l'utilisateur 
-                                                 dans les différents champs
     """
-    def __init__(self, fenetre: "Fenetre", taille_fenetre : dict):
+    sa_fenetre : "Fenetre"
+    """La fenêtre, objet parent."""
+    
+    sa_disposition : "QGridLayout"
+    """Objet hébergeant la visualisation des données."""
+    
+    taille_fenetre : "dict"
+    """Dictionnaire contenant la hauteur et la largeur de la fenêtre."""
+    
+    nb_personnes : "int"
+    """Nombre de personnes de la simulation."""
+    
+    nb_iterations : "int"
+    """Nombre d'itérations à l'instant T."""
+    
+    taux_letalite : "int"
+    """Taux de mortalité de la maladie."""
+    
+    distance_infection : "int"
+    """Distance à partir de laquelle une personne peut être infectée par une autre."""
+    
+    taux_transmission : "int"
+    """Taux de transmission de l'infection."""
+    
+    temps_guerison : "int"
+    """Temps pour qu'une personne infectée devienne saine."""
+    
+    taux_infectes : "int"
+    """Taux de personnes infectées au départ."""
+    
+    taux_immunodeprimes : "int"
+    """Taux de personnes immunodéprimées au départ."""
+    
+    visualisation : "PlotWidget"
+    """Objet portant le nuage de points représentant les données."""
+    
+    sa_maladie : "Maladie"
+    """Maladie de la simulation."""
+    
+    sa_simulation : "Simulation"
+    """Simulation instanciée."""
+    
+    nuage_de_points : "ScatterPlotItem"
+    """Nuage de points visualisant l'état T de la simulation."""
+    
+    en_cours : "bool"
+    """Indique si la simulation est en cours."""
+    
+    timer : "QTimer"
+    """Horloge permettant d'actualiser la simulation toutes les X millisecondes."""
+    
+    def __init__(self, fenetre: "Fenetre", taille_fenetre : dict) -> "Grille_visualisation":
+        """
+        Constructeur de la grille, instancie la disposition du composant et des sous-composants.
+        
+        :param fenetre: La fenêtre parente
+        :type fenetre: "Fenetre"
+        :param taille_fenetre: La taille de cette fenêtre parente
+        :type taille_fenetre: dict
+        """
         super().__init__()
         self.sa_fenetre = fenetre
         self.sa_disposition = QGridLayout()
@@ -97,7 +106,10 @@ class Grille_visualisation(QWidget):
         self.visualisation.hideAxis('bottom')
         self.visualisation.hideAxis('left')
 
-    def initialiser_simulation(self):
+    def initialiser_simulation(self) -> None:
+        """
+        Fonction auxiliaire pour instancier les objets Maladie, Simulation et initialiser la simulation.
+        """
         self.sa_maladie = Maladie(
             taux_letalite=self.taux_letalite,
             distance_infection=self.distance_infection,
@@ -121,15 +133,25 @@ class Grille_visualisation(QWidget):
             pourcentage_immunodeprimes=self.taux_immunodeprimes
         )
 
-    def creer_nuage_de_point(self, taille_point, personnes):
+    def creer_nuage_de_point(self, taille_point : int, personnes : list) -> ScatterPlotItem:
+        """
+        Fonction auxiliaire qui instancie le nuage de points portant les données de la simulation.
+        
+        :param taille_point: La taille à choisir pour le point
+        :param personnes: Le tableau des personnes
+        :return: Le graphique ScatterPlotItem porteur des points représentant les personnes.
+        """
         if not taille_point:
             taille_point = 10
         graphique = ScatterPlotItem(size=taille_point, spots=personnes)
         return graphique
 
-    def initialiser_nuage_de_point(self):
-        donnees = self.recuperer_points_personnes(self.sa_simulation.liste_personnes)
-        personnes = donnees
+    def initialiser_nuage_de_point(self) -> None:
+        """
+        Fonction auxiliaire qui instancie le nuage de points 
+        avec les données de la première itération
+        """
+        personnes = self.recuperer_points_personnes(self.sa_simulation.liste_personnes)
         nb_reel_personnes = (len(self.sa_simulation.liste_personnes))
         
         if nb_reel_personnes >= 200 and nb_reel_personnes <= 300:
@@ -144,7 +166,11 @@ class Grille_visualisation(QWidget):
         
         self.visualisation.addItem(self.nuage_de_points)
 
-    def demarrer_simulation(self) :
+    def demarrer_simulation(self) -> None :
+        """
+        Fonction auxiliaire qui démarre la simulation en récupérant les paramètres saisis 
+        par l'utilisateur. Met à jour la visualisation toutes les 250 millisecondes.
+        """
         self.recuperer_parametres_utilisateur()
 
         self.initialiser_simulation()
@@ -159,17 +185,26 @@ class Grille_visualisation(QWidget):
         self.timer.start()
         self.en_cours = True
 
-    def mettre_en_pause_simulation(self, etat):
+    def mettre_en_pause_simulation(self, etat : bool) -> None:
+        """
+        Méthode permettant de mettre en pause l'horloge
+        en fonction de l'état passé en paramètre
+        
+        :param etat: Le booléen indiquant l'état de la simulation
+        """
         if (etat) :
             self.timer.stop()
         else :
             self.timer.start()
 
-    def actualiser_simulation(self) -> None :
-        i = 0
-        for vivant in [p for p in self.sa_simulation.liste_personnes if p.etat != "mort"] :
-            i += 1
-        print(f"Nombre de vivants : {i}")
+    def actualiser_simulation(self) -> None:
+        """
+        Fonction auxiliaire pour passer à l'itération suivante.
+        """
+        # i = 0
+        # for vivant in [p for p in self.sa_simulation.liste_personnes if p.etat != "mort"] :
+        #     i += 1
+        # print(f"Nombre de vivants : {i}")
         if not self.est_en_cours():
             return
         self.sa_simulation.mise_a_jour_iteration()
@@ -177,23 +212,33 @@ class Grille_visualisation(QWidget):
         if self.isActiveWindow():
             self.nuage_de_points.setData(spots=self.recuperer_points_personnes(self.sa_simulation.liste_personnes))
 
-    def reinitialiser_simulation(self):
+    def reinitialiser_simulation(self) -> None:
+        """
+        Arrête la simulation, récupère les paramètres saisis par l'utilisateur et réinitialise la simulation avec ces nouvelles données.
+        """
         self.arreter_simulation()
         self.visualisation.setTitle(f"")
         self.recuperer_parametres_utilisateur()
         self.initialiser_simulation()
         self.nuage_de_points.setData([])
-        # Bug d'Athène : 
-        # Une fois la simulation précédente était restée affichée lors de la réinitialisation
 
     def arreter_simulation(self):
+        """
+        Arrête l'actualisation de la simulation.
+        """
         self.timer.stop()
         self.en_cours = False
         
-    def est_en_cours(self):
+    def est_en_cours(self) -> bool:
+        """
+        Retourne l'état de la simulation.
+        """
         return self.en_cours
 
     def recuperer_parametres_utilisateur(self):
+        """
+        Récupère les valeurs saisies par l'utilisateur dans les différents champs.
+        """
         self.nb_personnes = self.sa_fenetre.ses_parametres.champ_nb_personnes.value()
         self.temps_guerison = self.sa_fenetre.ses_parametres.champ_temps_guerison.recuperer_valeur_depuis_champ()
         self.taux_infectes = self.sa_fenetre.ses_parametres.champ_infectes.value()
@@ -206,13 +251,12 @@ class Grille_visualisation(QWidget):
 
     def recuperer_points_personnes(self, personnes: list[Personne]) -> list :
         """
-        Récupère la position des personnes
-
-        Paramètres:
-            cases (List): les cases contenant les personnes présentes dans la simulation
-
-        Retourne:
-        tuple: comportant un tableau des abscisses, des ordonnées et un tableau de coordonnée avec la personne associée.
+        Récupère la position des personnes dans la simulation
+        
+        :param self: Description
+        :param personnes: Description
+        :type personnes: list[Personne]
+        :return: La liste des personnes, avec leur position, leur couleur et leur symbole
         """
         afficher_morts = self.sa_fenetre.ses_parametres.champ_morts_visibles.isChecked()
         coordonnes_personnes = []
@@ -234,10 +278,15 @@ class Grille_visualisation(QWidget):
                     'size' : 15 if (personne.medecin == 1) else 10
                 })
         if self.afficher_distance_contagion == True:
-            self.distance_contagion_visuelle(coordonnes_personnes)
+            self.afficher_distance_contagion(coordonnes_personnes)
         return coordonnes_personnes
 
-    def distance_contagion_visuelle(self, personnes):
+    def afficher_distance_contagion(self, personnes) -> None:
+        """
+        Fonction auxiliaire qui affiche la distance de la 
+        contagion de la maladie autour d'une personne
+        :param personnes: La liste des personnes
+        """
         x, y = personnes[0]['pos']
         diametre = self.distance_infection
         couleur = (255, 0, 0)
@@ -253,13 +302,11 @@ class Grille_visualisation(QWidget):
 
 def afficher_information_personne(scatter, points : list) -> None :
     """
-    Permet de récupérer les informations d'une personne cliquée
-
-    Parametres: 
-        points (List): la liste des points du graphique
-
-    Retourne: 
-        None
+    Permet d'afficher les informations d'une personne cliquée
+    
+    :param scatter: Le graphique sur lequel l'écoute du signal est placée
+    :param points: Les points du graphique
+    :type points: list
     """
     for point in points:
         data = point.data()
@@ -272,3 +319,5 @@ couleurs_personnes = {
     "orange": "orange",
     "bleu": "blue"
 }
+"""Dictionnaire de traduction des couleurs du format
+utilisé dans la partie algorithmie"""

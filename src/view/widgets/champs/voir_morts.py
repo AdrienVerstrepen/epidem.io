@@ -9,24 +9,37 @@ class Champ_voir_morts(QCheckBox):
 	"""
 	Case à cocher définissant si l'immunité est activée après guérison.
 
-	Hérite de QCheckBox et permet de notifier le menu des paramètres lors d'un changement d'état.
-
-	Attributs :
-		son_texte (str): Texte affiché dans le label associé.
-		son_menu (Parametres): Référence au composant Parametres, permettant
-							   de mettre à jour son label correspondant.
-
-	Méthodes :
-		changement_valeur (None): Met à jour le QLabel associé lorsque la case est cochée
-								  ou décochée. Affiche dans le label la valeur issue du
-								  champ du nombre de personnes (comportement actuel du code).
+	Hérite de QCheckBox et permet d'activer ou non l'immunité.
 	"""
-	def __init__(self, menu:"Parametres", nom: str):
+	son_texte : "str"
+	"""Texte affiché dans le label associé."""
+	
+	son_menu : "Parametres"
+	"""Référence au composant Parametres, 
+	permettant de mettre à jour son label correspondant."""
+	
+	changement_valeur : "None"
+	"""Met à jour visuellement la case à cocher lors d'un changement d'état."""
+	def __init__(self, menu:"Parametres", nom: str) -> "Champ_voir_morts":
+		"""
+		Constructeur de la classe Champ_voir_morts
+	
+		:param menu: Son composant parent
+		:type menu: "Parametres"
+		:param nom: Le nom du composant
+		:type nom: str
+		:return: Le Champ_voir_morts associé
+		:rtype: Champ_voir_morts
+		"""
 		super().__init__()
 
 		self.son_texte = nom
 		self.son_menu = menu
 		self.setText(f"{nom}")
 
-	def changer_valeur(self, valeur):
+	def changer_valeur(self, valeur) -> None:
+		"""
+		Méthode qui change l'état visuel de la case 
+		à cocher en fonction de sa valeur
+		"""
 		self.setChecked(valeur)

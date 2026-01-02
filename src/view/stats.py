@@ -5,6 +5,7 @@ from pyqtgraph import *
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 
 from typing import TYPE_CHECKING
 
@@ -21,19 +22,28 @@ class Fenetre_statistiques(QWidget):
 	Cette classe hérite de :class:`QWidget` et s'occupe de
 	porter le graphique représentant l'évolution du 
 	nombre de morts au sein de la population.
-
-	Attributs:
-		sa_simulation (Simulation): La simulation courante
-		son_graphique (Figure): Le graphique matplotlib
-		ses_axes (Axes): les axes du graphique
-		son_widget_graphique (FigureCanvasQTagg): Le composant Qt porteur du graphique
-	
-	Méthodes:
-		rafraichir_graphique (None): Permet de mettre à jour le graphique
-									 pour suivre l'évolution de la simulation
-									 en temps réel
 	"""
-	def __init__(self, parent : "Fenetre", simulation: "Simulation"):
+	sa_simulation : "Simulation"
+	"""La simulation courante"""
+	son_graphique : Figure
+	"""Le graphique matplotlib"""
+	ses_axes : Axes
+	"""Les axes du graphique"""
+	son_widget_graphique : FigureCanvasQTAgg
+	"""Le composant Qt porteur du graphique"""
+	sa_fenetre_mere : "Fenetre"
+	"""La fenêtre porteuse de la fenêtre des statistiques"""
+	timer : QTimer
+	"""L'horloge permettant d'actualiser le graphique tous les 500ms"""
+	def __init__(self, parent : "Fenetre", simulation: "Simulation") -> "Fenetre_statistiques":
+		"""
+		Constructeur de la fenêtre secondaire
+		
+		:param parent: La fenêtre principale "mère"
+		:type parent: "Fenetre"
+		:param simulation: La simulation passée lors de la construction de la fenêtre
+		:type simulation: "Simulation"
+		"""
 		super().__init__()
 		self.setWindowTitle("épidém.io - statistiques")
 		self.sa_simulation = simulation
@@ -71,7 +81,12 @@ class Fenetre_statistiques(QWidget):
 
 		self.show()
 		
-	def rafraichir_graphique(self):
+	def rafraichir_graphique(self) -> None:
+		"""
+		Fonction appelée toutes les 500 millisecondes
+		qui rafraîchis l'état actuel du graphique
+		pour suivre l'évolution de la simulation.
+		"""
 		if self.sa_fenetre_mere.sa_grille.sa_simulation != self.sa_simulation:
 			self.sa_simulation = self.sa_fenetre_mere.sa_grille.sa_simulation
 		if (self.isActiveWindow()):

@@ -9,33 +9,53 @@ from typing import TYPE_CHECKING
 from .stats import *
 
 if TYPE_CHECKING:
-    from .widgets.parametres import Parametres
+	from .widgets.parametres import Parametres
 
 class Fenetre(QMainWindow):
 	"""
 	Fenêtre principale de l'application.
 
 	Cette classe hérite de :class:`QMainWindow` et s'occupe de l'assemblage 
-	des différents éléments composants de l'interface. 
-
-	Attributs:
-		largeur (int): largeur de la fenêtre
-		hauteur (int): hauteur de la fenêtre
-		taille_fenetre (dict): le dictionnaire contenant la largeur et la hauteur
-		disposition_principale (QHBoxLayout): disposition comportant les 3 sections de l'interface
-		ses_parametres (Parametres): section comportant les paramètres modifiables par l'utilisateur
-		sa_grille (Grille_visualisation): section comportant la représentation graphique de la simulation
-		boutons_haut (Barre_boutons): section comportant les boutons permettant de gérer l'état de la simulation
+	des différents éléments composants de l'interface.
 	"""
-	def __init__(self, taille_fenetre: dict):
+	sa_largeur : "int"
+	"""Largeur de la fenêtre."""
+	
+	sa_hauteur : "int"
+	"""Hauteur de la fenêtre."""
+	
+	taille_fenetre : "dict"
+	"""Dictionnaire contenant la largeur et la hauteur de la fenêtre."""
+	
+	sa_disposition_principale : "QHBoxLayout"
+	"""Disposition comportant les 3 sections de l'interface."""
+	
+	ses_parametres : "Parametres"
+	"""Section comportant les paramètres modifiables par l'utilisateur."""
+	
+	sa_grille : "Grille_visualisation"
+	"""Section comportant la représentation graphique de la simulation."""
+	
+	son_menu : "Barre_boutons"
+	"""Section comportant les boutons permettant de gérer l'état de la simulation."""
+
+	sa_fenetre_enfant : "Fenetre_statistiques"
+	"""Fenêtre enfant pour afficher les statistiques. Initialement None."""
+
+	bouton_fenetre_enfant : QPushButton
+	"""Bouton ajouté pour ouvrir la fenêtre des statistiques"""
+
+	style_bouton_fenetre_enfant : str
+	"""Style du bouton pour indiquer son état : actif ou désactivé"""
+
+	def __init__(self, taille_fenetre: dict) -> "Fenetre":
 		"""
 		Constructeur de la classe Fenetre.
+		
+		:param taille_fenetre: Le dictionnaire portant la largeur et la hauteur
 
-		Paramètres:
-			taille_fenetre (dict): dictionnaire permettant l'accès par clé à la hauteur et la largeur souhaitée
-
-		Retourne: 
-			Fenetre: l'objet Fenetre initialisé avec ses 3 sections.
+		:return Fenetre:
+			L'objet Fenetre initialisé avec ses 3 sections
 		"""
 		super().__init__()
 		self.setWindowTitle("épidém.io")
@@ -69,7 +89,7 @@ class Fenetre(QMainWindow):
 		widget_central.setLayout(disposition_menu)
 		
 		self.bouton_fenetre_enfant = QPushButton("Afficher les statistiques")
-		self.bouton_fenetre_enfant.clicked.connect(self.ouvrir_fenetre)
+		self.bouton_fenetre_enfant.clicked.connect(self.ouvrir_fenetre_statistique)
 		self.son_menu.sa_disposition.addWidget(self.bouton_fenetre_enfant, 0, 5)
 		self.bouton_fenetre_enfant.setEnabled(False)
 		self.style_bouton_fenetre_enfant = self.bouton_fenetre_enfant.styleSheet()
@@ -77,7 +97,11 @@ class Fenetre(QMainWindow):
 
 		self.setMinimumHeight(300)
 
-	def ouvrir_fenetre(self, checked):
+	def ouvrir_fenetre_statistique(self) -> None:
+		"""
+		Cette méthode instancie et ouvre la fenêtre portant
+		le graphique des statistiques.
+		"""
 		if self.sa_fenetre_enfant is None:
 			self.sa_fenetre_enfant = Fenetre_statistiques(self, self.sa_grille.sa_simulation)
 		else:

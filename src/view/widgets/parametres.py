@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
-from .sliders.taux_letalite import Slider_letalite
 from .sliders.taux_transmission import Slider_transmission
 from .sliders.taux_immunodeprimes import Slider_immunodeprime
 from .sliders.taux_infectes import Slider_infectes
@@ -16,72 +15,135 @@ from .champs.voir_morts import Champ_voir_morts
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..fenetre import Fenetre
+	from ..fenetre import Fenetre
 
 import src.ressources_rc
 
 class Parametres(QGroupBox):
 	"""
-	Composant graphique portant les champs de saisi des paramètres
-	modifiables par l'utilisateur
+	Composant graphique portant les champs de saisie des paramètres
+	modifiables par l'utilisateur.
 
-	Hérite de QGroupBox et instancie les champs et leurs labels associés
-
-	Attributs: 
-		sa_fenetre (Fenetre): son objet parent Fenetre
-		sa_disposition (QVBoxLayout): le layout suivi par ses composants
-		label_letalite (QLabel): Le QLabel associé au slider letalite
-		champ_letalite (Slider_letalite): Le composant à glisser permettant de récupérer la valeur pour le taux de létalité
-		label_infectes (QLabel): Le QLabel associé au slider infectés
-		champ_infectes (Slider_infectes): Composant permettant de récupérer la valeur du taux de personnes infectés
-		label_transmission (QLabel): Le QLabel associé au slider transmissio
-		champ_transmission (Slider_transmission): Composant récupérant la valeur du taux de transmission de la maladie
-		label_immunodeprime (QLabel): QLabel associé au slider immunodéprimé
-		champ_immunodeprime (Slider_immunodeprime): Composant récupérant la valeur du taux de personne immunodéprimés de la maladie
-		label_nb_personnes (QLabel): QLabel associé au champ du nombre de personnes
-		champ_nb_personnes (Champ_nb_personnes): Composant récupérant la valeur du nombre de personnes
-		label_temps_guerison (QLabel): QLabel associé au champ du temps de guérison
-		champ_temps_guerison (Champ_temps_guerison): Composant récupérant la valeur du temps de guérison de la maladie
-		label_immunite (QLabel): QLabel associé au champ activant ou non l'immunité après guérison
-		champ_immunite (Champ_immunite): Composant récupérant la possibilté ou non d'avoir une immunité
-
-	Méthodes:
-		initialiser_parametres (None): fonction auxiliaire qui initialie tous les composants
-		initialiser_composant (None): 
+	Hérite de QGroupBox et instancie les champs et leurs labels associés.
 	"""
-	def __init__(self, fenetre: "Fenetre"):
+	sa_fenetre : "Fenetre"
+	"""Objet parent Fenetre."""
+	
+	sa_disposition : "QVBoxLayout"
+	"""Layout suivi par ses composants."""
+	
+	label_letalite : "QLabel"
+	"""QLabel associé au slider létalité."""
+	
+	champ_letalite : "Champ_taux_letalite"
+	"""Composant permettant de récupérer la valeur pour le taux de létalité."""
+	
+	label_infectes : "QLabel"
+	"""QLabel associé au slider infectés."""
+	
+	champ_infectes : "Slider_infectes"
+	"""Composant permettant de récupérer la valeur du taux de personnes infectées."""
+	
+	label_transmission : "QLabel"
+	"""QLabel associé au slider transmission."""
+	
+	champ_transmission : "Slider_transmission"
+	"""Composant récupérant la valeur du taux de transmission de la maladie."""
+	
+	label_immunodeprime : "QLabel"
+	"""QLabel associé au slider immunodéprimé."""
+	
+	champ_immunodeprime : "Slider_immunodeprime"
+	"""Composant récupérant la valeur du taux de personnes immunodéprimées."""
+	
+	label_nb_personnes : "QLabel"
+	"""QLabel associé au champ du nombre de personnes."""
+	
+	champ_nb_personnes : "Champ_nb_personnes"
+	"""Composant récupérant la valeur du nombre de personnes."""
+	
+	label_temps_guerison : "QLabel"
+	"""QLabel associé au champ du temps de guérison."""
+	
+	champ_temps_guerison : "Champ_temps_guerison"
+	"""Composant récupérant la valeur du temps de guérison de la maladie."""
+	
+	label_immunite : "QLabel"
+	"""QLabel associé au champ activant ou non l'immunité après guérison."""
+	
+	champ_immunite : "Champ_immunite"
+	"""Composant récupérant la possibilité ou non d'avoir une immunité."""
+	
+	layout_non_instantane : "QVBoxLayout"
+	"""Layout pour les paramètres non instantanés."""
+	
+	layout_instantane : "QVBoxLayout"
+	"""Layout pour les paramètres instantanés."""
+
+	afficher_distance_infection : QCheckBox
+	"""Case à cocher déterminant si l'on affiche ou non la distance d'infection actuelle"""
+	
+	def __init__(self, fenetre: "Fenetre") -> "Parametres":
+		"""
+		Constructeur de la classe Paramètres
+
+		:param fenetre: Le composant Qt parent, la Fenêtre principale
+		:type fenetre: "Fenetre"
+		"""
 		super().__init__()
 
 		self.sa_fenetre = fenetre
 		self.sa_disposition = QVBoxLayout()
 		self.setLayout(self.sa_disposition)
 
-		self.groupement_non_instantane = QGroupBox("Paramètres mis à jour au lancement de la simulation", self)
-		self.groupement_instantane = QGroupBox("Paramètres mis à jour instantéments", self)
+		groupement_non_instantane = QGroupBox("Paramètres mis à jour au lancement de la simulation", self)
+		groupement_instantane = QGroupBox("Paramètres mis à jour instantéments", self)
 
-		self.sa_disposition.addWidget(self.groupement_non_instantane)
-		self.sa_disposition.addWidget(self.groupement_instantane)
+		self.sa_disposition.addWidget(groupement_non_instantane)
+		self.sa_disposition.addWidget(groupement_instantane)
 
 		self.layout_non_instantane = QVBoxLayout()
 		self.layout_instantane = QVBoxLayout()
 
-		self.groupement_non_instantane.setLayout(self.layout_non_instantane)
-		self.groupement_instantane.setLayout(self.layout_instantane)
+		groupement_non_instantane.setLayout(self.layout_non_instantane)
+		groupement_instantane.setLayout(self.layout_instantane)
 		self.initialiser_parametres()
 		
-		self.composant_distance_infection = QWidget()
+		composant_distance_infection = QWidget()
 		self.afficher_distance_infection = QCheckBox("Afficher la distance d'infection", self)
 		self.afficher_distance_infection.stateChanged.connect(self.gerer_affichage_distance_contagion)
 		arrangement_distance_infection = QVBoxLayout()
 		arrangement_distance_infection.addWidget(self.afficher_distance_infection)
-		self.composant_distance_infection.setLayout(arrangement_distance_infection)
+		composant_distance_infection.setLayout(arrangement_distance_infection)
 		
-		self.layout_instantane.addWidget(self.composant_distance_infection)
+		self.layout_instantane.addWidget(composant_distance_infection)
 		self.sa_disposition.addStretch()
-		
 
-	def initialiser_composant(self, nom, texte: str, valeur_defaut: int, unite : str, classe : type[QWidget], tooltip : str, instantane : int = 0):
+	def initialiser_composant(self, 
+						      nom, 
+						      texte: str, 
+						      valeur_defaut: int, 
+						      unite : str, 
+						      classe : type[QWidget], 
+						      tooltip : str, 
+						      instantane : bool = False) -> None:
+		"""
+		Fonction auxiliaire pour initialiser un composant spécifique.
 		
+		:param nom: Nom du composant
+		:param texte: Texte affichée sur le label du composant
+		:type texte: str
+		:param valeur_defaut: Valeur par défaut du composant
+		:type valeur_defaut: int
+		:param unite: Unité à afficher
+		:type unite: str
+		:param classe: Classe du composant
+		:type classe: type[QWidget]
+		:param tooltip: Texte de l'infobulle
+		:type tooltip: str
+		:param instantane: Si la modification du composant prends effet instantanément
+		:type instantane: bool
+		"""
 		composant = QWidget()
 		arrangement_principal = QVBoxLayout()
 		arrangement_label_icone = QHBoxLayout()
@@ -107,7 +169,6 @@ class Parametres(QGroupBox):
 			icone.setToolTip(tooltip)
 		elif isinstance(champ, Champ_immunite) or isinstance(champ, Champ_voir_morts):
 			getattr(self, f"champ_{nom}").changer_valeur(valeur_defaut)
-			# champ.stateChanged.connect(champ.changement_valeur)
 		else:
 			getattr(self, f"champ_{nom}").setValue(valeur_defaut)
 			champ.valueChanged.connect(champ.changement_valeur)
@@ -118,7 +179,10 @@ class Parametres(QGroupBox):
 		else:
 			self.layout_non_instantane.addWidget(composant)
 
-	def initialiser_parametres(self):
+	def initialiser_parametres(self) -> None:
+		"""
+		Fonction auxilaire pour initialiser tous les paramètres.
+		"""
 		# letalite
 		self.initialiser_composant(
 			"letalite", 
@@ -200,7 +264,7 @@ class Parametres(QGroupBox):
 			Champ_immunite,
 			"La possibilité ou non d'être immunisé après avoir guéri de la maladie"
 		)
-
+		# visibilité des morts
 		self.initialiser_composant(
 			"morts_visibles",
 			"Voir les morts",
@@ -208,10 +272,14 @@ class Parametres(QGroupBox):
 			"",
 			Champ_voir_morts,
 			"Si activé, toutes les personnes mortes sont conservées dans l'interface.\n Si désactivé, elles seront retirées progressivement",
-			instantane=1
+			instantane=True
 		)
 
-	def gerer_affichage_distance_contagion(self):
+	def gerer_affichage_distance_contagion(self) -> None:
+		"""
+		Fonction permettant de gérer l'affichage ou 
+		non de la distance de contagion de la maladie
+		"""
 		if self.afficher_distance_infection.isChecked():
 			self.sa_fenetre.sa_grille.afficher_distance_contagion = True
 		else : 
