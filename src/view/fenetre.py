@@ -55,7 +55,7 @@ class Fenetre(QMainWindow):
 		:param taille_fenetre: Le dictionnaire portant la largeur et la hauteur
 
 		:return Fenetre:
-			L'objet Fenetre initialisé avec ses 3 sections
+		L'objet Fenetre initialisé avec ses 3 sections
 		"""
 		super().__init__()
 		self.setWindowTitle("épidém.io")
