@@ -75,6 +75,8 @@ class Fenetre(QMainWindow):
 		self.bouton.clicked.connect(self.ouvrir_fenetre)
 		self.son_menu.sa_disposition.addWidget(self.bouton, 0, 5)
 
+		self.setMinimumHeight(300)
+
 	def ouvrir_fenetre(self, checked):
 		if self.sa_fenetre_enfant is None:
 			self.sa_fenetre_enfant = Fenetre_statistiques(self.sa_grille.sa_simulation)
