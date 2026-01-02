@@ -87,7 +87,7 @@ class Grille_visualisation(QWidget):
         self.sa_simulation = None
         self.distance_infection = None
         dimension_graphique = 520
-        self.rendre_visible_distance_contagion = False
+        self.afficher_distance_contagion = False
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
         self.sa_disposition.addWidget(self.visualisation)
@@ -277,7 +277,7 @@ class Grille_visualisation(QWidget):
                     'symbol' : 'star' if (personne.medecin == 1) else 'o',
                     'size' : 15 if (personne.medecin == 1) else 10
                 })
-        if self.rendre_visible_distance_contagion == True:
+        if self.afficher_distance_contagion == True:
             self.rendre_visible_distance_contagion(coordonnes_personnes)
         return coordonnes_personnes
 
