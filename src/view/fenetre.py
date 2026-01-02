@@ -26,9 +26,6 @@ class Fenetre(QMainWindow):
 		ses_parametres (Parametres): section comportant les paramètres modifiables par l'utilisateur
 		sa_grille (Grille_visualisation): section comportant la représentation graphique de la simulation
 		boutons_haut (Barre_boutons): section comportant les boutons permettant de gérer l'état de la simulation
-	
-	Méthodes:
-		__init__ (Fenetre): constructeur
 	"""
 	def __init__(self, taille_fenetre: dict):
 		"""
@@ -82,8 +79,8 @@ class Fenetre(QMainWindow):
 
 	def ouvrir_fenetre(self, checked):
 		if self.sa_fenetre_enfant is None:
-			self.sa_fenetre_enfant = Fenetre_statistiques(self.sa_grille.sa_simulation)
+			self.sa_fenetre_enfant = Fenetre_statistiques(self, self.sa_grille.sa_simulation)
 		else:
 			self.sa_fenetre_enfant.destroy()
-			self.sa_fenetre_enfant = Fenetre_statistiques(self.sa_grille.sa_simulation)
+			self.sa_fenetre_enfant = Fenetre_statistiques(self, self.sa_grille.sa_simulation)
 		self.sa_fenetre_enfant.show()

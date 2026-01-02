@@ -14,6 +14,13 @@ def main():
     sys.exit(application.exec())
 
 def presenter_application():
+    """
+    Cette fonctionne affiche une boîte modale
+    qui bloque la suite du lancement de l'application
+    pour permettre à l'utilisateur de prendre le temps 
+    de bien lire et comprendre l'introduction du
+    logiciel
+    """
     dialogue = QMessageBox()
     dialogue.setWindowTitle("Explications")
     dialogue.setText("""
