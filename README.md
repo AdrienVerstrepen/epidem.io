@@ -62,5 +62,15 @@ Des tests sont disponibles pour vérifier le bon fonctionnement des algorithmes.
 * `coverage run -m pytest` : exécute la suite de tests.
 * `coverage report -m` : affiche le rapport pour savoir si les tests sont réussis et si tout le code est couvert.
 
+### Guide d'utilisation :
+Lorsque vous lancez l'application, un petit texte vous est affiché.
+Ce texte vous explique les détails auxquels il faudra faire attention lors du suivi
+de l'évolution de la simulation. 
+
+L'interface est composée de 3 sections :
+1. La zone de menu avec 5 boutons. Ils servent à intéragir avec le moteur de simulation et à afficher les statistiques
+2. La zone des paramètres. Composé de deux groupes : les paramètres dont la mise à jour sera prise en compte au lancement de la prochaine simulation et les paramètres dont la mise à jour sera prise en compte à la prochaine itération.
+3. La visualisation de la simulation. Elle comporte la grille où notre population et son épidémie évoluera. 
+
 ***
 > Auteurs : Athène Rousseau-Rambach & Adrien Verstrepen
