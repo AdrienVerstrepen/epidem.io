@@ -18,35 +18,34 @@ def presenter_application():
     dialogue.setWindowTitle("Explications")
     dialogue.setText("""
         <h1 align="center">Bienvenue sur <b>Epidem.io</b></h1>
-
         <p>
-        Cette application vous permet de suivre la propagation d'une épidémie 
-        au sein d'une population humaine en fonction de différents paramètres.
+            Cette application vous permet de suivre la propagation d'une épidémie 
+            au sein d'une population humaine en fonction de différents paramètres.
         </p>
         <p>
-        Chaque personne est représenté par un point. Au cours de la simulation, la couleur de ces points 
-        sera amenée à changer car elle représente l'état actuel de la personne.
+            Chaque personne est représentée par un point. Au cours de la simulation, la couleur de ces points 
+            sera susceptible de changer car elle représente l'état actuel de la personne.
         </p>
         <p>
-        Les différents états sont les suivants : 
+            Les différents états sont les suivants : 
         </p>
         <ul>
-            <li>Les points verts indiquent les personnes en bonne santé</li>
-            <li>Les points jaunes symbolisent les personnes infectées</li>
-            <li>Les points rouges représentent les personnes décédées</li>
-            <li>Les points bleus illustrent les personnes immunisées</li>
+            <li>Les points verts indiquent les personnes en bonne santé.</li>
+            <li>Les points jaunes symbolisent les personnes infectées.</li>
+            <li>Les points rouges représentent les personnes décédées.</li>
+            <li>Les points bleus illustrent les personnes immunisées.</li>
         </ul>
-        
         <p>
-        Les simulations lancées par l'utilisateur sont paramétrables, 
-        une fois dans l'interface principale, vous aurez deux sections : une 
-        dont les changements ne seront pris en compte qu'au lancement d'une 
-        simulation; une autre où les changements sont pris en compte 
-        instantanément
+            Les simulations lancées par l'utilisateur sont paramétrables.
+            Une fois dans l'interface principale, vous aurez deux sections : 
+            l'une dont les changements ne seront pris en compte qu'au lancement d'une 
+            simulation ; l'autre où les changements sont pris en compte 
+            instantanément.
         </p>
-
-        <p>Enfin, certaines personnes sont représentées par des étoiles, ce sont les médecins. 
-        Leur rôle est d'accélérer la guérison des personnes proches d'eux.</p>
+        <p>
+            Enfin, certaines personnes sont représentées par des étoiles : ce sont les médecins. 
+            Leur rôle est d'accélérer la guérison des personnes proches d'eux.
+        </p>
     """)
     button = dialogue.exec()
 

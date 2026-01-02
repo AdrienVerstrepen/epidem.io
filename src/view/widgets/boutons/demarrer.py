@@ -15,8 +15,12 @@ class Bouton_demarrer(QPushButton):
 	def appui(self):
 		self.sa_barre.sa_fenetre.sa_grille.demarrer_simulation()
 		self.setEnabled(False)
-		self.setStyleSheet("background-color: #2b2b2b; color: #9d9d9d")
+		self.setStyleSheet("background-color: #999999; color: #eeeeee")
+		self.sa_barre.sa_fenetre.bouton_fenetre_enfant.setEnabled(True)
+		self.sa_barre.sa_fenetre.bouton_fenetre_enfant.setStyleSheet(self.son_style)
 
 	def reinitialiser_etat(self):
 		self.setEnabled(True)
 		self.setStyleSheet(self.son_style)
+		self.sa_barre.sa_fenetre.bouton_fenetre_enfant.setEnabled(False)
+		self.sa_barre.sa_fenetre.bouton_fenetre_enfant.setStyleSheet("background-color: #999999; color: #eeeeee")

@@ -69,11 +69,14 @@ class Fenetre(QMainWindow):
 		disposition_menu = QVBoxLayout()
 		disposition_menu.addWidget(self.son_menu)
 		disposition_menu.addLayout(self.sa_disposition_principale)
-
 		widget_central.setLayout(disposition_menu)
-		self.bouton = QPushButton("Afficher les statistiques")
-		self.bouton.clicked.connect(self.ouvrir_fenetre)
-		self.son_menu.sa_disposition.addWidget(self.bouton, 0, 5)
+		
+		self.bouton_fenetre_enfant = QPushButton("Afficher les statistiques")
+		self.bouton_fenetre_enfant.clicked.connect(self.ouvrir_fenetre)
+		self.son_menu.sa_disposition.addWidget(self.bouton_fenetre_enfant, 0, 5)
+		self.bouton_fenetre_enfant.setEnabled(False)
+		self.style_bouton_fenetre_enfant = self.bouton_fenetre_enfant.styleSheet()
+		self.bouton_fenetre_enfant.setStyleSheet("background-color: #999999; color: #eeeeee")
 
 		self.setMinimumHeight(300)
 

@@ -14,10 +14,10 @@ if TYPE_CHECKING:
 matplotlib.use("Qt5Agg")
 
 class Fenetre_statistiques(QWidget):
-	def __init__(self, simu: "Simulation"):
+	def __init__(self, simulation: "Simulation"):
 		super().__init__()
 		self.setWindowTitle("épidém.io - statistiques")
-		self.simu = simu
+		self.sa_simulation = simulation
 
 		self.son_graphique = Figure(figsize=(5, 4), dpi=100)
 		self.ses_axes = self.son_graphique.add_subplot(111)
@@ -25,8 +25,8 @@ class Fenetre_statistiques(QWidget):
 		self.ses_axes.set_xlabel("Nombre d'itérations")
 		
 		self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
-		if simu:
-			df = (simu.df_historique["nb_morts"] / simu.df_historique["nb_total"]) * 100
+		if self.sa_simulation:
+			df = (self.sa_simulation.df_historique["nb_morts"] / self.sa_simulation.df_historique["nb_total"]) * 100
 			self.ses_axes.plot(df)
 
 		self.ses_axes.set_ylim(0, 100)
@@ -57,7 +57,7 @@ class Fenetre_statistiques(QWidget):
 			self.ses_axes.set_title("Evolution du nombre de personnes mortes au fil du temps")
 			self.ses_axes.set_xlabel("Nombre d'itérations")
 			self.ses_axes.set_ylabel("Nombre de morts en pourcentage")
-			df = (self.simu.df_historique["nb_morts"] / self.simu.df_historique["nb_total"]) * 100
+			df = (self.sa_simulation.df_historique["nb_morts"] / self.sa_simulation.df_historique["nb_total"]) * 100
 			self.ses_axes.plot(df)
 			self.ses_axes.set_ylim(0, 100)
 			self.son_widget_graphique.draw()
