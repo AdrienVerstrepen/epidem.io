@@ -56,10 +56,14 @@ class Fenetre(QMainWindow):
 		self.sa_disposition_principale = QHBoxLayout()
 
 		self.ses_parametres = Parametres(self)
+		parametres_defilables = QScrollArea()
+		parametres_defilables.setWidget(self.ses_parametres)
+		parametres_defilables.setWidgetResizable(True)
+		parametres_defilables.setMinimumWidth(380)
 		self.sa_grille = Grille_visualisation(self, taille_fenetre)
 		
 		self.sa_disposition_principale.addWidget(self.sa_grille, stretch=3)
-		self.sa_disposition_principale.addWidget(self.ses_parametres, stretch=1)
+		self.sa_disposition_principale.addWidget(parametres_defilables, stretch=1)
 
 		self.son_menu = Barre_boutons(self)
 		disposition_menu = QVBoxLayout()
