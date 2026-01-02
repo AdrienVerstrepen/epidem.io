@@ -8,13 +8,17 @@ Voici l'adresse du dépôt contenant le code source : https://github.com/AdrienV
 ## Installation et lancement
 ### Exécutable
 Des fichiers exécutables sont fournis pour les systèmes Linux et Windows.
-Ils sont disponibles dans l'onglet "release" sur github, ou bien dans le dossier src/bin.
+Ils sont disponibles dans l'onglet "release" sur github.
 Ces fichiers sont des exécutables indépendants permettant l'exécution de l'application.
 
 ### Python
 Pour lancer l'application avec python, il faut récupérer le code source :
 ```
 git clone https://github.com/AdrienVerstrepen/epidem.io && cd epidem.io
+```
+Vous pouvez ensuite installer les modules nécessaire avec 
+```
+python -m pip install -r requirements.txt
 ```
 Puis vous pouvez lancer le programme avec : 
 ```

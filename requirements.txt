@@ -1,0 +1,7 @@
+pytest
+matplotlib
+numpy
+pandas
+pyqtgraph
+PySide6
+pyinstaller
