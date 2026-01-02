@@ -24,7 +24,7 @@ class Slider_immunodeprime(QSlider):
 	def __init__(self, menu:"Parametres", texte: str):
 		super().__init__(Qt.Orientation.Horizontal)
 
-		self.setMinimum(1)
+		self.setMinimum(0)
 		self.setMaximum(100)
 		self.texte = texte
 		self.son_menu = menu
