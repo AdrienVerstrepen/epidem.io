@@ -281,6 +281,6 @@ class Parametres(QGroupBox):
 		non de la distance de contagion de la maladie
 		"""
 		if self.afficher_distance_infection.isChecked():
-			self.sa_fenetre.sa_grille.afficher_distance_contagion = True
+			self.sa_fenetre.sa_grille.rendre_visible_distance_contagion = True
 		else : 
-			self.sa_fenetre.sa_grille.afficher_distance_contagion = False
+			self.sa_fenetre.sa_grille.rendre_visible_distance_contagion = False

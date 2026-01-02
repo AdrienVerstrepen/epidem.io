@@ -87,7 +87,7 @@ class Grille_visualisation(QWidget):
         self.sa_simulation = None
         self.distance_infection = None
         dimension_graphique = 520
-        self.afficher_distance_contagion = False
+        self.rendre_visible_distance_contagion = False
         # Récupération des données initialisées
         self.visualisation = PlotWidget()
         self.sa_disposition.addWidget(self.visualisation)
@@ -277,11 +277,11 @@ class Grille_visualisation(QWidget):
                     'symbol' : 'star' if (personne.medecin == 1) else 'o',
                     'size' : 15 if (personne.medecin == 1) else 10
                 })
-        if self.afficher_distance_contagion == True:
-            self.afficher_distance_contagion(coordonnes_personnes)
+        if self.rendre_visible_distance_contagion == True:
+            self.rendre_visible_distance_contagion(coordonnes_personnes)
         return coordonnes_personnes
 
-    def afficher_distance_contagion(self, personnes) -> None:
+    def rendre_visible_distance_contagion(self, personnes) -> None:
         """
         Fonction auxiliaire qui affiche la distance de la 
         contagion de la maladie autour d'une personne
