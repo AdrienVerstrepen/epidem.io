@@ -52,6 +52,7 @@ class Champ_temps_guerison(QComboBox):
 		affichée
 		"""
 		self.setCurrentIndex(self.currentIndex())
+		self.son_menu.label_temps_guerison.setText(f"{self.son_texte} : {self.currentText()}")
 
 	def recuperer_valeur_depuis_champ(self) -> int:
 		"""Méthode pour récupérer la valeur"""
