@@ -97,7 +97,7 @@ class Parametres(QGroupBox):
 		self.setLayout(self.sa_disposition)
 
 		groupement_non_instantane = QGroupBox("Paramètres mis à jour au lancement de la simulation", self)
-		groupement_instantane = QGroupBox("Paramètres mis à jour instantéments", self)
+		groupement_instantane = QGroupBox("Paramètres mis à jour en temps réel", self)
 
 		self.sa_disposition.addWidget(groupement_non_instantane)
 		self.sa_disposition.addWidget(groupement_instantane)
@@ -199,7 +199,8 @@ class Parametres(QGroupBox):
 			100,
 			"",
 			Champ_nb_personnes,
-			"Le nombre de personnes présentes au lancement de la simulation"
+			"Le nombre de personnes présentes au lancement de la simulation. " \
+			"Au maximum 200 personnes pour ne pas ralentir l'application."
 		)
 		# transmission
 		self.initialiser_composant(

@@ -49,6 +49,7 @@ class Champ_distance_infection(QComboBox):
 		"""Méthode pour mettre à jour la valeur
 		affichée avec la valeur sélectionnée"""
 		self.setCurrentIndex(self.currentIndex())
+		self.son_menu.label_distance_infection.setText(f"{self.son_texte} : {self.currentText()}")
 
 	def recuperer_valeur_depuis_champ(self) -> int:
 		"""Méthode pour récuperer la valeur depuis le champ"""

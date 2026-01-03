@@ -31,7 +31,9 @@ def presenter_application():
         </p>
         <p>
             Chaque personne est représentée par un point. Au cours de la simulation, la couleur de ces points 
-            sera susceptible de changer car elle représente l'état actuel de la personne.
+            sera susceptible de changer car elle représente l'état actuel de la personne. Afin de vous proposer
+            la meilleure expérience possible, nous avons limité le nombre de personnes maximales au lancement d'une
+            simulation à 200 personnes.
         </p>
         <p>
             Les différents états sont les suivants : 

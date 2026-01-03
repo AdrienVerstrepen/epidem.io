@@ -108,3 +108,9 @@ class Fenetre(QMainWindow):
 			self.sa_fenetre_enfant.destroy()
 			self.sa_fenetre_enfant = Fenetre_statistiques(self, self.sa_grille.sa_simulation)
 		self.sa_fenetre_enfant.show()
+
+	def closeEvent(self, event):
+		"""Méthode surchargée pour la fermeture de l'application"""
+		if self.sa_fenetre_enfant is not None:
+			self.sa_fenetre_enfant.close()
+		event.accept()
