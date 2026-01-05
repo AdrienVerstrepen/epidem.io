@@ -37,6 +37,7 @@ python -m src.ihm
 ## Organisation du projet
 
 Voici le diagramme de Gantt, illustrant la répartition des tâches, dans le temps et par personne du projet :
+![diagramme de Gantt](doc/annexes/Diagramme-de-Gantt.png)
 
 ### Structure du projet
 
