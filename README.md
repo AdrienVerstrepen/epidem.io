@@ -55,7 +55,7 @@ Le dossier src contient le code source du projet :
 * Package view
 * Package algorithmie
 * Exécutables
-* Image(s)
+* Images
 * Tests
 
 ### Tests et couverture
